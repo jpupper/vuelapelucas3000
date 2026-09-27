@@ -1,6 +1,6 @@
 # Dependencias
 node_modules/
-assetsraw
+assetsraw/
 # Entorno
 .env
 
@@ -8,7 +8,7 @@ assetsraw
 *.tar.gz
 *.backup
 *.tmp
-deploy_scripts/*.backup
+deploy_scripts/
 
 # Logs
 *.log
