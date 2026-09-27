@@ -1,0 +1,22 @@
+# Dependencias
+node_modules/
+
+# Entorno
+.env
+
+# Deploy scripts y backups
+deploy_scripts/
+*.tar.gz
+*.backup
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

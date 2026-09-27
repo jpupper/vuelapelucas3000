@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Vuelapelucas 3000</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: transparent;
+            color: #fff;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        #vuelapelucas-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -10;
+            pointer-events: none;
+            display: block;
+        }
+        .admin-container { max-width: 1400px; margin: 0 auto; }
+        h1 { color: #ff6b35; font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .subtitle { color: #ffd166; margin-bottom: 2rem; }
+        .login-form {
+            max-width: 400px;
+            margin: 5rem auto;
+            background: rgba(255,255,255,0.05);
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+        }
+        .login-form input {
+            width: 100%;
+            padding: 1rem;
+            margin: 1rem 0;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+        }
+        .login-form button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #ff6b35, #ec4899);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .stat-number { font-size: 3rem; color: #ff6b35; font-weight: bold; }
+        .stat-label { color: rgba(255,255,255,0.7); margin-top: 0.5rem; }
+
+        /* --- BARRA DE ACCIONES --- */
+        .toolbar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+        .toolbar-btn {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .toolbar-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-1px); }
+        .toolbar-btn.csv { background: linear-gradient(135deg, #059669, #10b981); border-color: transparent; font-weight: 600; }
+        .toolbar-btn.csv:hover { background: linear-gradient(135deg, #047857, #059669); }
+        .toolbar-btn.csv:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+        /* --- TABLA ---
+           overflow-x:auto (antes era hidden) para que la ultima columna NO quede recortada.
+           La columna Accion va sticky a la derecha para que el boton siempre se vea. */
+        .table-container {
+            background: rgba(255,255,255,0.03);
+            border-radius: 15px;
+            overflow-x: auto;
+            overflow-y: visible;
+            border: 1px solid rgba(255,255,255,0.1);
+            -webkit-overflow-scrolling: touch;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 0.9rem 1rem; text-align: left; vertical-align: top; }
+        th {
+            background: #3a2318;
+            color: #ffd166;
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+        td { border-bottom: 1px solid rgba(255,255,255,0.05); }
+        tr:hover td { background: rgba(255,255,255,0.03); }
+        .col-lg { min-width: 200px; max-width: 320px; white-space: pre-wrap; word-break: break-word; }
+        .col-md { min-width: 130px; white-space: nowrap; }
+        .col-sm { min-width: 90px; white-space: nowrap; }
+
+        /* Columna de accion fija a la derecha (no se va con el scroll) */
+        th.col-accion, td.col-accion {
+            position: sticky;
+            right: 0;
+            min-width: 96px;
+            text-align: center;
+            background: #17172a;
+            box-shadow: -8px 0 12px -8px rgba(0,0,0,0.9);
+        }
+        th.col-accion { background: #3a2318; z-index: 3; }
+        tr:hover td.col-accion { background: #1d1d33; }
+
+        .delete-btn {
+            background: #ef4444;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 0.9rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .delete-btn:hover { background: #dc2626; }
+
+        .badge-rol {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            border-radius: 20px;
+            background: rgba(255,107,53,0.2);
+            border: 1px solid rgba(255,107,53,0.4);
+            color: #ffd166;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+        .loading { text-align: center; padding: 3rem; color: rgba(255,255,255,0.5); }
+        .error { color: #ef4444; text-align: center; padding: 2rem; }
+        .sin-datos { text-align: center; padding: 2rem; color: rgba(255,255,255,0.5); }
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            .admin-container { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div id="login-section" class="login-form">
+            <h1>🔐 Admin</h1>
+            <p class="subtitle">Vuelapelucas 3000 - Panel de Administración</p>
+            <input type="password" id="admin-pass" placeholder="Contraseña de administrador">
+            <button onclick="login()">Ingresar</button>
+        </div>
+
+        <div id="admin-section" style="display: none;">
+            <div class="toolbar">
+                <button class="toolbar-btn csv" id="btn-csv" onclick="exportarCSV()">⬇️ Exportar CSV</button>
+                <button class="toolbar-btn" onclick="logout()">Cerrar Sesión</button>
+            </div>
+            <h1>📊 Panel de Administración</h1>
+            <p class="subtitle">Vuelapelucas 3000 - Inscripciones</p>
+
+            <div class="stats" id="stats"></div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="col-md">Nombre</th>
+                            <th class="col-md">Apellido</th>
+                            <th class="col-lg">Email</th>
+                            <th class="col-sm">Teléfono</th>
+                            <th class="col-sm">Ciudad</th>
+                            <th class="col-md">Rol</th>
+                            <th class="col-lg">Cómo colabora</th>
+                            <th class="col-lg">Espec. técnicas</th>
+                            <th class="col-sm">Hospedaje</th>
+                            <th class="col-sm">Fecha</th>
+                            <th class="col-accion">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inscripciones-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CONFIG = {
+            BASE: '/vuelapelucas3000_2',
+            API_URL: (() => {
+                const IS_NODE_SERVER = (
+                    location.hostname === 'localhost' ||
+                    location.hostname === '127.0.0.1' ||
+                    location.host.includes('localhost') ||
+                    location.hostname === 'vps-4455523-x.dattaweb.com'
+                );
+                return IS_NODE_SERVER ? '' : 'https://vps-4455523-x.dattaweb.com';
+            })()
+        };
+
+        let adminPass = '';
+        let ultimasInscripciones = [];
+
+        const ROLES = {
+            espectador: 'Espectador',
+            feriante: 'Feriante',
+            artista_escenario: 'Artista de escenario',
+            vj: 'VJ',
+            instalacion_multimedia: 'Instalación multimedia',
+            colaborador_productor: 'Colaborador / productor'
+        };
+
+        const esc = (v) => String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[c]));
+
+        const nombreRol = (r) => ROLES[r] || r || 'Espectador';
+
+        async function login() {
+            adminPass = document.getElementById('admin-pass').value;
+            await loadInscripciones();
+        }
+
+        function logout() {
+            adminPass = '';
+            ultimasInscripciones = [];
+            document.getElementById('login-section').style.display = 'block';
+            document.getElementById('admin-section').style.display = 'none';
+            document.getElementById('admin-pass').value = '';
+        }
+
+        function fechaCorta(iso) {
+            if (!iso) return '-';
+            const d = new Date(iso);
+            return isNaN(d) ? '-' : d.toLocaleDateString('es-AR');
+        }
+
+        async function loadInscripciones() {
+            try {
+                const url = CONFIG.API_URL + CONFIG.BASE + '/api/inscripciones?pass=' + encodeURIComponent(adminPass);
+                const response = await fetch(url, { credentials: 'include' });
+                const data = await response.json();
+
+                if (!response.ok) {
+                    alert('Contraseña incorrecta');
+                    return;
+                }
+
+                ultimasInscripciones = data.inscripciones || [];
+
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('admin-section').style.display = 'block';
+
+                // Stats
+                document.getElementById('stats').innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-number">${data.count}</div>
+                        <div class="stat-label">Total Inscriptos</div>
+                    </div>
+                `;
+
+                // Tabla
+                const tbody = document.getElementById('inscripciones-body');
+                if (!ultimasInscripciones.length) {
+                    tbody.innerHTML = '<tr><td class="sin-datos" colspan="11">Todavía no hay inscripciones</td></tr>';
+                } else {
+                    tbody.innerHTML = ultimasInscripciones.map(i => `
+                        <tr>
+                            <td class="col-md">${esc(i.nombre)}</td>
+                            <td class="col-md">${esc(i.apellido)}</td>
+                            <td class="col-lg">${esc(i.email)}</td>
+                            <td class="col-sm">${esc(i.telefono) || '-'}</td>
+                            <td class="col-sm">${esc(i.ciudad) || '-'}</td>
+                            <td class="col-md"><span class="badge-rol">${esc(nombreRol(i.rol))}</span></td>
+                            <td class="col-lg">${esc(i.como_colaborar) || '-'}</td>
+                            <td class="col-lg">${esc(i.especificaciones_tecnicas) || '-'}</td>
+                            <td class="col-sm">${esc(i.hospedaje) || '-'}</td>
+                            <td class="col-sm">${fechaCorta(i.createdAt)}</td>
+                            <td class="col-accion"><button class="delete-btn" onclick="deleteInscripcion('${i._id}')" title="Eliminar inscripción">🗑️</button></td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al cargar inscripciones');
+            }
+        }
+
+        async function deleteInscripcion(id) {
+            if (!confirm('¿Eliminar esta inscripción?')) return;
+
+            try {
+                const url = CONFIG.API_URL + CONFIG.BASE + '/api/inscripciones/' + id + '?pass=' + encodeURIComponent(adminPass);
+                await fetch(url, { method: 'DELETE', credentials: 'include' });
+                await loadInscripciones();
+            } catch (error) {
+                alert('Error al eliminar');
+            }
+        }
+
+        // --- EXPORTAR CSV ---
+        // Separador ";" y BOM UTF-8 para que Excel en español lo abra en columnas.
+        function celdaCSV(valor) {
+            const s = String(valor == null ? '' : valor).replace(/\r?\n/g, ' ').replace(/"/g, '""');
+            return '"' + s + '"';
+        }
+
+        function exportarCSV() {
+            if (!ultimasInscripciones.length) {
+                alert('No hay datos para exportar. Cargá las inscripciones primero.');
+                return;
+            }
+
+            const columnas = [
+                ['Nombre', i => i.nombre],
+                ['Apellido', i => i.apellido],
+                ['Email', i => i.email],
+                ['Telefono', i => i.telefono],
+                ['Ciudad', i => i.ciudad],
+                ['Rol', i => nombreRol(i.rol)],
+                ['Como colabora', i => i.como_colaborar],
+                ['Especificaciones tecnicas', i => i.especificaciones_tecnicas],
+                ['Hospedaje', i => i.hospedaje],
+                ['Fecha', i => fechaCorta(i.createdAt)],
+                ['Fecha ISO', i => i.createdAt]
+            ];
+
+            const lineas = [columnas.map(c => celdaCSV(c[0])).join(';')];
+            ultimasInscripciones.forEach(i => {
+                lineas.push(columnas.map(c => celdaCSV(c[1](i))).join(';'));
+            });
+
+            const csv = '\ufeff' + lineas.join('\r\n') + '\r\n';
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const hoy = new Date().toISOString().slice(0, 10);
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `vuelapelucas3000_inscripciones_${hoy}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+        }
+
+        // Enter en el campo de contraseña = ingresar
+        document.getElementById('admin-pass').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') login();
+        });
+    </script>
+    <script src="js/background-shader.js?v=1"></script>
+</body>
+</html>
