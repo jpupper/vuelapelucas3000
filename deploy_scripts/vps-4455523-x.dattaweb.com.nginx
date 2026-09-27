@@ -1,0 +1,129 @@
+server {
+    server_name vps-4455523-x.dattaweb.com;
+	
+	client_max_body_size 100M;
+    client_body_buffer_size 100M;
+    client_body_timeout 300s;
+	
+    # APLICACIÓN PRINCIPAL: bmraices_local (puerto 3000)
+    # Vuelapelucas 3000 (puerto 4000)
+    location /vuelapelucas3000_2 {
+        proxy_pass http://localhost:4000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+        proxy_set_header Cookie $http_cookie;
+        client_max_body_size 100M;
+        proxy_read_timeout 300s;
+    }
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+	# APLICACIÓN: Botonera (puerto 3030)
+	location /botonera {
+		proxy_pass http://localhost:3030;
+		proxy_http_version 1.1;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection "upgrade";
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_cache_bypass $http_upgrade;
+		proxy_set_header Cookie $http_cookie;
+		client_max_body_size 100M;
+		proxy_read_timeout 300s;
+	}
+	
+	# APLICACIÓN: MasterPrompt (puerto 3451)
+	location /fscauth {
+		# 1. Redirección al puerto interno (Identity Master)
+		proxy_pass http://localhost:3027;
+		
+		# 2. Soporte para WebSockets e Identidad Central (Cookies)
+		proxy_http_version 1.1;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection 'upgrade';
+		proxy_set_header Host $host;
+		proxy_set_header Cookie $http_cookie; 
+		proxy_cache_bypass $http_upgrade;
+		
+		# 3. Seguridad y Headers
+		add_header 'Access-Control-Allow-Credentials' 'true' always;
+		
+		# 4. Límites de Carga
+		client_max_body_size 100M;
+		proxy_read_timeout 300s;
+		proxy_connect_timeout 300s;
+	}
+	
+    location /masterprompt {
+        proxy_pass http://localhost:3451;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+    
+    location /rose {
+        proxy_pass http://localhost:3343;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+    
+    location /jpupper {
+        proxy_pass http://localhost:3243;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+    
+    location /raicesinterface {
+        proxy_pass http://localhost:3400;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+    
+    location /raicesgen {
+        proxy_pass http://localhost:3500;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+    
+    # APLICACIÓN: LiveIA WebSocket Server (puerto 3454)
+    location /liveiaserver {
+        proxy_pass http://localhost:3454;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_read_timeout 86400;
+    }
+}

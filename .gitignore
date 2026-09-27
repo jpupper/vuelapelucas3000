@@ -4,10 +4,11 @@ node_modules/
 # Entorno
 .env
 
-# Deploy scripts y backups
-deploy_scripts/
+# Backups y temporales
 *.tar.gz
 *.backup
+*.tmp
+deploy_scripts/*.backup
 
 # Logs
 *.log
