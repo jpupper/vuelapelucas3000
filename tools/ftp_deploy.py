@@ -10,6 +10,7 @@ Uso: python tools/ftp_deploy.py [remote_dir] [--only subpath]
 import argparse
 import ftplib
 import os
+import posixpath
 import sys
 import time
 
@@ -35,6 +36,7 @@ class Deployer:
         self.user = env["FTP_USER"]
         self.pw = env["FTP_PASS"]
         self.ftp = None
+        self._idx = {}          # dir remoto -> {nombre: size}
         self.connect()
 
     def connect(self):
@@ -51,6 +53,7 @@ class Deployer:
             self.ftp.voidcmd("TYPE I")   # binario: habilita SIZE
         except Exception:
             pass
+        self._idx = {}
 
     def mkd(self, path):
         cur = ""
@@ -60,21 +63,43 @@ class Deployer:
                 self.ftp.mkd(cur)
             except ftplib.error_perm:
                 pass
+            self._idx.pop(cur, None)
+
+    def _listdir(self, d):
+        """MLSD de un directorio -> {nombre: size}.  Cacheado."""
+        if d in self._idx:
+            return self._idx[d]
+        out = {}
+        try:
+            for name, facts in self.ftp.mlsd(d, ["type", "size"]):
+                if facts.get("type") == "file":
+                    try:
+                        out[name] = int(facts.get("size", -1))
+                    except (TypeError, ValueError):
+                        out[name] = -1
+        except Exception:
+            out = None
+        self._idx[d] = out if out is not None else {}
+        self._idx[d] = out if out is not None else {}
+        return self._idx[d]
 
     def remote_size(self, rp):
-        try:
-            return self.ftp.size(rp)
-        except Exception:
-            return None
+        """SIZE de este server devuelve basura; usamos MLSD (cacheado)."""
+        d, name = posixpath.split(rp)
+        return self._listdir(d or "/").get(name)
 
-    def put(self, lp, rp, tries=4):
+    def put(self, lp, rp, tries=4, force=False):
         want = os.path.getsize(lp)
         for attempt in range(1, tries + 1):
             try:
-                if self.remote_size(rp) == want:
-                    return "skip"
+                if not force:
+                    rs = self.remote_size(rp)
+                    if rs == want:
+                        return "skip"
                 with open(lp, "rb") as f:
                     self.ftp.storbinary("STOR " + rp, f, blocksize=65536)
+                # invalidar cache del dir para no repetir el error de SIZE
+                self._idx.pop(posixpath.dirname(rp) or "/", None)
                 return "ok"
             except Exception as e:
                 print(f"    retry {attempt}/{tries} {os.path.basename(rp)}: {str(e)[:70]}", flush=True)
@@ -91,16 +116,26 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("remote", nargs="?", default=None)
     ap.add_argument("--only", default=None, help="subir solo este subpath de public/")
+    ap.add_argument("--force", action="store_true", help="subir todo, sin comparar tamanos")
+    ap.add_argument("--diff", action="store_true", help="solo listar que difiere, sin subir")
+    ap.add_argument("--ext", default=None,
+                    help="subir solo estas extensiones (ej: html,css,js,json)")
     a = ap.parse_args()
     env = load_env()
     remote_base = a.remote or env.get("FTP_REMOTE_BASE", "/public_html/vuelapelucas3000")
     if not remote_base.startswith("/public_html/"):
         sys.exit(f"ABORTADO: destino inseguro {remote_base}")
 
+    ext_filter = None
+    if a.ext:
+        ext_filter = tuple("." + e.strip().lstrip(".").lower() for e in a.ext.split(",") if e.strip())
+
     src_root = os.path.join(PUBLIC, a.only) if a.only else PUBLIC
     files = []
     for dp, _d, fns in os.walk(src_root):
         for fn in fns:
+            if ext_filter and not fn.lower().endswith(ext_filter):
+                continue
             files.append(os.path.join(dp, fn))
     files.sort()
     print(f"{len(files)} archivos -> {remote_base}")
@@ -112,6 +147,17 @@ def main():
         rel = os.path.relpath(lp, PUBLIC).replace("\\", "/")
         rp = remote_base + "/" + rel
         rdir = os.path.dirname(rp)
+        if a.diff:
+            rs = d.remote_size(rp)
+            ls = os.path.getsize(lp)
+            if rs != ls:
+                print(f"   DISTINTO {rel}: local={ls} remoto={rs}")
+            if i % 80 == 0:
+                try:
+                    d.connect()
+                except Exception:
+                    pass
+            continue
         try:
             d.mkd(rdir)
         except Exception as e:
@@ -121,7 +167,7 @@ def main():
                 d.mkd(rdir)
             except Exception as e2:
                 print("    mkd fallo definitivo:", str(e2)[:70], flush=True)
-        r = d.put(lp, rp)
+        r = d.put(lp, rp, force=a.force)
         if r == "ok":
             ok += 1
         elif r == "skip":
@@ -137,7 +183,10 @@ def main():
                 pass
         if i % 20 == 0 or i == len(files):
             print(f"  {i}/{len(files)}  nuevos={ok} iguales={skip} fallos={fail}", flush=True)
-    print(f"LISTO nuevos={ok} iguales={skip} fallos={fail}")
+    if a.diff:
+        print("FIN del diff (no se subio nada)")
+    else:
+        print(f"LISTO nuevos={ok} iguales={skip} fallos={fail}")
     for f in fails[:20]:
         print("   FALLO", f)
     try:
