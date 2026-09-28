@@ -739,6 +739,58 @@ h1, h2, h3, h4 {
     box-shadow: 5px 5px 0px #000000;
 }
 
+/* iconos SVG dentro de los botones de redes del footer */
+.footer-social a svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+    vertical-align: -3px;
+    margin-right: 0.45rem;
+}
+
+/* ---------- FILA DE CREDITOS DEL FOOTER ---------- */
+.footer-credits {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem 1.6rem;
+    padding-top: 1.6rem;
+    border-top: 2px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 0.4rem;
+}
+
+.footer-credits-title {
+    font-family: 'Bebas Neue', cursive;
+    letter-spacing: 0.16em;
+    font-size: 1.05rem;
+    color: #ffd62c;
+}
+
+.footer-credits a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 0.86rem;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    padding-bottom: 1px;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.footer-credits a:hover {
+    color: #ffd62c;
+    border-bottom-color: #ffd62c;
+}
+
+.footer-credits a small {
+    display: block;
+    font-weight: 500;
+    font-size: 0.72rem;
+    letter-spacing: 0;
+    color: rgba(255, 255, 255, 0.6);
+}
+
 .footer-bottom {
     text-align: center;
     padding-top: 2rem;

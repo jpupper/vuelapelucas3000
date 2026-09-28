@@ -1,0 +1,561 @@
+/* =========================================================
+   VUELAPELUCAS 3000 — capa 2026
+   Galeria real, seccion comunidad, juegos y reemplazo de
+   iconos por imagenes. Se suma a styles.css (no lo pisa).
+   ========================================================= */
+
+/* ---------- NAV ---------- */
+.vl-nav {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.6rem 1.2rem;
+    background: #ffffff;
+    border-bottom: 3px solid #000;
+    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.18);
+}
+
+.vl-nav .vl-brand {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.5rem;
+    letter-spacing: 0.06em;
+    color: #000;
+    text-decoration: none;
+    line-height: 1;
+}
+
+.vl-nav .vl-brand b { color: var(--tertiary, #ef4720); }
+
+/* ---------- NAVE GIGANTE ARRIBA DE TODO ---------- */
+.vl-top-nave {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    padding: 0;
+    margin: 0 0 -0.6rem;
+    line-height: 0;
+    pointer-events: none;
+}
+
+.vl-top-nave img {
+    width: min(780px, 96vw);
+    height: auto;
+    display: block;
+    filter: drop-shadow(12px 12px 0 rgba(0, 0, 0, 0.45));
+    animation: vl-float 3.6s ease-in-out infinite;
+}
+
+@keyframes vl-float {
+    0%, 100% { transform: rotate(-0.8deg); }
+    50% { transform: rotate(0.8deg); }
+}
+
+.vl-nav nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.vl-nav nav a {
+    font-family: 'Bebas Neue', cursive;
+    letter-spacing: 0.06em;
+    font-size: 1.05rem;
+    color: #000;
+    text-decoration: none;
+    padding: 0.35rem 0.7rem;
+    border: 2px solid transparent;
+    border-radius: 999px;
+}
+
+.vl-nav nav a:hover {
+    background: var(--secondary, #ffd62c);
+    border-color: #000;
+}
+
+/* ---------- Imagenes que reemplazan iconos ---------- */
+.img-bullet {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    vertical-align: middle;
+    margin-right: 0.45rem;
+}
+
+.chip-img {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 2px solid #000;
+    flex: 0 0 auto;
+}
+
+.footer-social a img {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    object-fit: cover;
+    border: 2px solid #000;
+    background: #fff;
+    vertical-align: middle;
+    margin-right: 0.4rem;
+}
+
+/* ---------- HERO ---------- */
+.vl-hero-visual {
+    margin-top: 2.2rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 1.4rem;
+}
+
+.vl-screen {
+    position: relative;
+    background: #000;
+    border: 4px solid #000;
+    border-radius: 18px;
+    box-shadow: 9px 9px 0 #000;
+    overflow: hidden;
+    line-height: 0;
+}
+
+.vl-screen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(180deg,
+            rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 3px);
+}
+
+.vl-screen img {
+    display: block;
+    width: min(320px, 74vw);
+    height: auto;
+}
+
+.vl-screen .vl-screen-tag {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    background: var(--secondary, #ffd62c);
+    color: #000;
+    font-family: 'Bebas Neue', cursive;
+    letter-spacing: 0.08em;
+    font-size: 0.95rem;
+    padding: 0.2rem 0.7rem;
+    border-top: 3px solid #000;
+    border-right: 3px solid #000;
+    border-top-right-radius: 12px;
+    line-height: 1.4;
+}
+
+.vl-afiche {
+    width: min(380px, 80vw);
+    border: 4px solid #000;
+    border-radius: 18px;
+    box-shadow: 9px 9px 0 #000;
+    display: block;
+    background: #fff;
+}
+
+/* ---------- Cards del festival: grilla 2x2 ---------- */
+.festival-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+    .festival-grid { grid-template-columns: 1fr; }
+}
+
+.festival-card {
+    padding: 0 0 2rem;
+    overflow: hidden;
+}
+
+.festival-card .card-photo {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    display: block;
+    border-bottom: 3px solid #000;
+    margin-bottom: 1.4rem;
+    background: #ddd;
+}
+
+.festival-card h3,
+.festival-card p { padding: 0 1.5rem; }
+
+/* ---------- GALERIA ---------- */
+.vl-filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-bottom: 2rem;
+}
+
+.vl-filter {
+    font-family: 'Bebas Neue', cursive;
+    letter-spacing: 0.06em;
+    font-size: 1.15rem;
+    padding: 0.45rem 1.15rem;
+    border: 3px solid #000;
+    border-radius: 999px;
+    background: #fff;
+    color: #000;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 #000;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.vl-filter:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #000; }
+.vl-filter.is-active { background: var(--secondary, #ffd62c); }
+
+.vl-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 1.1rem;
+}
+
+.vl-gallery figure {
+    margin: 0;
+    aspect-ratio: 1;
+    border: 3px solid #000;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 5px 5px 0 #000;
+    background: #000;
+    position: relative;
+    cursor: zoom-in;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.vl-gallery figure:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 8px 8px 0 #000;
+}
+
+.vl-gallery img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.vl-gallery .vl-year {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: var(--secondary, #ffd62c);
+    border: 2px solid #000;
+    border-radius: 999px;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 0.95rem;
+    letter-spacing: 0.05em;
+    padding: 0 0.6rem;
+    line-height: 1.5;
+}
+
+.vl-more {
+    display: block;
+    margin: 2rem auto 0;
+    font-family: 'Bebas Neue', cursive;
+    letter-spacing: 0.08em;
+    font-size: 1.25rem;
+    padding: 0.7rem 1.8rem;
+    background: #fff;
+    color: #000;
+    border: 3px solid #000;
+    border-radius: 999px;
+    box-shadow: 5px 5px 0 #000;
+    cursor: pointer;
+}
+
+.vl-more:hover { background: var(--mint, #6cfeb5); }
+
+/* ---------- Lightbox ---------- */
+.vl-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.88);
+    padding: 1.2rem;
+}
+
+.vl-lightbox.is-open { display: flex; }
+
+.vl-lightbox img {
+    max-width: 94vw;
+    max-height: 84vh;
+    border: 4px solid #fff;
+    border-radius: 12px;
+    box-shadow: 0 0 0 4px #000;
+}
+
+.vl-lightbox .vl-lb-cap {
+    position: absolute;
+    bottom: 1.4rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--secondary, #ffd62c);
+    color: #000;
+    border: 3px solid #000;
+    border-radius: 999px;
+    padding: 0.25rem 1rem;
+    font-family: 'Bebas Neue', cursive;
+    letter-spacing: 0.06em;
+}
+
+.vl-lightbox button {
+    position: absolute;
+    top: 1rem;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 3px solid #000;
+    background: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+/* OJO: ".vl-lightbox button" (0,1,1) le gana a ".vl-lb-close" (0,1,0),
+   asi que estas reglas van con la misma especificidad o mas. */
+.vl-lightbox .vl-lb-prev,
+.vl-lightbox .vl-lb-next {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.vl-lightbox .vl-lb-prev { left: 1rem; right: auto; }
+.vl-lightbox .vl-lb-next { right: 1rem; left: auto; }
+
+/* la cruz va arriba a la derecha, en su propio rincon: antes caia justo
+   encima de la flecha › y no se podia pasar de foto */
+.vl-lightbox .vl-lb-close {
+    top: 1rem;
+    right: 1rem;
+    left: auto;
+    bottom: auto;
+    font-size: 1.2rem;
+}
+
+/* ---------- COMMUNITY CREATION ---------- */
+.vl-community-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem 1.2rem;
+    margin-bottom: 2rem;
+}
+
+/* el titulo ocupa su propia linea; los botones quedan juntos abajo */
+.vl-community-head .section-title {
+    flex: 1 0 100%;
+    margin: 0;
+}
+
+.vl-community-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 1.2rem;
+}
+
+.vl-community-grid a {
+    display: block;
+    aspect-ratio: 4 / 5;
+    border: 3px solid #000;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 6px 6px 0 #000;
+    background: #111;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.vl-community-grid a:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 9px 9px 0 #000;
+}
+
+.vl-community-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.vl-empty {
+    text-align: center;
+    font-weight: 600;
+    background: #fff;
+    border: 3px dashed #000;
+    border-radius: 18px;
+    padding: 1.6rem;
+    max-width: 620px;
+    margin: 0 auto;
+}
+
+/* ---------- JUEGOS ---------- */
+.vl-games {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.6rem;
+    margin-top: 1rem;
+}
+
+.vl-game {
+    display: block;
+    text-decoration: none;
+    color: #000;
+    background: #fff;
+    border: 3px solid #000;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 7px 7px 0 #000;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.vl-game:hover { transform: translate(-3px, -3px); box-shadow: 10px 10px 0 #000; }
+
+.vl-game img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    display: block;
+    border-bottom: 3px solid #000;
+    background: #111;
+}
+
+.vl-game .vl-game-body { padding: 1.1rem 1.2rem 1.4rem; }
+
+.vl-game h3 {
+    font-size: 1.7rem;
+    margin-bottom: 0.35rem;
+}
+
+.vl-game p { font-weight: 500; font-size: 0.98rem; }
+
+.vl-game .vl-play {
+    display: inline-block;
+    margin-top: 0.8rem;
+    font-family: 'Bebas Neue', cursive;
+    letter-spacing: 0.08em;
+    font-size: 1.15rem;
+    background: var(--tertiary, #ef4720);
+    color: #fff;
+    border: 3px solid #000;
+    border-radius: 999px;
+    padding: 0.3rem 1.2rem;
+    box-shadow: 4px 4px 0 #000;
+}
+
+/* ---------- chips de hospedaje con imagen ---------- */
+.place-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    text-align: left;
+}
+
+/* ---------- ajustes a componentes existentes ---------- */
+.category-icon-img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border: 3px solid #000;
+    border-radius: 12px;
+    box-shadow: 3px 3px 0 #000;
+    flex: 0 0 auto;
+}
+
+.ico-mini {
+    width: 18px;
+    height: 18px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 2px solid #000;
+    vertical-align: -3px;
+    margin-right: 0.35rem;
+}
+
+.date-badge,
+.location-badge,
+.cta-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.cta-badge { display: inline-flex; }
+
+.whatsapp-float {
+    overflow: visible;
+    padding: 0;
+}
+
+.scroll-indicator img {
+    display: block;
+    animation: vl-nave 2s infinite;
+}
+
+@keyframes vl-nave {
+    0%, 100% { transform: rotate(90deg) translateX(0); }
+    50% { transform: rotate(90deg) translateX(9px); }
+}
+
+.cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+}
+
+/* hero: ANOTATE centrado solo, galeria como secundario abajo */
+.vl-hero-actions {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9rem;
+}
+
+.btn-secondary {
+    display: inline-block;
+    background: #ffffff;
+    color: #000000;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.25rem;
+    letter-spacing: 0.06em;
+    padding: 0.65rem 2.2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    border: 3px solid #000000;
+    box-shadow: 5px 5px 0px #000000;
+    transition: all 0.15s ease;
+}
+
+.btn-secondary:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 7px 7px 0px #000000;
+    background: var(--mint, #6cfeb5);
+}
+
+@media (max-width: 768px) {
+    .vl-nav { flex-direction: column; align-items: flex-start; }
+    .vl-gallery { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+    .vl-screen img { width: 78vw; }
+}

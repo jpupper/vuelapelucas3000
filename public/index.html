@@ -4,54 +4,149 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vuelapelucas 3000 - Encuentro de Artistas</title>
+    <meta name="description" content="Vuelapelucas 3000 - Encuentro de artistas, música y comunidad en Victorica, La Pampa. Galería, juegos y creaciones de la comunidad.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=4">
+    <link rel="stylesheet" href="css/styles.css?v=5">
+    <link rel="stylesheet" href="css/vuelapelucas2026.css?v=4">
 </head>
 <body>
+
+    <!-- NAV -->
+    <header class="vl-nav">
+        <a class="vl-brand" href="#inicio">
+            VUELAPELUCAS <b>3000</b>
+        </a>
+        <nav>
+            <a href="#festival">ENCUENTRO</a>
+            <a href="#galeria">GALERIA</a>
+            <a href="#comunidad">COMUNIDAD</a>
+            <a href="#juegos">JUEGOS</a>
+            <a href="#hospedajes">HOSPEDAJES</a>
+            <a href="anotate.html">ANOTATE</a>
+        </nav>
+    </header>
+
     <!-- HERO -->
     <section class="hero" id="inicio">
         <div class="hero-bg"></div>
         <div class="hero-content">
+            <div class="vl-top-nave">
+                <img src="img/nave-vuelapelu.png" alt="Nave Vuelapelucas 3000">
+            </div>
             <h1 class="hero-title">VUELAPELUCAS <span class="hero-number">3000</span></h1>
             <p class="hero-subtitle">ENCUENTRO DE ARTISTAS</p>
             <div class="hero-date">
-                <span class="date-badge">🗓️ 19 - 20 - 21 DICIEMBRE</span>
-                <span class="location-badge">📍 EL GRIFO BAR - VICTORICA, LA PAMPA</span>
+                <span class="date-badge">
+                    <img class="img-bullet" src="img/ico-fecha.jpg" alt="Afiche del festival">
+                    19 - 20 - 21 DICIEMBRE
+                </span>
+                <span class="location-badge">
+                    <img class="img-bullet" src="img/ico-lugar.jpg" alt="Victorica, La Pampa">
+                    EL GRIFO BAR - VICTORICA, LA PAMPA
+                </span>
             </div>
-            <a href="anotate.html" class="btn-primary">¡ANOTATE YA!</a>
+
+            <div class="vl-hero-visual">
+                <img class="vl-afiche" src="img/afiche-vuelapelucas3000.jpg" alt="Afiche Vuelapelucas 3000">
+            </div>
+
+            <div class="cta-actions vl-hero-actions" style="margin-top: 2.2rem;">
+                <a href="anotate.html" class="btn-primary">¡ANOTATE YA!</a>
+                <a href="#galeria" class="btn-secondary">VER LA GALERIA</a>
+            </div>
         </div>
         <div class="scroll-indicator">
-            <span>↓</span>
+            <img src="img/nave-vuelapelu.png" alt="" style="width:52px;transform:rotate(90deg)">
         </div>
     </section>
 
     <!-- INFO FESTIVAL -->
     <section class="section festival-section" id="festival">
         <div class="container">
-            <h2 class="section-title">EL FESTIVAL</h2>
+            <h2 class="section-title">EL ENCUENTRO</h2>
             <div class="festival-grid">
                 <div class="festival-card">
-                    <div class="card-icon">🎨</div>
+                    <img class="card-photo" src="img/card-comunidad.jpg" alt="Encuentro artístico en Victorica">
                     <h3>Encuentro Artístico</h3>
-                    <p>Vuelapelucas 3000 es un festival de arte, música y comunidad que se celebra cada año en Victorica, La Pampa. Un espacio de encuentro para artistas visuales, músicos, performers y creadores de todo el país.</p>
+                    <p>Vuelapelucas 3000 es un encuentro de arte, música y comunidad que se celebra cada año en Victorica, La Pampa. Un espacio de encuentro para artistas visuales, músicos, performers y creadores de todo el país.</p>
                 </div>
                 <div class="festival-card">
-                    <div class="card-icon">🎵</div>
+                    <img class="card-photo" src="img/card-musica.jpg" alt="Banda en vivo sobre el escenario">
                     <h3>Música en Vivo</h3>
                     <p>Bandas locales y nacionales se presentan en el escenario principal durante 3 días de pura música. Desde rock hasta electrónica, folclore experimental y todo lo que puedas imaginar.</p>
                 </div>
                 <div class="festival-card">
-                    <div class="card-icon">🖼️</div>
-                    <h3>Arte Visual</h3>
-                    <p>Exposiciones de ilustración, pintura, muralismo y arte digital. Talleres abiertos donde los artistas comparten sus técnicos con la comunidad.</p>
+                    <img class="card-photo" src="img/card-camping.jpg" alt="Atardecer pampeano, zona de acampada">
+                    <h3>Acampada</h3>
+                    <p>El encuentro incluye zona de acampada en Club Banco Nación y Parque Los Pisaderos. Viví la experiencia completa bajo las estrellas pampeanas.</p>
                 </div>
                 <div class="festival-card">
-                    <div class="card-icon">🏕️</div>
-                    <h3>Acampada</h3>
-                    <p>El festival incluye zona de acampada en Club Banco Nación y Parque Los Pisaderos. Viví la experiencia completa bajo las estrellas pampeanas.</p>
+                    <img class="card-photo" src="img/card-arte.jpg" alt="Instalación de televisores con tela estampada">
+                    <h3>Arte Visual</h3>
+                    <p>Exposiciones de ilustración, pintura, muralismo, videoarte e instalaciones con televisores. Talleres abiertos donde los artistas comparten sus técnicas con la comunidad.</p>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GALERIA -->
+    <section class="section" id="galeria">
+        <div class="container">
+            <h2 class="section-title">GALERIA</h2>
+            <p class="section-subtitle">Fotos de las ediciones 2022, 2024 y 2025. Tocá una foto para verla en grande.</p>
+            <div class="vl-filters"></div>
+            <div class="vl-gallery"></div>
+            <button type="button" class="vl-more" style="display:none"></button>
+        </div>
+    </section>
+
+    <!-- CREACIONES DE LA COMUNIDAD -->
+    <section class="section" id="comunidad">
+        <div class="container">
+            <div class="vl-community-head">
+                <h2 class="section-title" style="text-align:center;margin:0">CREACIONES DE LA COMUNIDAD</h2>
+                <a class="btn-primary btn-cta" href="https://www.instagram.com/vuelapelucas3000/" target="_blank" rel="noopener">@VUELAPELUCAS3000</a>
+                <a class="btn-secondary btn-cta" href="https://objkt.com/collections/KT1GtVdpn2WDn2yooz2n663jg56h8F9Fe3c9" target="_blank" rel="noopener">VER MÁS EN OBJKT</a>
+            </div>
+            <div class="vl-community-grid"></div>
+        </div>
+    </section>
+
+    <!-- JUEGOS -->
+    <section class="section" id="juegos">
+        <div class="container">
+            <h2 class="section-title">JUEGOS</h2>
+            <p class="section-subtitle">Los videojuegos del universo Vuelapelucas 3000, hechos por JPupper / Pamilo.</p>
+            <div class="vl-games">
+                <a class="vl-game" href="https://fullscreencode.com/jpupper/nftsapps/vuela3000game/" target="_blank" rel="noopener">
+                    <img src="img/juegos/vuela3000game.jpg" alt="Vuela3000, el juego de la navecita">
+                    <div class="vl-game-body">
+                        <h3>VUELA 3000</h3>
+                        <p>El juego de la navecita: esquivá, dispará y sobreviví al vuelo por la galaxia peluquera.</p>
+                        <span class="vl-play">JUGAR</span>
+                    </div>
+                </a>
+                <a class="vl-game" href="https://fullscreencode.com/jpupper/nftsapps/pamparticles/" target="_blank" rel="noopener">
+                    <img src="img/juegos/pamparticles.jpg" alt="Pamparticles, arte generativo interactivo">
+                    <div class="vl-game-body">
+                        <h3>PAMPARTICLES</h3>
+                        <p>Sistema de partículas generativas: tocá la pantalla y armá tu propia composición pampeana.</p>
+                        <span class="vl-play">JUGAR</span>
+                    </div>
+                </a>
+                <a class="vl-game" href="https://fullscreencode.com/jpupper/nftsapps/pamilo/" target="_blank" rel="noopener">
+                    <img src="img/juegos/pamilo.jpg" alt="Pamilo generator">
+                    <div class="vl-game-body">
+                        <h3>PAMILO GENERATOR</h3>
+                        <p>Generador de personajes y formas: cada recarga es una pieza única del universo Pamilo.</p>
+                        <span class="vl-play">JUGAR</span>
+                    </div>
+                </a>
+            </div>
+            <div class="cta-actions" style="margin-top:2rem">
+                <a href="https://fullscreencode.com/jpupper/nftsapps/pampam/" target="_blank" rel="noopener" class="btn-primary btn-cta">VER TODOS LOS JUEGOS</a>
             </div>
         </div>
     </section>
@@ -60,14 +155,14 @@
     <section class="section accommodation-section" id="hospedajes">
         <div class="container">
             <div class="anotate-cta-card accommodation-home-card">
-                <span class="cta-badge">🏕️ DÓNDE ALOJARTE</span>
-                <h2 class="section-title">HOSPEDAJES & CAMPING</h2>
+                <span class="cta-badge"><img class="img-bullet" src="img/ico-camping.jpg" alt=""> DÓNDE ALOJARTE</span>
+                <h2 class="section-title">HOSPEDAJES &amp; CAMPING</h2>
                 <p class="section-subtitle">¿Venís al festival y buscás dónde dormir? Conocé todas las opciones de camping, hoteles y cabañas en Victorica.</p>
                 <div class="places-summary-grid">
-                    <div class="place-chip">🏕️ Camping Club Banco Nación</div>
-                    <div class="place-chip">🏕️ Camping Parque Los Pisaderos</div>
-                    <div class="place-chip">🏨 Apart La Estrella & Hoteles</div>
-                    <div class="place-chip">🏡 Cabañas & Posadas Locales</div>
+                    <div class="place-chip"><img class="chip-img" src="img/ico-camping.jpg" alt=""> Camping Club Banco Nación</div>
+                    <div class="place-chip"><img class="chip-img" src="img/ico-alojamiento.jpg" alt=""> Camping Parque Los Pisaderos</div>
+                    <div class="place-chip"><img class="chip-img" src="img/ico-lugar.jpg" alt=""> Apart La Estrella &amp; Hoteles</div>
+                    <div class="place-chip"><img class="chip-img" src="img/ico-feria.jpg" alt=""> Cabañas &amp; Posadas Locales</div>
                 </div>
                 <div class="cta-actions" style="margin-top: 2rem;">
                     <a href="hospedajes.html" class="btn-primary btn-cta">VER TODOS LOS HOSPEDAJES Y TELÉFONOS →</a>
@@ -80,7 +175,7 @@
     <section class="section anotate-cta-section" id="inscripcion">
         <div class="container">
             <div class="anotate-cta-card">
-                <span class="cta-badge">🎟️ CONVOCATORIA ABIERTA</span>
+                <span class="cta-badge"><img class="img-bullet" src="img/ico-nave.jpg" alt=""> CONVOCATORIA ABIERTA</span>
                 <h2 class="section-title">¡SUMATE AL VUELAPELUCAS 3000!</h2>
                 <p class="section-subtitle">Participá como espectador, feriante, artista de escenario, VJ, instalación multimedia o colaborador.</p>
                 <div class="cta-actions">
@@ -100,10 +195,25 @@
                     <p>Victorica, La Pampa, Argentina</p>
                 </div>
                 <div class="footer-social">
-                    <a href="https://www.instagram.com/vuelapelucas3000/" target="_blank">📷 Instagram</a>
-                    <a href="https://chat.whatsapp.com/CDzwewC5EdQHqiC5IqmpGL" target="_blank" rel="noopener">💬 Grupo de WhatsApp</a>
-                    <a href="https://fullscreencode.com/jpupper/nftsapps/pampam/" target="_blank">🎮 Juegos</a>
+                    <a href="https://chat.whatsapp.com/CDzwewC5EdQHqiC5IqmpGL" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.347-.347.52-.52.174-.174.232-.298.347-.497.116-.198.058-.371-.058-.52-.116-.148-.669-1.611-.916-2.206-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg> WhatsApp
+                    </a>
+                    <a href="https://www.instagram.com/vuelapelucas3000/" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.2" y="2.2" width="19.6" height="19.6" rx="5.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="17.4" cy="6.6" r="1.5"/></svg> Instagram
+                    </a>
+                    <a href="https://objkt.com/collections/KT1GtVdpn2WDn2yooz2n663jg56h8F9Fe3c9" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 3 7v10l9 5 9-5V7l-9-5zm0 2.4L18.4 8 12 11.6 5.6 8 12 4.4zM5 9.9l6 3.4v5.9l-6-3.3V9.9zm8 9.3v-5.9l6-3.4v6l-6 3.3z"/></svg> OBJKT
+                    </a>
+                    <a href="https://fullscreencode.com/jpupper/nftsapps/pampam/" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1.5" y="6" width="21" height="12" rx="6"/><rect x="5.6" y="10.4" width="4.8" height="1.6" rx=".8" fill="#fff"/><rect x="7.2" y="8.8" width="1.6" height="4.8" rx=".8" fill="#fff"/><circle cx="16" cy="10.6" r="1.3" fill="#fff"/><circle cx="18.4" cy="13.4" r="1.3" fill="#fff"/></svg> Juegos
+                    </a>
                 </div>
+            </div>
+            <div class="footer-credits">
+                <span class="footer-credits-title">CRÉDITOS</span>
+                <a href="https://www.instagram.com/pamiloceirone/" target="_blank" rel="noopener">PAMILO CEIRONE<small>creador del festival</small></a>
+                <a href="https://fullscreencode.com" target="_blank" rel="noopener">FULLSCREENCODE.COM<small>desarrollo del sitio</small></a>
+                <a href="https://artedigitaldata.com" target="_blank" rel="noopener">ARTEDIGITALDATA<small>sponsor</small></a>
             </div>
             <div class="footer-bottom">
                 <p>© 2026 Vuelapelucas 3000 - Todos los derechos reservados</p>
@@ -119,6 +229,7 @@
     </a>
 
     <script src="js/background-shader.js?v=2"></script>
-    <script src="js/main.js?v=3"></script>
+    <script src="js/main.js?v=4"></script>
+    <script src="js/galeria.js?v=4"></script>
 </body>
 </html>
