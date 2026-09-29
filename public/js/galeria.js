@@ -1,15 +1,28 @@
 /* =========================================================
-   VUELAPELUCAS 3000 — galeria + community creation
-   Carga los manifests generados por tools/build_gallery.py
-   y tools/ig_download.py (o el fallback manual).
+   VUELAPELUCAS 3000 — galeria + creaciones de la comunidad
+   ---------------------------------------------------------
+   - Los archivos base son los manifest estaticos (img/galeria,
+     img/flyers) generados por tools/build_gallery.py.
+   - Encima se aplica la CURADURIA del panel de admin (API):
+     fotos ocultas, año forzado a mano y imagenes subidas.
+   - Las creaciones de PanchoDraw se listan desde la API y se
+     muestran ANIMADAS (el GIF del temblor) con boton de descarga.
    ========================================================= */
 (function () {
     'use strict';
 
     var PAGE = 24;
 
+    // API de la app (VPS). En local apunta al server local.
+    var API_VUELA = (function () {
+        var h = location.hostname;
+        var local = (h === 'localhost' || h === '127.0.0.1');
+        return local
+            ? (location.protocol + '//' + location.host + '/vuelapelucas3000_2')
+            : 'https://vps-4455523-x.dattaweb.com/vuelapelucas3000_2';
+    })();
+
     // Las rutas del manifest ya vienen relativas a public/ ("img/...").
-    // Si vinieran cortas ("008.jpg") se asume el prefijo de la carpeta.
     function url(p, fallbackDir) {
         if (!p) return '';
         if (p.indexOf('img/') === 0 || p.indexOf('/') === 0 || p.indexOf('http') === 0) return p;
@@ -23,22 +36,67 @@
         return e;
     }
 
-    /* ---------------- galeria ---------------- */
+    function abs(u) {
+        if (!u) return '';
+        return u.indexOf('http') === 0 ? u : (API_VUELA + u);
+    }
+
+    /* ---------------- curaduria (panel de admin) ---------------- */
+    // ocultos: rutas que NO se muestran | years: { ruta: '2023' } | extra: subidas
+    function loadCuration(key) {
+        if (typeof fetch !== 'function') return Promise.resolve({ ocultos: [], years: {}, extra: [] });
+        return fetch(API_VUELA + '/api/curation/' + key, { cache: 'no-cache' })
+            .then(function (r) { return r.json(); })
+            .then(function (d) {
+                return {
+                    ocultos: (d && d.ocultos) || [],
+                    years: (d && d.years) || {},
+                    extra: (d && d.extra) || []
+                };
+            })
+            .catch(function () { return { ocultos: [], years: {}, extra: [] }; });
+    }
+
+    function aplicarCuraduria(items, cur, esGaleria) {
+        var out = [];
+        items.forEach(function (it) {
+            var f = it.file || it.big || '';
+            if (cur.ocultos.indexOf(f) >= 0) return;               // oculto desde el panel
+            if (cur.years[f]) it.year = cur.years[f];              // año puesto a mano
+            out.push(it);
+        });
+        (cur.extra || []).forEach(function (m) {
+            var src = abs(m.src);
+            out.push({
+                n: out.length + 1,
+                file: src, thumb: src, big: src,
+                year: m.year || '',
+                autor: m.autor || '',
+                nombre: m.nombre || '',
+                subida: true,
+                id: m.id
+            });
+        });
+        return esGaleria ? out.filter(function (i) { return i.year !== '0000'; }) : out;
+    }
+
+    /* ---------------- galeria de fotos ---------------- */
     function initGallery(root) {
         var filtersBox = root.querySelector('.vl-filters');
         var grid = root.querySelector('.vl-gallery');
         var moreBtn = root.querySelector('.vl-more');
         if (!grid) return;
 
-        fetch('img/galeria/manifest.json', { cache: 'no-cache' })
-            .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-            .then(function (items) {
-                buildGallery(items.filter(function (i) { return i.year !== '0000'; }));
-            })
+        Promise.all([
+            fetch('img/galeria/manifest.json', { cache: 'no-cache' })
+                .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }),
+            loadCuration('galeria')
+        ])
+            .then(function (res) { buildGallery(aplicarCuraduria(res[0], res[1], true)); })
             .catch(function () {
                 grid.parentNode.insertBefore(
-                    el('div', 'vl-empty', 'No se encontro la galeria (img/galeria/manifest.json).' +
-                        ' Corré tools/build_selection.py y volvé a subir la carpeta img/galeria.'), grid);
+                    el('div', 'vl-empty', 'No se encontro la galeria (img/galeria/manifest.json).'),
+                    grid);
             });
 
         function buildGallery(items) {
@@ -77,13 +135,13 @@
                 grid.innerHTML = '';
                 list.slice(0, state.shown).forEach(function (i, idx) {
                     var fig = el('figure');
-                    fig.title = 'Foto ' + i.n + ' — ' + i.year;
+                    fig.title = 'Foto ' + i.n + (i.year ? ' — ' + i.year : '');
                     var im = el('img');
                     im.loading = 'lazy';
                     im.src = url(i.thumb, 'img/galeria/');
-                    im.alt = 'Vuelapelucas 3000 ' + i.year + ' — foto ' + i.n;
+                    im.alt = 'Vuelapelucas 3000 ' + (i.year || '') + ' — foto ' + i.n;
                     fig.appendChild(im);
-                    if (state.year === 'all') fig.appendChild(el('span', 'vl-year', i.year));
+                    if (state.year === 'all') fig.appendChild(el('span', 'vl-year', i.year || 'S/F'));
                     fig.addEventListener('click', function () { lb.open(list, idx); });
                     grid.appendChild(fig);
                 });
@@ -100,19 +158,18 @@
     }
 
     /* ---------------- lightbox (compartido) ---------------- */
-    // El mismo visor lo usan la galeria de fotos y las creaciones de la
-    // comunidad: click en una imagen la abre ahi mismo y se pasa con las
-    // flechas ‹ › (o las flechas del teclado).
     function lbSrc(it) {
         return url(it.file || it.big, 'img/galeria/');
     }
+
     function lbCaption(it) {
-        if (it.year != null) {
-            return 'VUELAPELUCAS 3000 · ' + it.year + ' · ' + it.n + '/' + it.mp + 'MP';
-        }
         if (it.isDraw) {
             var ar = String(it.autor || '').replace(/^@+/, '');
             return 'PANCHODRAW · ' + it.nombre + (ar ? ' · @' + ar : '');
+        }
+        if (it.year != null) {
+            var extra = it.year ? (' · ' + it.year) : '';
+            return 'VUELAPELUCAS 3000' + extra + ' · ' + it.n + '/' + (it.mp ? it.mp + 'MP' : 'foto');
         }
         return 'CREACIÓN DE LA COMUNIDAD' + (it.autor ? ' · @' + it.autor : '');
     }
@@ -124,11 +181,13 @@
         var box = el('div', 'vl-lightbox');
         var img = el('img');
         var cap = el('div', 'vl-lb-cap');
+        var dl = el('a', 'vl-lb-dl', '⬇ DESCARGAR');
         var prev = el('button', 'vl-lb-prev', '‹');
         var next = el('button', 'vl-lb-next', '›');
         var close = el('button', 'vl-lb-close', '✕');
         [prev, next, close].forEach(function (b) { b.type = 'button'; });
-        box.appendChild(img); box.appendChild(cap);
+        dl.setAttribute('rel', 'noopener');
+        box.appendChild(img); box.appendChild(cap); box.appendChild(dl);
         box.appendChild(prev); box.appendChild(next); box.appendChild(close);
         document.body.appendChild(box);
 
@@ -139,6 +198,13 @@
             if (!it) return;
             img.src = lbSrc(it);
             cap.textContent = lbCaption(it);
+            if (it.dl) {
+                dl.href = it.dl;
+                dl.style.display = 'inline-block';
+                dl.setAttribute('download', '');
+            } else {
+                dl.style.display = 'none';
+            }
         }
         function open(l, i) { list = l; idx = i; show(); box.classList.add('is-open'); }
         function closeIt() {
@@ -154,6 +220,7 @@
         prev.addEventListener('click', function (e) { e.stopPropagation(); step(-1); });
         next.addEventListener('click', function (e) { e.stopPropagation(); step(1); });
         close.addEventListener('click', closeIt);
+        dl.addEventListener('click', function (e) { e.stopPropagation(); });
         box.addEventListener('click', function (e) { if (e.target === box) closeIt(); });
         document.addEventListener('keydown', function (e) {
             if (!box.classList.contains('is-open')) return;
@@ -165,20 +232,23 @@
         return { open: open };
     }
 
-    /* ---------------- creaciones de la comunidad ---------------- */
+    /* ---------------- flyers (creaciones de la comunidad) ---------------- */
     function initCommunity(root) {
         var grid = root.querySelector('.vl-community-grid');
         if (!grid) return;
-        fetch('img/flyers/manifest.json', { cache: 'no-cache' })
-            .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-            .then(function (items) {
-                if (!items || !items.length) throw new Error('vacio');
+
+        Promise.all([
+            fetch('img/flyers/manifest.json', { cache: 'no-cache' })
+                .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }),
+            loadCuration('flyers')
+        ])
+            .then(function (res) {
+                var items = aplicarCuraduria(res[0], res[1], false);
+                if (!items.length) throw new Error('vacio');
                 var lb = lightbox();
                 grid.innerHTML = '';
                 items.forEach(function (it, idx) {
                     var a = el('a');
-                    // El href queda para "abrir en otra pestaña"; el click normal
-                    // abre el visor acá mismo, con flechas.
                     a.href = url(it.file || it.big, 'img/flyers/');
                     a.target = '_blank';
                     a.rel = 'noopener';
@@ -199,23 +269,13 @@
             })
             .catch(function () {
                 grid.innerHTML = '';
-                var n = el('div', 'vl-empty', 'Todavia no hay flyers descargados. ' +
+                var n = el('div', 'vl-empty', 'Todavia no hay flyers cargados. ' +
                     'Usá el botón de Instagram para ver las creaciones de la comunidad.');
                 grid.parentNode.insertBefore(n, grid);
             });
     }
 
     /* ---------------- dibujos de PANCHODRAW ---------------- */
-    // Las creaciones viven en la base de la app (VPS): aca se listan y se
-    // muestran en la subseccion PANCHODRAW de CREACIONES DE LA COMUNIDAD.
-    var API_VUELA = (function () {
-        var h = location.hostname;
-        var local = (h === 'localhost' || h === '127.0.0.1');
-        return local
-            ? (location.protocol + '//' + location.host + '/vuelapelucas3000_2')
-            : 'https://vps-4455523-x.dattaweb.com/vuelapelucas3000_2';
-    })();
-
     function initDrawings(root) {
         var grid = root.querySelector('.vl-draw-grid');
         if (!grid) return;
@@ -232,41 +292,51 @@
                 if (!items.length) {
                     grid.appendChild(el('div', 'vl-empty',
                         'Todavía no hay dibujos. Entrá a PanchoDraw, dibujá tu arte del vuela y publicalo.'));
-                    setCount('#count-draw', 0);
+                    setCount(0);
                     return;
                 }
 
                 var lb = lightbox();
-                // Items para el visor compartido (mismo formato que galeria/flyers)
+                // Para el visor: la imagen ANIMADA (GIF del temblor) y su descarga.
                 var lbItems = items.map(function (it) {
+                    var anim = it.gif ? abs(it.gif) : abs(it.img);
                     return {
                         isDraw: true,
-                        big: API_VUELA + it.img,
+                        big: anim,
+                        dl: abs(it.gif ? (it.gif + '?dl=1') : (it.img + '?dl=1')),
                         nombre: it.nombre,
                         autor: it.username || it.autor
                     };
                 });
+
                 items.forEach(function (it, idx) {
                     var fig = el('figure');
                     fig.title = 'PanchoDraw — ' + it.nombre + (it.autor ? ' (@' + it.autor + ')' : '');
 
                     var im = el('img');
                     im.loading = 'lazy';
-                    im.src = API_VUELA + it.img;
+                    im.src = abs(it.gif ? it.gif : it.img);   // animado si tiene temblor
                     im.alt = 'Dibujo de ' + (it.autor || 'la comunidad') + ': ' + it.nombre;
                     fig.appendChild(im);
 
                     var cap = el('figcaption');
                     cap.appendChild(el('b', null, it.nombre));
-                    var aut = el('span', 'vl-draw-autor', (it.username ? '@' + it.username : it.autor));
-                    cap.appendChild(aut);
-                    fig.appendChild(cap);
+                    cap.appendChild(el('span', 'vl-draw-autor', (it.username ? '@' + it.username : it.autor)));
 
+                    var dl = el('a', 'vl-draw-dl', '⬇ DESCARGAR');
+                    dl.href = abs(it.gif ? (it.gif + '?dl=1') : (it.img + '?dl=1'));
+                    dl.setAttribute('download', '');
+                    dl.setAttribute('rel', 'noopener');
+                    dl.title = 'Descargar ' + it.nombre;
+                    dl.addEventListener('click', function (e) { e.stopPropagation(); });
+                    cap.appendChild(dl);
+
+                    fig.appendChild(cap);
                     fig.addEventListener('click', function () { lb.open(lbItems, idx); });
                     grid.appendChild(fig);
                 });
 
-                setCount('#count-draw', items.length);
+                setCount(items.length);
             })
             .catch(function () {
                 grid.innerHTML = '';
@@ -275,8 +345,8 @@
                     'Entrá a PanchoDraw y publicá el primero.'));
             });
 
-        function setCount(sel, n) {
-            var e = root.querySelector(sel);
+        function setCount(n) {
+            var e = root.querySelector('#count-draw');
             if (e) e.textContent = n ? '(' + n + ')' : '';
         }
     }

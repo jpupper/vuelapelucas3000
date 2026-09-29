@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <!-- estilos base del sitio: mismas variables, tipografias y estetica -->
-    <link rel="stylesheet" href="css/styles.css?v=5">
+    <link rel="stylesheet" href="css/styles.css?v=7">
     <style>
         /* =========================================================
            ADMIN — misma estetica que la pagina principal:
@@ -41,7 +41,7 @@
             padding: 2.2rem 1.6rem 0;
         }
 
-        /* ---------- BARRA SUPERIOR (misma que anotate/hospedajes) ---------- */
+        /* ---------- BARRA SUPERIOR ---------- */
         .admin-header {
             display: flex;
             align-items: center;
@@ -53,7 +53,7 @@
             border: 3px solid #000000;
             border-radius: 50px;
             box-shadow: 6px 6px 0px #000000;
-            margin-bottom: 2.5rem;
+            margin-bottom: 1.8rem;
         }
 
         .admin-header .brand {
@@ -179,19 +179,47 @@
             box-shadow: 3px 3px 0px #000000;
         }
 
-        /* ---------- CABECERA DEL PANEL ---------- */
+        /* ---------- PESTAÑAS ---------- */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+            margin-bottom: 1.6rem;
+        }
+
+        .tab {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.5rem;
+            letter-spacing: 0.08em;
+            background: #ffffff;
+            color: #000000;
+            border: 3px solid #000000;
+            border-radius: 999px;
+            padding: 0.45rem 1.6rem;
+            box-shadow: 4px 4px 0px #000000;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .tab:hover { background: #fff3c4; transform: translate(-2px, -2px); box-shadow: 6px 6px 0px #000000; }
+        .tab.is-active { background: var(--secondary, #ffd62c); }
+        .tab .tab-n { font-size: 1.1rem; color: var(--tertiary, #ef4720); }
+
+        .panel { display: none; }
+        .panel.is-active { display: block; }
+
         .panel-head {
             display: flex;
             align-items: flex-end;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 1.2rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.8rem;
         }
 
         .panel-head h1 {
             font-family: 'Bebas Neue', cursive;
-            font-size: clamp(2.4rem, 5vw, 3.4rem);
+            font-size: clamp(2.2rem, 4.5vw, 3.2rem);
             letter-spacing: 0.04em;
             color: #000000;
             line-height: 1;
@@ -226,29 +254,27 @@
             transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
         }
 
-        .toolbar-btn:hover {
-            background: var(--secondary, #ffd62c);
-            transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0px #000000;
-        }
-
+        .toolbar-btn:hover { background: var(--secondary, #ffd62c); transform: translate(-2px, -2px); box-shadow: 6px 6px 0px #000000; }
         .toolbar-btn:active { transform: translate(1px, 1px); box-shadow: 3px 3px 0px #000000; }
-
-        .toolbar-btn.csv {
-            background: var(--green, #04ba65);
-            color: #ffffff;
-        }
-
+        .toolbar-btn.csv { background: var(--green, #04ba65); color: #ffffff; }
         .toolbar-btn.csv:hover { background: #05a95a; }
-
-        .toolbar-btn.csv:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: 4px 4px 0px #000000; }
+        .toolbar-btn.save { background: var(--tertiary, #ef4720); color: #ffffff; }
+        .toolbar-btn.save:hover { background: #d63c17; }
+        .toolbar-btn.dirty { animation: vl-dirty 1.1s ease-in-out infinite; }
+        /* ojo: sin transform (un boton que se mueve es incomodo de clickear y
+           ademas rompe la deteccion de "estable" de las herramientas) */
+        @keyframes vl-dirty {
+            0%, 100% { background: var(--tertiary, #ef4720); box-shadow: 4px 4px 0px #000000; }
+            50% { background: var(--secondary, #ffd62c); color: #000000; box-shadow: 4px 4px 0px #000000, 0 0 0 6px rgba(239, 71, 32, 0.35); }
+        }
+        .toolbar-btn.mini { font-size: 1rem; padding: 0.25rem 0.9rem; box-shadow: 3px 3px 0 #000; }
 
         /* ---------- STATS ---------- */
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 1.8rem;
             justify-items: start;
         }
 
@@ -256,8 +282,8 @@
             background: #ffffff;
             color: #000000;
             width: 100%;
-            max-width: 320px;
-            padding: 1.8rem 1.6rem;
+            max-width: 280px;
+            padding: 1.4rem 1.4rem;
             border: 3px solid #000000;
             border-radius: 20px;
             box-shadow: 7px 7px 0px #000000;
@@ -266,20 +292,8 @@
         }
 
         .stat-card:hover { transform: translate(-3px, -3px); box-shadow: 10px 10px 0px #000000; }
-
-        .stat-number {
-            font-family: 'Bebas Neue', cursive;
-            font-size: 3.6rem;
-            line-height: 1;
-            color: var(--tertiary, #ef4720);
-        }
-
-        .stat-label {
-            color: #333333;
-            font-weight: 800;
-            letter-spacing: 0.05em;
-            margin-top: 0.4rem;
-        }
+        .stat-number { font-family: 'Bebas Neue', cursive; font-size: 3rem; line-height: 1; color: var(--tertiary, #ef4720); }
+        .stat-label { color: #333333; font-weight: 800; letter-spacing: 0.05em; margin-top: 0.3rem; }
 
         /* ---------- TABLA ---------- */
         .table-container {
@@ -293,7 +307,6 @@
         }
 
         table { width: 100%; border-collapse: collapse; }
-
         th, td { padding: 0.9rem 1rem; text-align: left; vertical-align: top; }
 
         th {
@@ -310,12 +323,7 @@
             z-index: 2;
         }
 
-        td {
-            border-bottom: 1px solid #e6e6e6;
-            color: #111111;
-            font-weight: 500;
-        }
-
+        td { border-bottom: 1px solid #e6e6e6; color: #111111; font-weight: 500; }
         tbody tr:last-child td { border-bottom: none; }
         tr:hover td { background: #fffbe8; }
 
@@ -323,7 +331,6 @@
         .col-md { min-width: 130px; white-space: nowrap; }
         .col-sm { min-width: 90px; white-space: nowrap; }
 
-        /* Columna de accion fija a la derecha (no se va con el scroll) */
         th.col-accion, td.col-accion {
             position: sticky;
             right: 0;
@@ -348,11 +355,7 @@
             transition: all 0.15s ease;
         }
 
-        .delete-btn:hover {
-            background: #d63c17;
-            transform: translate(-1px, -1px);
-            box-shadow: 4px 4px 0px #000000;
-        }
+        .delete-btn:hover { background: #d63c17; transform: translate(-1px, -1px); box-shadow: 4px 4px 0px #000000; }
 
         .badge-rol {
             display: inline-block;
@@ -367,19 +370,129 @@
             white-space: nowrap;
         }
 
-        .loading, .sin-datos {
-            text-align: center;
-            padding: 2.5rem;
-            color: #444444;
-            font-weight: 600;
+        .badge-off { background: #d7d7d7; }
+
+        .loading, .sin-datos { text-align: center; padding: 2.5rem; color: #444444; font-weight: 600; }
+        .error { text-align: center; padding: 2rem; color: var(--tertiary, #ef4720); font-weight: 800; }
+
+        /* ---------- GRILLA DE MEDIA (dibujos, fotos, flyers) ---------- */
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 1.1rem;
         }
 
-        .error {
-            text-align: center;
-            padding: 2rem;
-            color: var(--tertiary, #ef4720);
-            font-weight: 800;
+        .media-card {
+            background: #ffffff;
+            border: 3px solid #000000;
+            border-radius: 16px;
+            box-shadow: 5px 5px 0 #000000;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
+
+        .media-card .thumb {
+            background: #f2f2f2;
+            border-bottom: 3px solid #000000;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .media-card .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            image-rendering: pixelated;
+        }
+
+        .media-card .info { padding: 0.6rem 0.7rem; font-size: 0.82rem; font-weight: 600; line-height: 1.35; flex: 1; }
+        .media-card .info b { display: block; font-family: 'Bebas Neue', cursive; font-size: 1.15rem; letter-spacing: 0.04em; }
+        .media-card .meta { color: #666666; font-size: 0.75rem; overflow-wrap: anywhere; }
+        .media-card .row { display: flex; gap: 0.4rem; flex-wrap: wrap; padding: 0 0.7rem 0.8rem; }
+
+        select.mini-select, input.mini-input {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 700;
+            width: 100%;
+            padding: 0.35rem 0.5rem;
+            border: 2px solid #000000;
+            border-radius: 10px;
+            background: #f8f9fa;
+            color: #000000;
+            box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        .mini-btn {
+            font-family: 'Bebas Neue', cursive;
+            letter-spacing: 0.05em;
+            font-size: 1rem;
+            border: 2px solid #000000;
+            border-radius: 999px;
+            padding: 0.15rem 0.8rem;
+            background: #ffffff;
+            color: #000000;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #000000;
+            text-decoration: none;
+        }
+
+        .mini-btn:hover { background: var(--secondary, #ffd62c); }
+        .mini-btn.danger { background: var(--tertiary, #ef4720); color: #ffffff; }
+        .mini-btn.danger:hover { background: #d63c17; }
+        .mini-btn.ok { background: var(--green, #04ba65); color: #ffffff; }
+
+        .oculto { opacity: 0.45; }
+
+        .src-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 0 0.5rem;
+            border-radius: 999px;
+            border: 2px solid #000000;
+            background: var(--mint, #6cfeb5);
+        }
+
+        .src-tag.manifest { background: #ffffff; }
+        .src-tag.subida { background: var(--pink, #f5abd0); }
+
+        .file-input {
+            width: 100%;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 2px dashed #000000;
+            border-radius: 12px;
+            padding: 0.6rem;
+            background: #fffbe8;
+        }
+
+        .add-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 0.8rem;
+            margin-bottom: 1.6rem;
+            padding: 1.2rem;
+            background: #ffffff;
+            border: 3px dashed #000000;
+            border-radius: 18px;
+        }
+
+        .add-box label { font-size: 0.8rem; font-weight: 800; display: block; margin-bottom: 0.25rem; }
+
+        .hint { font-size: 0.85rem; color: #444444; font-weight: 600; margin-bottom: 1rem; }
+        .toast {
+            position: fixed; bottom: 1.2rem; left: 50%; transform: translateX(-50%);
+            background: #000000; color: #ffffff; font-weight: 700;
+            border: 3px solid var(--secondary, #ffd62c); border-radius: 999px;
+            padding: 0.6rem 1.6rem; z-index: 300; display: none;
+        }
+        .toast.is-on { display: block; }
 
         @media (max-width: 768px) {
             .admin-page { padding: 1.2rem 1rem 0; }
@@ -407,42 +520,163 @@
             </div>
 
             <div id="admin-section" style="display: none;">
-                <div class="admin-card panel-head">
-                    <div>
-                        <h1>📊 Panel de Administración</h1>
-                        <p class="subtitle">Vuelapelucas 3000 - Inscripciones</p>
+                <div class="tabs">
+                    <button class="tab is-active" data-tab="inscriptos">INSCRIPTOS <span class="tab-n" id="tabn-inscriptos"></span></button>
+                    <button class="tab" data-tab="dibujos">DIBUJOS <span class="tab-n" id="tabn-dibujos"></span></button>
+                    <button class="tab" data-tab="galeria">GALERÍA <span class="tab-n" id="tabn-galeria"></span></button>
+                    <button class="tab" data-tab="flyers">FLYERS <span class="tab-n" id="tabn-flyers"></span></button>
+                    <button class="toolbar-btn" onclick="logout()">Cerrar Sesión</button>
+                </div>
+
+                <!-- ================= INSCRIPTOS ================= -->
+                <div class="panel is-active" id="panel-inscriptos">
+                    <div class="admin-card panel-head">
+                        <div>
+                            <h1>📊 Inscriptos</h1>
+                            <p class="subtitle">Vuelapelucas 3000 - Inscripciones al encuentro</p>
+                        </div>
+                        <div class="toolbar">
+                            <button class="toolbar-btn csv" id="btn-csv" onclick="exportarCSV()">⬇️ Exportar CSV</button>
+                        </div>
                     </div>
-                    <div class="toolbar">
-                        <button class="toolbar-btn csv" id="btn-csv" onclick="exportarCSV()">⬇️ Exportar CSV</button>
-                        <button class="toolbar-btn" onclick="logout()">Cerrar Sesión</button>
+                    <div class="stats" id="stats"></div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="col-md">Nombre</th>
+                                    <th class="col-md">Apellido</th>
+                                    <th class="col-lg">Email</th>
+                                    <th class="col-sm">Teléfono</th>
+                                    <th class="col-sm">Ciudad</th>
+                                    <th class="col-md">Rol</th>
+                                    <th class="col-lg">Cómo colabora</th>
+                                    <th class="col-lg">Espec. técnicas</th>
+                                    <th class="col-sm">Hospedaje</th>
+                                    <th class="col-sm">Fecha</th>
+                                    <th class="col-accion">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inscripciones-body"></tbody>
+                        </table>
                     </div>
                 </div>
 
-                <div class="stats" id="stats"></div>
+                <!-- ================= DIBUJOS (PANCHODRAW) ================= -->
+                <div class="panel" id="panel-dibujos">
+                    <div class="admin-card panel-head">
+                        <div>
+                            <h1>🎨 Dibujos de PanchoDraw</h1>
+                            <p class="subtitle">Creaciones de la comunidad. Se ven animadas (temblor) y se pueden borrar o agregar.</p>
+                        </div>
+                        <div class="toolbar">
+                            <button class="toolbar-btn" onclick="cargarDibujos()">↻ Recargar</button>
+                        </div>
+                    </div>
 
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th class="col-md">Nombre</th>
-                                <th class="col-md">Apellido</th>
-                                <th class="col-lg">Email</th>
-                                <th class="col-sm">Teléfono</th>
-                                <th class="col-sm">Ciudad</th>
-                                <th class="col-md">Rol</th>
-                                <th class="col-lg">Cómo colabora</th>
-                                <th class="col-lg">Espec. técnicas</th>
-                                <th class="col-sm">Hospedaje</th>
-                                <th class="col-sm">Fecha</th>
-                                <th class="col-accion">Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody id="inscripciones-body"></tbody>
-                    </table>
+                    <div class="stats" id="stats-dibujos"></div>
+
+                    <div class="add-box">
+                        <div>
+                            <label for="dw-nombre">Nombre del dibujo</label>
+                            <input class="mini-input" type="text" id="dw-nombre" maxlength="80" placeholder="Mi nave del vuela">
+                        </div>
+                        <div>
+                            <label for="dw-autor">Autor</label>
+                            <input class="mini-input" type="text" id="dw-autor" maxlength="60" placeholder="@usuario o nombre">
+                        </div>
+                        <div>
+                            <label for="dw-file">Imagen (PNG / JPG / GIF)</label>
+                            <input class="file-input" type="file" id="dw-file" accept="image/*">
+                        </div>
+                        <div style="display:flex; align-items:flex-end;">
+                            <button class="toolbar-btn" id="btn-add-dibujo" onclick="agregarDibujo()">➕ Agregar dibujo</button>
+                        </div>
+                    </div>
+
+                    <div class="media-grid" id="dibujos-grid"></div>
+                </div>
+
+                <!-- ================= GALERIA ================= -->
+                <div class="panel" id="panel-galeria">
+                    <div class="admin-card panel-head">
+                        <div>
+                            <h1>📷 Galería de fotos</h1>
+                            <p class="subtitle">Año de cada foto, ocultar/mostrar y agregar nuevas.</p>
+                        </div>
+                        <div class="toolbar">
+                            <button class="toolbar-btn" onclick="cargarGaleria()">↻ Recargar</button>
+                            <button class="toolbar-btn save" id="btn-save-galeria" onclick="guardarCuraduria('galeria')">💾 Guardar cambios</button>
+                        </div>
+                    </div>
+
+                    <p class="hint">El año se toma de la fecha real de la foto (metadata EXIF). Cambiá el que quieras y apretá <b>Guardar cambios</b>.
+                        Los años que ya no tiene ninguna foto desaparecen solos del filtro de la página.</p>
+                    <div class="stats" id="stats-galeria"></div>
+
+                    <div class="add-box">
+                        <div>
+                            <label for="gl-file">Foto nueva</label>
+                            <input class="file-input" type="file" id="gl-file" accept="image/*">
+                        </div>
+                        <div>
+                            <label for="gl-year">Año</label>
+                            <input class="mini-input" type="text" id="gl-year" maxlength="10" placeholder="2025">
+                        </div>
+                        <div>
+                            <label for="gl-nombre">Descripción (opcional)</label>
+                            <input class="mini-input" type="text" id="gl-nombre" maxlength="120" placeholder="Ej: escenario principal">
+                        </div>
+                        <div style="display:flex; align-items:flex-end;">
+                            <button class="toolbar-btn" id="btn-add-foto" onclick="agregarMedia('galeria')">➕ Agregar foto</button>
+                        </div>
+                    </div>
+
+                    <div class="media-grid" id="galeria-grid"></div>
+                </div>
+
+                <!-- ================= FLYERS ================= -->
+                <div class="panel" id="panel-flyers">
+                    <div class="admin-card panel-head">
+                        <div>
+                            <h1>🖼️ Flyers</h1>
+                            <p class="subtitle">Afiches de las ediciones: cuáles se muestran en CREACIONES DE LA COMUNIDAD.</p>
+                        </div>
+                        <div class="toolbar">
+                            <button class="toolbar-btn" onclick="cargarFlyers()">↻ Recargar</button>
+                            <button class="toolbar-btn save" id="btn-save-flyers" onclick="guardarCuraduria('flyers')">💾 Guardar cambios</button>
+                        </div>
+                    </div>
+
+                    <p class="hint">Todos los flyers que ya estaban cargados aparecen acá y se muestran por defecto.
+                        Con <b>Quitar</b> los sacás de la página (el archivo no se borra) y con <b>Borrar</b> eliminás las imágenes que subiste vos.</p>
+                    <div class="stats" id="stats-flyers"></div>
+
+                    <div class="add-box">
+                        <div>
+                            <label for="fl-file">Flyer nuevo</label>
+                            <input class="file-input" type="file" id="fl-file" accept="image/*">
+                        </div>
+                        <div>
+                            <label for="fl-autor">Autor</label>
+                            <input class="mini-input" type="text" id="fl-autor" maxlength="80" placeholder="@vuelapelucas3000">
+                        </div>
+                        <div>
+                            <label for="fl-nombre">Título (opcional)</label>
+                            <input class="mini-input" type="text" id="fl-nombre" maxlength="120" placeholder="Afiche 2025">
+                        </div>
+                        <div style="display:flex; align-items:flex-end;">
+                            <button class="toolbar-btn" id="btn-add-flyer" onclick="agregarMedia('flyers')">➕ Agregar flyer</button>
+                        </div>
+                    </div>
+
+                    <div class="media-grid" id="flyers-grid"></div>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="toast" id="toast"></div>
 
     <script>
         const CONFIG = {
@@ -457,9 +691,17 @@
                 return IS_NODE_SERVER ? '' : 'https://vps-4455523-x.dattaweb.com';
             })()
         };
+        const API = CONFIG.API_URL + CONFIG.BASE + '/api';
 
         let adminPass = '';
         let ultimasInscripciones = [];
+        let dibujos = [];
+        let galeriaBase = [], flyersBase = [];
+        const cur = {
+            galeria: { ocultos: [], years: {}, extra: [] },
+            flyers: { ocultos: [], years: {}, extra: [] }
+        };
+        const dirty = { galeria: false, flyers: false };
 
         const ROLES = {
             espectador: 'Espectador',
@@ -476,9 +718,35 @@
 
         const nombreRol = (r) => ROLES[r] || r || 'Espectador';
 
+        function toast(txt) {
+            const t = document.getElementById('toast');
+            t.textContent = txt;
+            t.className = 'toast is-on';
+            clearTimeout(window.__toastT);
+            window.__toastT = setTimeout(() => { t.className = 'toast'; }, 3600);
+        }
+
+        function kb(n) {
+            n = Number(n) || 0;
+            return n > 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.round(n / 1024) + ' KB';
+        }
+
+        function fechaCorta(iso) {
+            if (!iso) return '-';
+            const d = new Date(iso);
+            return isNaN(d) ? '-' : d.toLocaleDateString('es-AR');
+        }
+
+        /* ==================== LOGIN ==================== */
         async function login() {
             adminPass = document.getElementById('admin-pass').value;
-            await loadInscripciones();
+            const ok = await loadInscripciones();
+            if (!ok) return;
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('admin-section').style.display = 'block';
+            cargarDibujos();
+            cargarGaleria();
+            cargarFlyers();
         }
 
         function logout() {
@@ -489,29 +757,31 @@
             document.getElementById('admin-pass').value = '';
         }
 
-        function fechaCorta(iso) {
-            if (!iso) return '-';
-            const d = new Date(iso);
-            return isNaN(d) ? '-' : d.toLocaleDateString('es-AR');
-        }
+        // Pestañas
+        document.querySelectorAll('.tab[data-tab]').forEach((b) => {
+            b.addEventListener('click', () => {
+                document.querySelectorAll('.tab[data-tab]').forEach((x) => x.classList.remove('is-active'));
+                b.classList.add('is-active');
+                document.querySelectorAll('.panel').forEach((p) => p.classList.remove('is-active'));
+                document.getElementById('panel-' + b.dataset.tab).classList.add('is-active');
+            });
+        });
 
+        /* ==================== INSCRIPTOS ==================== */
         async function loadInscripciones() {
             try {
-                const url = CONFIG.API_URL + CONFIG.BASE + '/api/inscripciones?pass=' + encodeURIComponent(adminPass);
+                const url = API + '/inscripciones?pass=' + encodeURIComponent(adminPass);
                 const response = await fetch(url, { credentials: 'include' });
                 const data = await response.json();
 
                 if (!response.ok) {
                     alert('Contraseña incorrecta');
-                    return;
+                    return false;
                 }
 
                 ultimasInscripciones = data.inscripciones || [];
+                document.getElementById('tabn-inscriptos').textContent = '(' + data.count + ')';
 
-                document.getElementById('login-section').style.display = 'none';
-                document.getElementById('admin-section').style.display = 'block';
-
-                // Stats
                 document.getElementById('stats').innerHTML = `
                     <div class="stat-card">
                         <div class="stat-number">${data.count}</div>
@@ -519,7 +789,6 @@
                     </div>
                 `;
 
-                // Tabla
                 const tbody = document.getElementById('inscripciones-body');
                 if (!ultimasInscripciones.length) {
                     tbody.innerHTML = '<tr><td class="sin-datos" colspan="11">Todavía no hay inscripciones</td></tr>';
@@ -540,26 +809,27 @@
                         </tr>
                     `).join('');
                 }
+                return true;
             } catch (error) {
                 console.error('Error:', error);
                 alert('Error al cargar inscripciones');
+                return false;
             }
         }
 
         async function deleteInscripcion(id) {
             if (!confirm('¿Eliminar esta inscripción?')) return;
-
             try {
-                const url = CONFIG.API_URL + CONFIG.BASE + '/api/inscripciones/' + id + '?pass=' + encodeURIComponent(adminPass);
-                await fetch(url, { method: 'DELETE', credentials: 'include' });
+                await fetch(API + '/inscripciones/' + id + '?pass=' + encodeURIComponent(adminPass), {
+                    method: 'DELETE', credentials: 'include'
+                });
                 await loadInscripciones();
             } catch (error) {
                 alert('Error al eliminar');
             }
         }
 
-        // --- EXPORTAR CSV ---
-        // Separador ";" y BOM UTF-8 para que Excel en español lo abra en columnas.
+        // ---------- EXPORTAR CSV ----------
         function celdaCSV(valor) {
             const s = String(valor == null ? '' : valor).replace(/\r?\n/g, ' ').replace(/"/g, '""');
             return '"' + s + '"';
@@ -570,7 +840,6 @@
                 alert('No hay datos para exportar. Cargá las inscripciones primero.');
                 return;
             }
-
             const columnas = [
                 ['Nombre', i => i.nombre],
                 ['Apellido', i => i.apellido],
@@ -584,12 +853,10 @@
                 ['Fecha', i => fechaCorta(i.createdAt)],
                 ['Fecha ISO', i => i.createdAt]
             ];
-
             const lineas = [columnas.map(c => celdaCSV(c[0])).join(';')];
             ultimasInscripciones.forEach(i => {
                 lineas.push(columnas.map(c => celdaCSV(c[1](i))).join(';'));
             });
-
             const csv = '\ufeff' + lineas.join('\r\n') + '\r\n';
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const hoy = new Date().toISOString().slice(0, 10);
@@ -602,9 +869,325 @@
             setTimeout(() => URL.revokeObjectURL(a.href), 2000);
         }
 
-        // Enter en el campo de contraseña = ingresar
+        /* ==================== DIBUJOS ==================== */
+        async function cargarDibujos() {
+            const grid = document.getElementById('dibujos-grid');
+            grid.innerHTML = '<div class="loading">Cargando dibujos...</div>';
+            try {
+                const r = await fetch(API + '/artworks', { credentials: 'include', cache: 'no-store' });
+                const d = await r.json();
+                dibujos = d.artworks || [];
+                document.getElementById('tabn-dibujos').textContent = '(' + dibujos.length + ')';
+
+                const conAnim = dibujos.filter(x => x.gif).length;
+                document.getElementById('stats-dibujos').innerHTML = `
+                    <div class="stat-card"><div class="stat-number">${dibujos.length}</div><div class="stat-label">Dibujos publicados</div></div>
+                    <div class="stat-card"><div class="stat-number">${conAnim}</div><div class="stat-label">Con animación</div></div>
+                    <div class="stat-card"><div class="stat-number">${dibujos.filter(x => x.username).length}</div><div class="stat-label">De usuarios FSCAUTH</div></div>
+                `;
+
+                if (!dibujos.length) {
+                    grid.innerHTML = '<div class="sin-datos">Todavía no hay dibujos publicados.</div>';
+                    return;
+                }
+
+                grid.innerHTML = dibujos.map(x => `
+                    <div class="media-card">
+                        <div class="thumb"><img src="${esc(API.replace(/\/api$/, '') + (x.gif || x.img))}" alt="${esc(x.nombre)}" loading="lazy"></div>
+                        <div class="info">
+                            <b>${esc(x.nombre)}</b>
+                            <span class="badge-rol">${esc(x.username ? '@' + x.username : x.autor)}</span>
+                            <div class="meta">${x.w}x${x.h} · ${kb(x.bytes)}${x.gifBytes ? ' + ' + kb(x.gifBytes) + ' de GIF' : ' · sin animación'}</div>
+                            <div class="meta">${fechaCorta(x.createdAt)}</div>
+                        </div>
+                        <div class="row">
+                            <a class="mini-btn" href="${esc((x.gif || x.img) + '?dl=1')}" download>⬇ Descargar</a>
+                            <button class="mini-btn danger" onclick="borrarDibujo('${x.id}', '${esc(x.nombre)}')">🗑 Borrar</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                grid.innerHTML = '<div class="error">No se pudieron cargar los dibujos.</div>';
+            }
+        }
+
+        async function borrarDibujo(id, nombre) {
+            if (!confirm('¿Borrar el dibujo "' + nombre + '"? Se saca de la galería de la comunidad.')) return;
+            const r = await fetch(API + '/artworks/' + id + '?pass=' + encodeURIComponent(adminPass), { method: 'DELETE' });
+            if (r.ok) { toast('Dibujo borrado'); cargarDibujos(); }
+            else toast('No se pudo borrar');
+        }
+
+        async function agregarDibujo() {
+            const nombre = document.getElementById('dw-nombre').value.trim();
+            const autor = document.getElementById('dw-autor').value.trim();
+            const file = document.getElementById('dw-file').files[0];
+            if (!nombre || !autor) { alert('Completá nombre y autor.'); return; }
+            if (!file) { alert('Elegí la imagen del dibujo.'); return; }
+
+            const image = await leerArchivo(file);
+            const img = await new Promise(res => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = image; });
+            let escala = 2;
+            if (img) {
+                const e = Math.round(img.width / 256);
+                escala = [1, 2, 4].indexOf(e) >= 0 ? e : 2;
+            }
+
+            const btn = document.getElementById('btn-add-dibujo');
+            btn.disabled = true;
+            try {
+                const r = await fetch(API + '/artworks?pass=' + encodeURIComponent(adminPass), {
+                    method: 'POST', credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nombre, autor, escala, image })
+                });
+                const d = await r.json();
+                if (!r.ok) throw new Error(d.error || 'Error');
+                toast('✓ Dibujo agregado');
+                document.getElementById('dw-nombre').value = '';
+                document.getElementById('dw-autor').value = '';
+                document.getElementById('dw-file').value = '';
+                cargarDibujos();
+            } catch (e) {
+                alert('No se pudo agregar: ' + e.message);
+            }
+            btn.disabled = false;
+        }
+
+        /* ==================== GALERIA + FLYERS ==================== */
+        function leerArchivo(file) {
+            return new Promise((res, rej) => {
+                const fr = new FileReader();
+                fr.onload = () => res(String(fr.result));
+                fr.onerror = rej;
+                fr.readAsDataURL(file);
+            });
+        }
+
+        async function cargarGaleria() {
+            const grid = document.getElementById('galeria-grid');
+            grid.innerHTML = '<div class="loading">Cargando fotos...</div>';
+            try {
+                const [man, c] = await Promise.all([
+                    fetch('img/galeria/manifest.json', { cache: 'no-cache' }).then(r => r.json()),
+                    fetch(API + '/curation/galeria', { cache: 'no-store' }).then(r => r.json())
+                ]);
+                galeriaBase = man || [];
+                cur.galeria = { ocultos: c.ocultos || [], years: c.years || {}, extra: c.extra || [] };
+                dirty.galeria = false;
+                document.getElementById('btn-save-galeria').classList.remove('dirty');
+                pintarMedia('galeria');
+            } catch (e) {
+                grid.innerHTML = '<div class="error">No se pudo cargar la galería.</div>';
+            }
+        }
+
+        async function cargarFlyers() {
+            const grid = document.getElementById('flyers-grid');
+            grid.innerHTML = '<div class="loading">Cargando flyers...</div>';
+            try {
+                const [man, c] = await Promise.all([
+                    fetch('img/flyers/manifest.json', { cache: 'no-cache' }).then(r => r.json()),
+                    fetch(API + '/curation/flyers', { cache: 'no-store' }).then(r => r.json())
+                ]);
+                flyersBase = man || [];
+                cur.flyers = { ocultos: c.ocultos || [], years: c.years || {}, extra: c.extra || [] };
+                dirty.flyers = false;
+                document.getElementById('btn-save-flyers').classList.remove('dirty');
+                pintarMedia('flyers');
+                document.getElementById('tabn-flyers').textContent = '(' + flyersBase.length + ')';
+            } catch (e) {
+                grid.innerHTML = '<div class="error">No se pudo cargar los flyers.</div>';
+            }
+        }
+
+        function añosDisponibles() {
+            const set = [];
+            galeriaBase.forEach(x => { if (x.year && set.indexOf(String(x.year)) < 0) set.push(String(x.year)); });
+            Object.keys(cur.galeria.years).forEach(y => {
+                const v = cur.galeria.years[y];
+                if (v && set.indexOf(String(v)) < 0) set.push(String(v));
+            });
+            cur.galeria.extra.forEach(x => { if (x.year && set.indexOf(String(x.year)) < 0) set.push(String(x.year)); });
+            const hoy = String(new Date().getFullYear());
+            if (set.indexOf(hoy) < 0) set.push(hoy);
+            return set.sort().reverse();
+        }
+
+        function pintarMedia(key) {
+            const grid = document.getElementById(key === 'galeria' ? 'galeria-grid' : 'flyers-grid');
+            const base = key === 'galeria' ? galeriaBase : flyersBase;
+            const c = cur[key];
+            const años = key === 'galeria' ? añosDisponibles() : [];
+
+            let html = '';
+            base.forEach((it) => {
+                const f = it.file || it.big || '';
+                const oculto = c.ocultos.indexOf(f) >= 0;
+                const año = c.years[f] || it.year || '';
+                const src = esc(it.thumb || it.file);
+                html += `
+                    <div class="media-card ${oculto ? 'oculto' : ''}">
+                        <div class="thumb"><img src="${src}" alt="" loading="lazy"></div>
+                        <div class="info">
+                            <b>${esc((it.autor || 'vuelapelucas3000'))}</b>
+                            <div class="meta">${esc(f.split('/').pop())}</div>
+                            <div class="meta"><span class="src-tag manifest">archivo del sitio</span></div>
+                            ${key === 'galeria' ? `
+                            <div style="margin-top:0.4rem;">
+                                <label style="font-size:0.72rem;font-weight:800;">Año</label>
+                                <input class="mini-select" list="vl-years" value="${esc(año)}" placeholder="2025"
+                                       onchange="setYear('${esc(f)}', this.value)" oninput="setYear('${esc(f)}', this.value)">
+                            </div>` : ''}
+                        </div>
+                        <div class="row">
+                            <button class="mini-btn ${oculto ? 'ok' : ''}" onclick="toggleOculto('${key}', '${esc(f)}')">${oculto ? '👁 Mostrar' : '🚫 Quitar'}</button>
+                        </div>
+                    </div>`;
+            });
+
+            c.extra.forEach((m) => {
+                const src = esc(API.replace(/\/api$/, '') + m.src);
+                html += `
+                    <div class="media-card">
+                        <div class="thumb"><img src="${src}" alt="" loading="lazy"></div>
+                        <div class="info">
+                            <b>${esc(m.nombre || (key === 'galeria' ? 'Foto subida' : 'Flyer subido'))}</b>
+                            ${m.autor ? `<span class="badge-rol">${esc(m.autor)}</span>` : ''}
+                            <div class="meta"><span class="src-tag subida">subida desde el panel</span></div>
+                            ${key === 'galeria' ? `
+                            <div style="margin-top:0.4rem;">
+                                <label style="font-size:0.72rem;font-weight:800;">Año</label>
+                                <input class="mini-select" list="vl-years" value="${esc(m.year || '')}" placeholder="2025"
+                                       onchange="setYearExtra('${m.id}', this.value)" oninput="setYearExtra('${m.id}', this.value)">
+                            </div>` : ''}
+                        </div>
+                        <div class="row">
+                            <a class="mini-btn" href="${src}?dl=1" download>⬇</a>
+                            <button class="mini-btn danger" onclick="borrarMedia('${m.id}', '${key}')">🗑 Borrar</button>
+                        </div>
+                    </div>`;
+            });
+
+            grid.innerHTML = html || '<div class="sin-datos">No hay nada acá todavía.</div>';
+            if (key === 'galeria') {
+                // Sugerencias del año (se puede escribir cualquiera igual)
+                const dl = document.createElement('datalist');
+                dl.id = 'vl-years';
+                años.forEach(y => { const o = document.createElement('option'); o.value = y; dl.appendChild(o); });
+                grid.appendChild(dl);
+            }
+
+            const visibles = base.filter(x => c.ocultos.indexOf(x.file || x.big || '') < 0).length + c.extra.length;
+            const stats = document.getElementById(key === 'galeria' ? 'stats-galeria' : 'stats-flyers');
+            stats.innerHTML = `
+                <div class="stat-card"><div class="stat-number">${base.length + c.extra.length}</div><div class="stat-label">Total cargadas</div></div>
+                <div class="stat-card"><div class="stat-number">${visibles}</div><div class="stat-label">Se muestran en la página</div></div>
+                <div class="stat-card"><div class="stat-number">${c.ocultos.length}</div><div class="stat-label">Quitadas</div></div>
+            `;
+            if (key === 'galeria') document.getElementById('tabn-galeria').textContent = '(' + (base.length + c.extra.length) + ')';
+        }
+
+        function marcarDirty(key) {
+            dirty[key] = true;
+            const b = document.getElementById(key === 'galeria' ? 'btn-save-galeria' : 'btn-save-flyers');
+            b.classList.add('dirty');
+            b.textContent = '💾 Guardar cambios •';
+        }
+
+        function setYear(file, valor) {
+            cur.galeria.years[file] = valor;
+            marcarDirty('galeria');
+        }
+
+        function setYearExtra(id, valor) {
+            const m = cur.galeria.extra.filter(x => x.id === id)[0];
+            if (m) { m.year = valor; marcarDirty('galeria'); }
+        }
+
+        function toggleOculto(key, file) {
+            const arr = cur[key].ocultos;
+            const i = arr.indexOf(file);
+            if (i >= 0) arr.splice(i, 1); else arr.push(file);
+            marcarDirty(key);
+            pintarMedia(key);
+        }
+
+        async function guardarCuraduria(key) {
+            const btn = document.getElementById(key === 'galeria' ? 'btn-save-galeria' : 'btn-save-flyers');
+            btn.disabled = true;
+            try {
+                // Los extras guardan su año en el propio registro de la subida.
+                if (key === 'galeria') {
+                    for (const m of cur.galeria.extra) {
+                        await fetch(API + '/media/' + m.id + '?pass=' + encodeURIComponent(adminPass), {
+                            method: 'PATCH', credentials: 'include',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ year: m.year })
+                        });
+                    }
+                }
+                const r = await fetch(API + '/curation/' + key + '?pass=' + encodeURIComponent(adminPass), {
+                    method: 'POST', credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ocultos: cur[key].ocultos, years: cur[key].years })
+                });
+                if (!r.ok) throw new Error('Error al guardar');
+                dirty[key] = false;
+                btn.classList.remove('dirty');
+                btn.textContent = '💾 Guardar cambios';
+                toast('✓ Cambios guardados');
+                key === 'galeria' ? cargarGaleria() : cargarFlyers();
+            } catch (e) {
+                alert('No se pudo guardar: ' + e.message);
+            }
+            btn.disabled = false;
+        }
+
+        async function agregarMedia(key) {
+            const pre = key === 'galeria' ? 'gl' : 'fl';
+            const file = document.getElementById(pre + '-file').files[0];
+            if (!file) { alert('Elegí una imagen.'); return; }
+            const image = await leerArchivo(file);
+            const body = {
+                tipo: key === 'galeria' ? 'galeria' : 'flyer',
+                image,
+                year: (document.getElementById('gl-year') || {}).value || '',
+                nombre: (document.getElementById(pre + '-nombre') || {}).value || '',
+                autor: (document.getElementById(pre + '-autor') || {}).value || ''
+            };
+            const btn = document.getElementById('btn-add-' + (key === 'galeria' ? 'foto' : 'flyer'));
+            btn.disabled = true;
+            try {
+                const r = await fetch(API + '/media?pass=' + encodeURIComponent(adminPass), {
+                    method: 'POST', credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const d = await r.json();
+                if (!r.ok) throw new Error(d.error || 'Error');
+                toast('✓ Imagen agregada');
+                document.getElementById(pre + '-file').value = '';
+                key === 'galeria' ? cargarGaleria() : cargarFlyers();
+            } catch (e) {
+                alert('No se pudo subir: ' + e.message);
+            }
+            btn.disabled = false;
+        }
+
+        async function borrarMedia(id, key) {
+            if (!confirm('¿Borrar esta imagen subida? Se elimina del sitio.')) return;
+            const r = await fetch(API + '/media/' + id + '?pass=' + encodeURIComponent(adminPass), { method: 'DELETE' });
+            if (r.ok) { toast('Imagen borrada'); key === 'galeria' ? cargarGaleria() : cargarFlyers(); }
+            else toast('No se pudo borrar');
+        }
+
+        /* ==================== arranque ==================== */
         document.getElementById('admin-pass').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') login();
+        });
+        window.addEventListener('beforeunload', (e) => {
+            if (dirty.galeria || dirty.flyers) { e.preventDefault(); e.returnValue = ''; }
         });
     </script>
     <script src="js/background-shader.js?v=2"></script>

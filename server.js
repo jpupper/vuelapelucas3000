@@ -54,7 +54,7 @@ app.get(['/shadres/backgroundshader.frag', `${BASE_PATH}/shadres/backgroundshade
 
 // El body JSON se usa para las inscripciones y para publicar dibujos de
 // PanchoDraw (llegan como data:image/png;base64) -> limite holgado pero acotado.
-app.use(express.json({ limit: '12mb' }));
+app.use(express.json({ limit: '20mb' }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -71,6 +71,8 @@ app.get(['/hospedajes', `${BASE_PATH}/hospedajes`, '/hospedajes.html', `${BASE_P
 app.use(`${BASE_PATH}/api`, require('./routes/api'));
 // Creaciones de la comunidad (PanchoDraw) + indice FSCAUTH
 app.use(`${BASE_PATH}/api`, require('./routes/artworks'));
+// Curaduria del sitio (galeria / flyers) + imagenes subidas desde el admin
+app.use(`${BASE_PATH}/api`, require('./routes/curation'));
 
 // Health check
 app.get('/health', (req, res) => {

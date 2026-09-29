@@ -722,3 +722,152 @@
 }
 
 .vl-draw-grid .vl-empty { grid-column: 1 / -1; }
+
+/* =========================================================
+   BOTON "HACE TU DIBUJO" — animado, invita a clickear
+   (latido + anillo sonar + barrido de brillo + flecha que se
+   mueve sola; se frena al pasar el mouse para no pelear con el
+   efecto hover del sitio)
+   ========================================================= */
+.vl-cta-pop {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    animation: vl-cta-latido 1.9s cubic-bezier(.4, 0, .2, 1) infinite;
+    will-change: transform, box-shadow;
+}
+
+@keyframes vl-cta-latido {
+    0%   { transform: translate(0, 0) scale(1);           box-shadow: 6px 6px 0 #000, 0 0 0 0 rgba(239, 71, 32, .55); }
+    16%  { transform: translate(-3px, -3px) scale(1.07);  box-shadow: 10px 10px 0 #000, 0 0 0 12px rgba(239, 71, 32, 0); }
+    28%  { transform: translate(1px, 1px) scale(1.02);    box-shadow: 5px 5px 0 #000, 0 0 0 0 rgba(239, 71, 32, 0); }
+    40%  { transform: translate(-2px, -2px) scale(1.05);  box-shadow: 8px 8px 0 #000, 0 0 0 8px rgba(239, 71, 32, 0); }
+    58%  { transform: translate(0, 0) scale(1);           box-shadow: 6px 6px 0 #000, 0 0 0 0 rgba(239, 71, 32, 0); }
+    100% { transform: translate(0, 0) scale(1);           box-shadow: 6px 6px 0 #000, 0 0 0 0 rgba(239, 71, 32, 0); }
+}
+
+/* barrido de brillo cruzando el boton */
+.vl-cta-pop::before {
+    content: "";
+    position: absolute;
+    inset: -40% -10%;
+    background: linear-gradient(105deg,
+            rgba(255, 255, 255, 0) 35%,
+            rgba(255, 255, 255, .92) 50%,
+            rgba(255, 255, 255, 0) 65%);
+    transform: translateX(-130%) rotate(6deg);
+    animation: vl-cta-brillo 2.6s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes vl-cta-brillo {
+    0%, 50%   { transform: translateX(-130%) rotate(6deg); }
+    82%, 100% { transform: translateX(130%) rotate(6deg); }
+}
+
+/* la flecha se desliza sola */
+.vl-cta-arrow {
+    display: inline-block;
+    animation: vl-cta-flecha 1.1s ease-in-out infinite;
+}
+
+@keyframes vl-cta-flecha {
+    0%, 100% { transform: translateX(0); }
+    50%      { transform: translateX(8px); }
+}
+
+/* al pasar el mouse manda el hover del sitio (sin pelea de transforms) */
+.vl-cta-pop:hover {
+    animation: none;
+    box-shadow: 10px 10px 0 #000;
+}
+
+.vl-cta-pop:hover::before { animation: none; opacity: 0; }
+.vl-cta-pop:hover .vl-cta-arrow { animation: none; }
+
+/* respeta a quien pidio menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+    .vl-cta-pop,
+    .vl-cta-pop::before,
+    .vl-cta-arrow { animation: none; }
+}
+
+/* =========================================================
+   DESCARGAS, CREDITOS Y AJUSTES DEL CTA DE PANCHODRAW
+   ========================================================= */
+
+/* el CTA largo del panchodraw entra comodo en una linea */
+.vl-sub-cta {
+    max-width: min(100%, 660px);
+    text-align: center;
+    line-height: 1.15;
+}
+
+/* ---------- boton de descarga dentro de cada creacion ---------- */
+.vl-draw-grid .vl-draw-dl {
+    display: block;
+    margin-top: 0.5rem;
+    text-align: center;
+    font-family: 'Bebas Neue', cursive;
+    letter-spacing: 0.06em;
+    font-size: 0.95rem;
+    color: #000000;
+    background: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 999px;
+    padding: 0.15rem 0.6rem;
+    text-decoration: none;
+    box-shadow: 2px 2px 0 #000000;
+    transition: all 0.15s ease;
+}
+
+.vl-draw-grid .vl-draw-dl:hover {
+    background: var(--green, #04ba65);
+    color: #ffffff;
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 #000000;
+}
+
+/* ---------- boton de descarga dentro del visor ---------- */
+.vl-lightbox .vl-lb-dl {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    right: auto;
+    height: auto;
+    width: auto;
+    border-radius: 999px;
+    background: var(--secondary, #ffd62c);
+    color: #000000;
+    text-decoration: none;
+    font-family: 'Bebas Neue', cursive;
+    letter-spacing: 0.06em;
+    font-size: 1.15rem;
+    line-height: 1.5;
+    padding: 0.3rem 1.1rem;
+    border: 3px solid #000000;
+    box-shadow: 4px 4px 0 #000000;
+    transition: all 0.15s ease;
+}
+
+.vl-lightbox .vl-lb-dl:hover {
+    background: #ffffff;
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #000000;
+}
+
+/* ---------- creditos sin link (Pancho, Kitty, ...) ---------- */
+.footer-credits .credit-name {
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 0.86rem;
+    letter-spacing: 0.05em;
+    border-bottom: 2px dashed rgba(255, 255, 255, 0.35);
+    padding-bottom: 1px;
+}
+
+.footer-credits .credit-name-wide {
+    border-bottom: none;
+    color: var(--secondary, #ffd62c);
+}

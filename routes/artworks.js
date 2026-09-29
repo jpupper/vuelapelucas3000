@@ -18,7 +18,8 @@ const PUBLIC_APP = PUBLIC_BASE + '/vuelapelucas3000/';
 // fscauth del VPS: verificacion server->server (nunca links para humanos aca)
 const FSCAUTH_URL = process.env.FSCAUTH_URL || 'https://vps-4455523-x.dattaweb.com/fscauth';
 
-const MAX_BYTES = 2.6 * 1024 * 1024;   // ~2.6 MB por PNG (512/1024 px de pixel art)
+const MAX_BYTES = 2.6 * 1024 * 1024;       // ~2.6 MB por PNG (512/1024 px de pixel art)
+const MAX_GIF_BYTES = 6 * 1024 * 1024;     // la animacion del temblor (4 cuadros) puede pesar mas
 const MAX_LIST = 200;
 
 // ---------- helpers ----------
@@ -81,26 +82,42 @@ const pub = (a) => ({
     username: a.username || '',
     url: PUBLIC_APP + 'panchodraw/',                       // la app que lo creo
     img: '/api/artworks/' + String(a._id) + '/img',        // relativo: el front le pone el host
+    gif: a.gifBytes ? ('/api/artworks/' + String(a._id) + '/gif') : '',
     w: a.w, h: a.h, escala: a.escala,
+    bytes: a.bytes || 0, gifBytes: a.gifBytes || 0,
     createdAt: a.createdAt
 });
+
+// Nombre prolijo para la descarga: "nombre - @autor.png" (ASCII + UTF-8 para acentos).
+function adjunto(doc, ext) {
+    const crudo = (String(doc.nombre || 'vuelapelucas3000') + ' - ' + String(doc.autor || 'comunidad'))
+        .replace(/[\\/:*?"<>|]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 60) || 'vuelapelucas3000';
+    const ascii = crudo.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^\x20-\x7E]/g, '') || 'vuelapelucas3000';
+    return 'attachment; filename="' + ascii + '.' + ext + '"; filename*=UTF-8\'\'' + encodeURIComponent(crudo + '.' + ext);
+}
 
 // ---------- POST: publicar ----------
 router.post('/artworks', async (req, res) => {
     try {
+        // El panel de admin (con la clave) no entra en el anti-spam.
+        const esAdmin = req.query.pass && req.query.pass === process.env.ADMIN_PASS;
         const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.ip || 'anon';
-        if (!rateOk(ip)) {
+        if (!esAdmin && !rateOk(ip)) {
             return res.status(429).json({ error: 'Demasiadas publicaciones seguidas. Esperá unos minutos.' });
         }
 
         const nombre = limpio(req.body && req.body.nombre, 80);
         const autor = limpio(req.body && req.body.autor, 60);
         const image = String((req.body && req.body.image) || '');
+        const gifData = String((req.body && req.body.gif) || '');
         const escala = [1, 2, 4].indexOf(Number(req.body && req.body.escala)) >= 0 ? Number(req.body.escala) : 2;
 
         if (!nombre) return res.status(400).json({ error: 'Ponele un nombre al dibujo' });
         if (!autor) return res.status(400).json({ error: 'Ponele un autor al dibujo' });
-        if (!/^data:image\/png;base64,/.test(image)) {
+        if (!/^data:image\/(png|jpeg|jpg);base64,/.test(image)) {
             return res.status(400).json({ error: 'La imagen tiene que ser un PNG generado por PanchoDraw' });
         }
 
@@ -115,6 +132,18 @@ router.post('/artworks', async (req, res) => {
             return res.status(413).json({ error: 'La imagen es muy grande. Probá con 1x o 2x.' });
         }
 
+        // GIF del temblor (opcional pero es lo que hace que se vea animado).
+        let gif = null;
+        if (/^data:image\/gif;base64,/.test(gifData)) {
+            try {
+                gif = Buffer.from(gifData.split(',')[1], 'base64');
+                if (!gif.length) gif = null;
+                if (gif && gif.length > MAX_GIF_BYTES) {
+                    return res.status(413).json({ error: 'La animación es muy grande. Probá con 1x.' });
+                }
+            } catch (e) { gif = null; }
+        }
+
         // Si hay sesion FSCAUTH, la creacion queda atada al perfil universal.
         const sesion = await fscSession(req);
         const dim = 256 * escala;
@@ -123,7 +152,9 @@ router.post('/artworks', async (req, res) => {
             nombre, autor,
             username: sesion ? sesion.username : '',
             userId: sesion ? sesion.userId : '',
-            png, bytes: png.length, escala, w: dim, h: dim
+            png, bytes: png.length,
+            gif, gifBytes: gif ? gif.length : 0,
+            escala, w: dim, h: dim
         });
 
         res.status(201).json({
@@ -132,7 +163,8 @@ router.post('/artworks', async (req, res) => {
             nombre: doc.nombre,
             autor: doc.autor,
             fscauth: sesion ? sesion.username : null,
-            img: '/api/artworks/' + String(doc._id) + '/img'
+            img: '/api/artworks/' + String(doc._id) + '/img',
+            gif: gif ? ('/api/artworks/' + String(doc._id) + '/gif') : ''
         });
     } catch (error) {
         console.error('Error al publicar dibujo:', error);
@@ -154,15 +186,31 @@ router.get('/artworks', async (req, res) => {
     }
 });
 
-// ---------- GET: el PNG ----------
+// ---------- GET: el PNG (con ?dl=1 baja como archivo) ----------
 router.get('/artworks/:id/img', async (req, res) => {
     try {
         if (!/^[0-9a-fA-F]{24}$/.test(String(req.params.id))) return res.status(400).end();
-        const doc = await Artwork.findById(req.params.id, { png: 1 }).lean();
+        const doc = await Artwork.findById(req.params.id, { png: 1, nombre: 1, autor: 1, w: 1 }).lean();
         if (!doc || !doc.png) return res.status(404).end();
         res.setHeader('Content-Type', 'image/png');
         res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+        if (req.query.dl) res.setHeader('Content-Disposition', adjunto(doc, 'png'));
         res.send(doc.png.buffer || doc.png);
+    } catch (error) {
+        res.status(404).end();
+    }
+});
+
+// ---------- GET: el GIF del temblor (se ve animado en la galeria) ----------
+router.get('/artworks/:id/gif', async (req, res) => {
+    try {
+        if (!/^[0-9a-fA-F]{24}$/.test(String(req.params.id))) return res.status(400).end();
+        const doc = await Artwork.findById(req.params.id, { gif: 1, nombre: 1, autor: 1 }).lean();
+        if (!doc || !doc.gif) return res.status(404).end();
+        res.setHeader('Content-Type', 'image/gif');
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+        if (req.query.dl) res.setHeader('Content-Disposition', adjunto(doc, 'gif'));
+        res.send(doc.gif.buffer || doc.gif);
     } catch (error) {
         res.status(404).end();
     }

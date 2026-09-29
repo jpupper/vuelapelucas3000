@@ -1915,15 +1915,32 @@
   function fscPintaSesion() {
     if (fscSesion) {
       pubFscStatus.className = 'pub-fsc-status is-on';
-      pubFscStatus.innerHTML = '● Sesión FSCAUTH: @' + fscSesion.username;
-      pubFscLink.className = 'pub-fsc-link is-hidden';
+      pubFscStatus.innerHTML = '● Sesión FSCAUTH activa: @' + fscSesion.username;
+      pubFscLink.className = 'pub-fsc-link';
+      pubFscLink.innerHTML = 'USAR MI USUARIO FSCAUTH';
+      // Ya logueado: el link NO navega, completa AUTOR con tu usuario.
+      if (!pubAutor.value) pubAutor.value = '@' + fscSesion.username;
     } else {
       pubFscStatus.className = 'pub-fsc-status';
       pubFscStatus.innerHTML = 'Se publica sin usuario (solo nombre y autor).';
       pubFscLink.className = 'pub-fsc-link';
-      pubFscLink.href = FSC_PASSPORT;
+      pubFscLink.innerHTML = 'Logearse con FSCAUTH';
     }
+    pubFscLink.href = FSC_PASSPORT;
   }
+
+  // Click en "Logearse con FSCAUTH":
+  //  - sin sesion  -> te lleva al pasaporte (fullscreencode.com/fscauth/)
+  //  - con sesion  -> NO te saca de la pagina: completa AUTOR y te deja logueado
+  pubFscLink.onclick = function (e) {
+    if (!fscSesion) return;                      // sin sesion: va al pasaporte
+    if (e && e.preventDefault) e.preventDefault();
+    pubAutor.value = '@' + fscSesion.username;
+    pubFscStatus.className = 'pub-fsc-status is-on';
+    pubFscStatus.innerHTML = '● Sesión FSCAUTH: @' + fscSesion.username + ' (ya está en AUTOR)';
+    pubMsg('✓ Vas a publicar como @' + fscSesion.username + ' (queda en tu perfil FSCAUTH).', 'is-ok');
+    try { pubNombre.focus(); } catch (err) {}
+  };
 
   function fscCheck() {
     if (typeof fetch !== 'function') { fscPintaSesion(); return; }
@@ -1932,7 +1949,6 @@
       .then(function (d) {
         if (d && d.loggedIn && d.user) {
           fscSesion = { username: d.user.username, id: d.user.id };
-          if (!pubAutor.value) pubAutor.value = '@' + d.user.username;
         }
         fscPintaSesion();
       })
@@ -1963,6 +1979,51 @@
     setTimeout(function () { try { pubNombre.focus(); } catch (e) {} }, 60);
   }
 
+  // GIF del TEMBLOR: los mismos 4 cuadros que ves mientras dibujás.
+  // Es lo que hace que en la galería la creación se vea animada.
+  function pubGif(scale, done) {
+    if (!window.GifEncoder) { done('', 'sin-encoder'); return; }
+    var dim = 256 * scale;
+    try {
+      var encoder = new window.GifEncoder(dim, dim);
+      encoder.setDelay(Math.round(100 / state.fps));
+      encoder.setRepeat(0);
+
+      var rgbPalette = [];
+      for (var p = 0; p < OFFICIAL_PALETTE.length; p++) {
+        var rgb = hexToRgba(OFFICIAL_PALETTE[p]);
+        rgbPalette.push([rgb[0], rgb[1], rgb[2]]);
+      }
+      encoder.setPalette(rgbPalette);
+
+      var base256 = document.createElement('canvas');
+      base256.width = 256; base256.height = 256;
+      var bCtx = base256.getContext('2d');
+      if (bCtx.imageSmoothingEnabled !== undefined) bCtx.imageSmoothingEnabled = false;
+
+      var frameCanvas = document.createElement('canvas');
+      frameCanvas.width = dim; frameCanvas.height = dim;
+      var fCtx = frameCanvas.getContext('2d');
+      if (fCtx.imageSmoothingEnabled !== undefined) fCtx.imageSmoothingEnabled = false;
+
+      for (var f = 0; f < state.loopFrames; f++) {
+        renderFrame(bCtx, f);
+        fCtx.clearRect(0, 0, dim, dim);
+        fCtx.drawImage(base256, 0, 0, 256, 256, 0, 0, dim, dim);
+        encoder.addFrame(fCtx);
+      }
+
+      var out = encoder.render();
+      if (typeof out === 'string') { done(out, null); return; }
+      var fr = new FileReader();
+      fr.onload = function () { done(String(fr.result || ''), null); };
+      fr.onerror = function () { done('', 'reader'); };
+      fr.readAsDataURL(out);
+    } catch (e) {
+      done('', String((e && e.message) || e));
+    }
+  }
+
   function doPublish() {
     var nombre = String(pubNombre.value || '').replace(/\s+/g, ' ').trim();
     var autor = String(pubAutor.value || '').replace(/\s+/g, ' ').trim();
@@ -1984,26 +2045,36 @@
       pubMsg('No se pudo leer el lienzo.', 'is-err');
       return;
     }
-    pubProgressBar.style.width = '65%';
+    pubProgressBar.style.width = '55%';
 
-    fetch(API_BASE + '/api/artworks', {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nombre: nombre, autor: autor, escala: scale, image: dataUrl })
-    }).then(function (r) {
-      return r.json().then(function (d) { return { ok: r.ok, d: d }; });
-    }).then(function (res) {
-      if (!res.ok) throw new Error((res.d && res.d.error) || 'No se pudo publicar');
-      pubProgressBar.style.width = '100%';
-      pubMsg('✓ ¡Publicado! Ya aparece en CREACIONES DE LA COMUNIDAD' +
-        (res.d.fscauth ? ' y en tu perfil FSCAUTH (@' + res.d.fscauth + ')' : '') + '.', 'is-ok');
-      try {
-        document.getElementById('winTitleText').innerHTML = String(nombre) + '.bmp - Paint (VUELAPELUCAS 3000)';
-      } catch (e) {}
-    }).catch(function (err) {
-      pubMsg('✕ ' + ((err && err.message) ? err.message : 'Error al publicar') + '.', 'is-err');
-    }).then(function () { btnDoPublish.disabled = false; });
+    // Primero la animación (temblor) y después la subida.
+    pubGif(scale, function (gifUrl, gifErr) {
+      pubProgressBar.style.width = '75%';
+      if (gifErr) {
+        pubMsg('No se pudo armar la animación, se publica la imagen fija...');
+      } else {
+        pubMsg('Subiendo la animación del trazo...');
+      }
+
+      fetch(API_BASE + '/api/artworks', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre: nombre, autor: autor, escala: scale, image: dataUrl, gif: gifUrl || '' })
+      }).then(function (r) {
+        return r.json().then(function (d) { return { ok: r.ok, d: d }; });
+      }).then(function (res) {
+        if (!res.ok) throw new Error((res.d && res.d.error) || 'No se pudo publicar');
+        pubProgressBar.style.width = '100%';
+        pubMsg('✓ ¡Publicado! Ya aparece animado en CREACIONES DE LA COMUNIDAD' +
+          (res.d.fscauth ? ' y en tu perfil FSCAUTH (@' + res.d.fscauth + ')' : '') + '.', 'is-ok');
+        try {
+          document.getElementById('winTitleText').innerHTML = String(nombre) + '.bmp - Paint (VUELAPELUCAS 3000)';
+        } catch (e) {}
+      }).catch(function (err) {
+        pubMsg('✕ ' + ((err && err.message) ? err.message : 'Error al publicar') + '.', 'is-err');
+      }).then(function () { btnDoPublish.disabled = false; });
+    });
   }
 
   if (btnQuickPublish) btnQuickPublish.onclick = openPublishDialog;
@@ -2012,6 +2083,10 @@
   document.getElementById('btnCancelPublish').onclick = function () { closeModal('publishDialog'); };
   document.getElementById('btnClosePublish').onclick = function () { closeModal('publishDialog'); };
   pubNombre.onkeydown = function (e) { if (e.key === 'Enter' || e.keyCode === 13) doPublish(); };
+
+  // Al abrir la pagina ya se consulta la sesión FSCAUTH (así el botón sabe si
+  // tenés que loguearte o si ya puede usar tu usuario).
+  setTimeout(fscCheck, 400);
 
   // F9 = publicar (sin pisar los atajos de dibujo)
   window.addEventListener('keydown', function (e) {
