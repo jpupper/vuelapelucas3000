@@ -110,6 +110,10 @@
         if (it.year != null) {
             return 'VUELAPELUCAS 3000 · ' + it.year + ' · ' + it.n + '/' + it.mp + 'MP';
         }
+        if (it.isDraw) {
+            var ar = String(it.autor || '').replace(/^@+/, '');
+            return 'PANCHODRAW · ' + it.nombre + (ar ? ' · @' + ar : '');
+        }
         return 'CREACIÓN DE LA COMUNIDAD' + (it.autor ? ' · @' + it.autor : '');
     }
 
@@ -190,8 +194,8 @@
                     });
                     grid.appendChild(a);
                 });
-                var cnt = root.querySelector('.vl-community-count');
-                if (cnt) cnt.textContent = items.length + ' PUBLICACIONES DE LA COMUNIDAD';
+                var cnt = root.querySelector('#count-flyers') || root.querySelector('.vl-community-count');
+                if (cnt) cnt.textContent = items.length + ' PUBLICACIONES';
             })
             .catch(function () {
                 grid.innerHTML = '';
@@ -201,10 +205,86 @@
             });
     }
 
+    /* ---------------- dibujos de PANCHODRAW ---------------- */
+    // Las creaciones viven en la base de la app (VPS): aca se listan y se
+    // muestran en la subseccion PANCHODRAW de CREACIONES DE LA COMUNIDAD.
+    var API_VUELA = (function () {
+        var h = location.hostname;
+        var local = (h === 'localhost' || h === '127.0.0.1');
+        return local
+            ? (location.protocol + '//' + location.host + '/vuelapelucas3000_2')
+            : 'https://vps-4455523-x.dattaweb.com/vuelapelucas3000_2';
+    })();
+
+    function initDrawings(root) {
+        var grid = root.querySelector('.vl-draw-grid');
+        if (!grid) return;
+
+        fetch(API_VUELA + '/api/artworks', { cache: 'no-cache' })
+            .then(function (r) {
+                if (r.headers.get('content-type') && r.headers.get('content-type').indexOf('json') < 0) {
+                    throw new Error('no-json');
+                }
+                return r.json();
+            })
+            .then(function (d) {
+                var items = (d && d.artworks) || [];
+                if (!items.length) {
+                    grid.appendChild(el('div', 'vl-empty',
+                        'Todavía no hay dibujos. Entrá a PanchoDraw, dibujá tu arte del vuela y publicalo.'));
+                    setCount('#count-draw', 0);
+                    return;
+                }
+
+                var lb = lightbox();
+                // Items para el visor compartido (mismo formato que galeria/flyers)
+                var lbItems = items.map(function (it) {
+                    return {
+                        isDraw: true,
+                        big: API_VUELA + it.img,
+                        nombre: it.nombre,
+                        autor: it.username || it.autor
+                    };
+                });
+                items.forEach(function (it, idx) {
+                    var fig = el('figure');
+                    fig.title = 'PanchoDraw — ' + it.nombre + (it.autor ? ' (@' + it.autor + ')' : '');
+
+                    var im = el('img');
+                    im.loading = 'lazy';
+                    im.src = API_VUELA + it.img;
+                    im.alt = 'Dibujo de ' + (it.autor || 'la comunidad') + ': ' + it.nombre;
+                    fig.appendChild(im);
+
+                    var cap = el('figcaption');
+                    cap.appendChild(el('b', null, it.nombre));
+                    var aut = el('span', 'vl-draw-autor', (it.username ? '@' + it.username : it.autor));
+                    cap.appendChild(aut);
+                    fig.appendChild(cap);
+
+                    fig.addEventListener('click', function () { lb.open(lbItems, idx); });
+                    grid.appendChild(fig);
+                });
+
+                setCount('#count-draw', items.length);
+            })
+            .catch(function () {
+                grid.innerHTML = '';
+                grid.appendChild(el('div', 'vl-empty',
+                    'No se pudieron cargar los dibujos de PanchoDraw en este momento. ' +
+                    'Entrá a PanchoDraw y publicá el primero.'));
+            });
+
+        function setCount(sel, n) {
+            var e = root.querySelector(sel);
+            if (e) e.textContent = n ? '(' + n + ')' : '';
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         var g = document.getElementById('galeria');
         if (g) initGallery(g);
         var c = document.getElementById('comunidad');
-        if (c) initCommunity(c);
+        if (c) { initCommunity(c); initDrawings(c); }
     });
 })();

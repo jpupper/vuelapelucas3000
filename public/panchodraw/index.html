@@ -1,0 +1,529 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="es">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>dibujo.bmp - Paint (VUELAPELUCAS 3000)</title>
+  <!-- Fuentes bitmap / pixel art -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&family=VT323&family=Share+Tech+Mono&display=swap">
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+  <!-- Volver a la pagina del encuentro -->
+  <a class="vl-back-link" href="../index.html">← VOLVER AL VUELAPELUCAS 3000</a>
+
+  <!-- Ventana Principal Windows 95 Paint -->
+  <div class="paint-window" id="paintWindow">
+
+    <!-- Barra de Título Windows 95 -->
+    <div class="win-titlebar">
+      <div class="win-title-left">
+        <!-- Ícono clásico de Paint 16x16 -->
+        <svg class="win-title-icon" viewBox="0 0 16 16">
+          <rect x="2" y="2" width="12" height="12" fill="#ffd62c" />
+          <path d="M4 4h3v3H4zm5 0h3v3H9zm-3 4h4v3H6z" fill="#ef4720" />
+          <rect x="2" y="12" width="12" height="2" fill="#0e75fe" />
+        </svg>
+        <span class="win-title-text" id="winTitleText">dibujo.bmp - Paint (VUELAPELUCAS 3000)</span>
+      </div>
+      <div class="win-title-controls">
+        <button class="win-title-btn" id="btnWinMin" title="Minimizar">_</button>
+        <button class="win-title-btn" id="btnWinMax" title="Maximizar">□</button>
+        <button class="win-title-btn" id="btnWinClose" title="Cerrar">✕</button>
+      </div>
+    </div>
+
+    <!-- Barra de Menús Clásica Windows 95 -->
+    <div class="win-menubar">
+      <div class="win-menu-item" data-menu="archivo">
+        <div class="win-menu-label"><u>A</u>rchivo</div>
+        <div class="win-dropdown">
+          <div class="win-dropdown-row" id="menuNuevo"><span><u>N</u>uevo (256x256)</span><span class="win-shortcut">Ctrl+N</span></div>
+          <div class="win-dropdown-row" id="menuAbrir"><span><u>A</u>brir imagen...</span><span class="win-shortcut">Ctrl+O</span></div>
+          <div class="win-dropdown-row" id="menuGuardar"><span><u>G</u>uardar proyecto</span><span class="win-shortcut">Ctrl+S</span></div>
+          <div class="win-dropdown-sep"></div>
+          <div class="win-dropdown-row" id="menuPublicar"><span><b>🌐 <u>P</u>ublicar en la galería de la comunidad...</b></span><span class="win-shortcut">F9</span></div>
+          <div class="win-dropdown-sep"></div>
+          <div class="win-dropdown-row" id="menuExportar"><span><b><u>E</u>xportar (PNG / GIF / Video)...</b></span><span class="win-shortcut">Ctrl+E</span></div>
+          <div class="win-dropdown-sep"></div>
+          <div class="win-dropdown-row" id="menuSalir"><span><u>S</u>alir</span></div>
+        </div>
+      </div>
+
+      <div class="win-menu-item" data-menu="edicion">
+        <div class="win-menu-label"><u>E</u>dición</div>
+        <div class="win-dropdown">
+          <div class="win-dropdown-row" id="menuDeshacer"><span><u>D</u>eshacer</span><span class="win-shortcut">Ctrl+Z</span></div>
+          <div class="win-dropdown-row" id="menuRehacer"><span><u>R</u>ehacer</span><span class="win-shortcut">Ctrl+Y</span></div>
+          <div class="win-dropdown-sep"></div>
+          <div class="win-dropdown-row" id="menuLimpiar"><span><u>B</u>orrar imagen</span><span class="win-shortcut">Ctrl+Shft+N</span></div>
+          <div class="win-dropdown-row" id="menuInvertir"><span><u>I</u>nvertir colores</span><span class="win-shortcut">Ctrl+I</span></div>
+        </div>
+      </div>
+
+      <div class="win-menu-item" data-menu="ver">
+        <div class="win-menu-label"><u>V</u>er</div>
+        <div class="win-dropdown">
+          <div class="win-dropdown-row" id="menuCuadricula"><span><u>C</u>uadrícula pixelada</span></div>
+          <div class="win-dropdown-sep"></div>
+          <div class="win-dropdown-row" id="menuZoom100"><span>Zoom normal (100% - 256x256)</span></div>
+          <div class="win-dropdown-row" id="menuZoom200"><span>Zoom grande (200% - 512x512)</span></div>
+          <div class="win-dropdown-row" id="menuZoom400"><span>Zoom personalizado (400%)</span></div>
+        </div>
+      </div>
+
+      <div class="win-menu-item" data-menu="imagen">
+        <div class="win-menu-label"><u>I</u>magen</div>
+        <div class="win-dropdown">
+          <div class="win-dropdown-row" id="menuPlantillaOficial"><span>★ Cargar Afiche Vuelapelucas 3000</span></div>
+          <div class="win-dropdown-row" id="menuPlantillaRave"><span>★ Cargar Flyer Neón Rave</span></div>
+        </div>
+      </div>
+
+      <div class="win-menu-item" data-menu="opciones">
+        <div class="win-menu-label"><u>O</u>pciones</div>
+        <div class="win-dropdown">
+          <div class="win-dropdown-row" id="menuToggleAnim"><span>Animación temblorosa (Play/Pausa)</span><span class="win-shortcut">Espacio</span></div>
+          <div class="win-dropdown-sep"></div>
+          <div class="win-dropdown-row" id="menuFps4"><span>Velocidad: 4 FPS (Lenta)</span></div>
+          <div class="win-dropdown-row" id="menuFps8"><span>Velocidad: 8 FPS (Temblor)</span></div>
+          <div class="win-dropdown-row" id="menuFps12"><span>Velocidad: 12 FPS (Rápida)</span></div>
+          <div class="win-dropdown-row" id="menuFps16"><span>Velocidad: 16 FPS (Vibrante)</span></div>
+        </div>
+      </div>
+
+      <div class="win-menu-item" data-menu="ayuda">
+        <div class="win-menu-label">A<u>y</u>uda</div>
+        <div class="win-dropdown">
+          <div class="win-dropdown-row" id="menuTemasAyuda"><span><u>T</u>emas de Ayuda</span><span class="win-shortcut">F1</span></div>
+          <div class="win-dropdown-sep"></div>
+          <div class="win-dropdown-row" id="menuAcercaDe"><span>Acerca de VUELAPELUCAS 3000...</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barra de Accesos Rápidos -->
+    <div class="vuelapelucas-subbar">
+      <button class="win-button" id="btnQuickUndo" title="Deshacer (Ctrl+Z)">↶ Deshacer</button>
+      <button class="win-button" id="btnQuickRedo" title="Rehacer (Ctrl+Y)">↷ Rehacer</button>
+      <button class="win-button" id="btnQuickClear" title="Borrar lienzo">🗑 Borrar</button>
+      <div class="sep-vertical"></div>
+      <button class="win-button" id="btnQuickPlay" title="Pausar o reanudar animación de temblor">⏸ Pausar Temblor</button>
+      <button class="win-button" id="btnQuickGrid" title="Mostrar u ocultar cuadrícula">⊞ Cuadrícula</button>
+      <button class="win-button" id="btnQuickZoom" title="Alternar tamaño de visualización">🔍 Zoom: 200%</button>
+      <div class="sep-vertical"></div>
+      <button class="win-button win-button-primary" id="btnQuickExport" title="Exportar en 256, 512, 1024 o 2048 px">💾 EXPORTAR (PNG / GIF / VIDEO)</button>
+      <button class="win-button win-button-publish" id="btnQuickPublish" title="Publicar el dibujo en la galería pública de VUELAPELUCAS 3000">🌐 PUBLICAR EN LA GALERÍA</button>
+    </div>
+
+    <!-- Área de Trabajo Principal: Caja de Herramientas y Visor del Lienzo -->
+    <div class="paint-workspace">
+
+      <!-- Caja de Herramientas Windows 95 (13 herramientas) -->
+      <div class="toolbox-container">
+        <div class="tools-grid">
+          <!-- 1. Goma de Borrar -->
+          <div class="tool-cell" data-tool="eraser" title="Borrador / Borrador de color">
+            <svg viewBox="0 0 16 16"><path d="M11 2 L14 5 L6 13 L2 13 L2 9 Z" fill="#f5abd0" stroke="#000" stroke-width="1"/><path d="M4 11 L7 14" stroke="#000" stroke-width="1"/></svg>
+          </div>
+          <!-- 2. Relleno con Color (Bote) -->
+          <div class="tool-cell" data-tool="bucket" title="Relleno con color">
+            <svg viewBox="0 0 16 16"><path d="M12 7 L7 2 L2 7 L7 12 Z" fill="#ffd62c" stroke="#000" stroke-width="1"/><path d="M12 9 C12 12 14 14 14 14 C14 14 16 12 16 9 C16 8 12 8 12 9 Z" fill="#0e75fe"/></svg>
+          </div>
+          <!-- 3. Seleccionar Color (Cuentagotas) -->
+          <div class="tool-cell" data-tool="dropper" title="Seleccionar color">
+            <svg viewBox="0 0 16 16"><path d="M13 2 L14 3 L7 10 L4 11 L5 8 Z" fill="#000"/><path d="M3 13 L2 14" stroke="#000" stroke-width="2"/></svg>
+          </div>
+          <!-- 4. Lupa / Ampliación -->
+          <div class="tool-cell" data-tool="magnifier" title="Ampliación">
+            <svg viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.5" fill="none" stroke="#000" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14.5" y2="14.5" stroke="#000" stroke-width="2"/></svg>
+          </div>
+          <!-- 5. Lápiz (Wiggly Pencil) -->
+          <div class="tool-cell selected" data-tool="pencil" title="Lápiz (Trazo a mano alzada con temblor)">
+            <svg viewBox="0 0 16 16"><path d="M11 2 L14 5 L6 13 L3 13 L3 10 Z" fill="#ffd62c" stroke="#000" stroke-width="1"/><polygon points="3,13 3,10 6,13" fill="#000"/></svg>
+          </div>
+          <!-- 6. Pincel (Wiggly Brush) -->
+          <div class="tool-cell" data-tool="brush" title="Pincel (Puntas y grosores con temblor)">
+            <svg viewBox="0 0 16 16"><path d="M13 2 C14 5 11 8 8 9 L6 13 L4 13 L6 9 Z" fill="#c2612c" stroke="#000" stroke-width="1"/><path d="M4 13 C3 14 2 15 2 15" stroke="#000" stroke-width="2"/></svg>
+          </div>
+          <!-- 7. Aerógrafo (Spray) -->
+          <div class="tool-cell" data-tool="airbrush" title="Aerógrafo (Spray de partículas temblorosas)">
+            <svg viewBox="0 0 16 16"><rect x="6" y="5" width="5" height="9" fill="#0e75fe" stroke="#000" stroke-width="1"/><rect x="7" y="2" width="3" height="3" fill="#000"/><circle cx="13" cy="3" r="0.7" fill="#000"/><circle cx="14" cy="5" r="0.7" fill="#000"/><circle cx="12" cy="6" r="0.7" fill="#000"/></svg>
+          </div>
+          <!-- 8. Texto -->
+          <div class="tool-cell" data-tool="text" title="Texto (Tipografía de flyers)">
+            <svg viewBox="0 0 16 16"><text x="3" y="13" font-family="'Times New Roman', serif" font-size="14" font-weight="bold" fill="#000">A</text></svg>
+          </div>
+          <!-- 9. Línea Recta -->
+          <div class="tool-cell" data-tool="line" title="Línea">
+            <svg viewBox="0 0 16 16"><line x1="2" y1="14" x2="14" y2="2" stroke="#000" stroke-width="1.5"/></svg>
+          </div>
+          <!-- 10. Curva -->
+          <div class="tool-cell" data-tool="curve" title="Curva">
+            <svg viewBox="0 0 16 16"><path d="M2 13 Q8 2 14 13" fill="none" stroke="#000" stroke-width="1.5"/></svg>
+          </div>
+          <!-- 11. Rectángulo -->
+          <div class="tool-cell" data-tool="rect" title="Rectángulo">
+            <svg viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" fill="none" stroke="#000" stroke-width="1.5"/></svg>
+          </div>
+          <!-- 12. Rectángulo Redondeado -->
+          <div class="tool-cell" data-tool="roundrect" title="Rectángulo redondeado">
+            <svg viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="3" ry="3" fill="none" stroke="#000" stroke-width="1.5"/></svg>
+          </div>
+          <!-- 13. Elipse -->
+          <div class="tool-cell" data-tool="ellipse" title="Elipse">
+            <svg viewBox="0 0 16 16"><ellipse cx="8" cy="8" rx="6" ry="4.5" fill="none" stroke="#000" stroke-width="1.5"/></svg>
+          </div>
+        </div>
+
+        <!-- Sub-panel de Opciones de Herramienta Windows 95 -->
+        <div class="tool-options-panel" id="toolOptionsPanel">
+          <!-- Opciones de grosor de línea (Lápiz, Línea, Curva, Formas) -->
+          <div id="optLines" style="display: block;">
+            <div class="line-width-opt" data-width="1"><div class="line-bar" style="height: 1px;"></div></div>
+            <div class="line-width-opt selected" data-width="2"><div class="line-bar" style="height: 2px;"></div></div>
+            <div class="line-width-opt" data-width="3"><div class="line-bar" style="height: 3px;"></div></div>
+            <div class="line-width-opt" data-width="4"><div class="line-bar" style="height: 4px;"></div></div>
+            <div class="line-width-opt" data-width="6"><div class="line-bar" style="height: 6px;"></div></div>
+          </div>
+
+          <!-- Opciones de Puntas de Pincel (Matriz clásica) -->
+          <div id="optBrush" style="display: none;" class="brush-grid-options">
+            <div class="brush-tip-opt" data-shape="circle" data-size="2"><div style="width:2px; height:2px; background:#000; border-radius:50%;"></div></div>
+            <div class="brush-tip-opt" data-shape="circle" data-size="4"><div style="width:4px; height:4px; background:#000; border-radius:50%;"></div></div>
+            <div class="brush-tip-opt selected" data-shape="circle" data-size="6"><div style="width:6px; height:6px; background:#000; border-radius:50%;"></div></div>
+            <div class="brush-tip-opt" data-shape="square" data-size="2"><div style="width:2px; height:2px; background:#000;"></div></div>
+            <div class="brush-tip-opt" data-shape="square" data-size="4"><div style="width:4px; height:4px; background:#000;"></div></div>
+            <div class="brush-tip-opt" data-shape="square" data-size="6"><div style="width:6px; height:6px; background:#000;"></div></div>
+            <div class="brush-tip-opt" data-shape="slash" data-size="4"><div style="width:5px; height:2px; background:#000; transform:rotate(-45deg);"></div></div>
+            <div class="brush-tip-opt" data-shape="slash" data-size="6"><div style="width:7px; height:2px; background:#000; transform:rotate(-45deg);"></div></div>
+            <div class="brush-tip-opt" data-shape="backslash" data-size="6"><div style="width:7px; height:2px; background:#000; transform:rotate(45deg);"></div></div>
+          </div>
+
+          <!-- Opciones de Borrador (4 tamaños cuadrados) -->
+          <div id="optEraser" style="display: none; width: 100%; text-align: center;">
+            <div class="brush-tip-opt" data-size="4" style="height:14px;"><div style="width:4px; height:4px; background:#000;"></div></div>
+            <div class="brush-tip-opt" data-size="6" style="height:14px;"><div style="width:6px; height:6px; background:#000;"></div></div>
+            <div class="brush-tip-opt selected" data-size="8" style="height:16px;"><div style="width:8px; height:8px; background:#000;"></div></div>
+            <div class="brush-tip-opt" data-size="12" style="height:18px;"><div style="width:12px; height:12px; background:#000;"></div></div>
+          </div>
+
+          <!-- Opciones de Relleno para Formas (3 modos clásicos) -->
+          <div id="optShapes" style="display: none;">
+            <div class="shape-mode-item selected" data-fill="stroke" title="Solo contorno">
+              <div class="shape-box-icon" style="border: 1px solid #000; background: transparent;"></div>
+            </div>
+            <div class="shape-mode-item" data-fill="both" title="Contorno y relleno">
+              <div class="shape-box-icon" style="border: 1px solid #000; background: #808080;"></div>
+            </div>
+            <div class="shape-mode-item" data-fill="fill" title="Solo relleno">
+              <div class="shape-box-icon" style="border: 1px solid #808080; background: #808080;"></div>
+            </div>
+          </div>
+
+          <!-- Opciones de Lupa (1x, 2x, 4x, 8x) -->
+          <div id="optMagnifier" style="display: none; width: 100%; text-align: center; font-size: 10px; font-weight: bold;">
+            <div class="line-width-opt" data-zoom="1">1x</div>
+            <div class="line-width-opt selected" data-zoom="2">2x</div>
+            <div class="line-width-opt" data-zoom="4">4x</div>
+            <div class="line-width-opt" data-zoom="8">8x</div>
+          </div>
+        </div>
+
+        <!-- Sub-panel de Temblor (Wiggly / Squigglevision) -->
+        <div class="wiggly-control-box">
+          <div class="wiggly-title">TEMBLOR</div>
+          <select class="wiggly-select" id="selWiggleIntensity">
+            <option value="0">0: Off</option>
+            <option value="1.0">1: Sutil</option>
+            <option value="2.0" selected>2: Wiggly</option>
+            <option value="3.8">3: Vuela!</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- Visor del Lienzo: Lienzo exacto de 256 x 256 píxeles -->
+      <div class="canvas-outer-viewport" id="canvasViewport">
+        <div class="canvas-frame" id="canvasFrame">
+          <canvas id="paintCanvas" width="256" height="256"></canvas>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Barra de Paleta de Colores Windows 95 con los 12 Colores de VUELAPELUCAS 3000 -->
+    <div class="color-box-bar">
+      <!-- Muestrario de Color 1 (Trazo) y Color 2 (Relleno/Fondo) -->
+      <div class="color-current-preview" title="Color 1 (Izq) y Color 2 (Der)">
+        <div class="color-sample-sec" id="sampleColor2" style="background-color: #ffffff;"></div>
+        <div class="color-sample-pri" id="sampleColor1" style="background-color: #000000;"></div>
+      </div>
+
+      <!-- Cuadrícula de 2 filas con la paleta oficial de 12 colores -->
+      <div class="color-grid" id="colorGrid">
+        <div class="color-swatch" data-color="#ffffff" style="background-color: #ffffff;" title="#ffffff (Blanco)"></div>
+        <div class="color-swatch" data-color="#000000" style="background-color: #000000;" title="#000000 (Negro)"></div>
+        <div class="color-swatch" data-color="#ffd62c" style="background-color: #ffd62c;" title="#ffd62c (Amarillo Vuelapelucas)"></div>
+        <div class="color-swatch" data-color="#ef4720" style="background-color: #ef4720;" title="#ef4720 (Rojo Fuego)"></div>
+        <div class="color-swatch" data-color="#0e75fe" style="background-color: #0e75fe;" title="#0e75fe (Azul Eléctrico)"></div>
+        <div class="color-swatch" data-color="#f5abd0" style="background-color: #f5abd0;" title="#f5abd0 (Rosa Chicle)"></div>
+        <div class="color-swatch" data-color="#6cfeb3" style="background-color: #6cfeb3;" title="#6cfeb3 (Verde Menta Neón)"></div>
+        <div class="color-swatch" data-color="#229cff" style="background-color: #229cff;" title="#229cff (Celeste Cian)"></div>
+        <div class="color-swatch" data-color="#9c51f2" style="background-color: #9c51f2;" title="#9c51f2 (Violeta Cósmico)"></div>
+        <div class="color-swatch" data-color="#04ba63" style="background-color: #04ba63;" title="#04ba63 (Verde Esmeralda)"></div>
+        <div class="color-swatch" data-color="#c2612c" style="background-color: #c2612c;" title="#c2612c (Naranja Teja)"></div>
+        <div class="color-swatch" data-color="#ffab00" style="background-color: #ffab00;" title="#ffab00 (Ámbar Dorado)"></div>
+      </div>
+    </div>
+
+    <!-- Barra de Estado Windows 95 -->
+    <div class="win-statusbar">
+      <div class="status-cell status-main" id="statusText">Para ayuda, haga clic en Ayuda en el menú.</div>
+      <div class="status-cell status-coords" id="statusCoords">128, 128</div>
+      <div class="status-cell status-dim" id="statusDim">256x256</div>
+      <div class="status-cell status-fps" id="statusFps">8 FPS (4 cuadros)</div>
+    </div>
+
+  </div>
+
+  <!-- ==========================================================================
+       MODAL DE EXPORTACIÓN (VECINO MÁS CERCANO - 256, 512, 1024, 2048 PX)
+       ========================================================================== -->
+  <div class="modal-overlay" id="exportDialog">
+    <div class="win-dialog">
+      <div class="dialog-header">
+        <span>Exportar Imagen / Flyer - VUELAPELUCAS 3000</span>
+        <button class="win-title-btn" id="btnCloseExport">✕</button>
+      </div>
+      <div class="dialog-contents">
+        <div class="dialog-group">
+          <span class="dialog-group-title">Formato de Salida</span>
+          <div class="dialog-row">
+            <label for="selExportFormat" style="width:70px;">Tipo:</label>
+            <select class="dialog-select" id="selExportFormat">
+              <option value="png" selected>Imagen PNG (Vecino más cercano / Sin desenfoque)</option>
+              <option value="gif">GIF Animado (Bucle continuo con temblor de trazo)</option>
+              <option value="webm">Video WebM (Animación para historias / redes)</option>
+              <option value="json">Archivo de Proyecto VUELAPELUCAS (.json)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="dialog-group" id="grpExportScale">
+          <span class="dialog-group-title">Resolución (Escalado Vecino Más Cercano)</span>
+          <div class="dialog-row">
+            <label for="selExportScale" style="width:70px;">Tamaño:</label>
+            <select class="dialog-select" id="selExportScale">
+              <option value="1">1x - 256 x 256 px (Pixel Art Original Retro)</option>
+              <option value="2" selected>2x - 512 x 512 px (Estándar Web)</option>
+              <option value="4">4x - 1024 x 1024 px (Flyer Redes / Instagram)</option>
+              <option value="8">8x - 2048 x 2048 px (Afiche Gigante Impreso)</option>
+            </select>
+          </div>
+          <div style="font-size: 10px; color: #444; margin-top: 4px;">
+            ✓ Algoritmo Vecino Más Cercano: Mantiene los píxeles 100% crujientes y nítidos.
+          </div>
+        </div>
+
+        <div class="dialog-group">
+          <span class="dialog-group-title">Vista Previa</span>
+          <div class="export-preview-container">
+            <canvas id="exportPreviewCanvas" width="120" height="120"></canvas>
+          </div>
+          <div class="retro-progress" id="exportProgress">
+            <div class="retro-progress-bar" id="exportProgressBar"></div>
+          </div>
+          <div id="exportStatusMsg" style="font-size: 10px; text-align: center; margin-top: 4px;">Listo para exportar.</div>
+        </div>
+
+        <div class="dialog-actions">
+          <button class="win-button win-button-primary" id="btnExecuteExport">Guardar en disco</button>
+          <button class="win-button" id="btnCancelExport">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL DE TEXTO / TIPOGRAFÍA FLYER
+       ========================================================================== -->
+  <div class="modal-overlay" id="textDialog">
+    <div class="win-dialog">
+      <div class="dialog-header">
+        <span>Insertar Texto - VUELAPELUCAS 3000</span>
+        <button class="win-title-btn" id="btnCloseText">✕</button>
+      </div>
+      <div class="dialog-contents">
+        <div class="dialog-group">
+          <span class="dialog-group-title">Texto del Flyer</span>
+          <div class="dialog-row">
+            <input type="text" class="dialog-input" id="inputFlyerText" value="VUELAPELUCAS 3000">
+          </div>
+        </div>
+        <div class="dialog-group">
+          <span class="dialog-group-title">Fuente y Estilo</span>
+          <div class="dialog-row">
+            <label for="selTextFont">Fuente:</label>
+            <select class="dialog-select" id="selTextFont">
+              <option value="'Press Start 2P', monospace" selected>Press Start 2P (Arcade 8x8)</option>
+              <option value="'Silkscreen', monospace">Silkscreen (Pixel UI Nítida)</option>
+              <option value="'VT323', monospace">VT323 (Terminal CRT Retro)</option>
+              <option value="'Share Tech Mono', monospace">Share Tech Mono (Digital)</option>
+            </select>
+          </div>
+          <div class="dialog-row">
+            <label for="selTextSize">Tamaño:</label>
+            <select class="dialog-select" id="selTextSize">
+              <option value="10">10 px (Compacto / Info)</option>
+              <option value="12">12 px (Pequeño / Fechas)</option>
+              <option value="16" selected>16 px (Mediano / Bandas)</option>
+              <option value="22">22 px (Grande / Subtítulo)</option>
+              <option value="30">30 px (Titular Festival)</option>
+            </select>
+          </div>
+          <div class="dialog-row">
+            <label for="selTextSpacing">Espaciado:</label>
+            <select class="dialog-select" id="selTextSpacing">
+              <option value="2">2 px (Compacto)</option>
+              <option value="3" selected>3 px (Recomendado - Letras separadas)</option>
+              <option value="5">5 px (Amplio / Sin choque)</option>
+            </select>
+          </div>
+          <div class="dialog-row">
+            <label><input type="checkbox" id="chkTextOutline" checked> Borde pixel negro 1px (Contorno sólido y claro)</label>
+          </div>
+          <div class="dialog-row">
+            <label><input type="checkbox" id="chkTextWiggle" checked> Aplicar temblor al texto</label>
+          </div>
+        </div>
+        <div class="dialog-actions">
+          <button class="win-button win-button-primary" id="btnApplyFlyerText">Estampar en lienzo</button>
+          <button class="win-button" id="btnCancelFlyerText">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <!-- ==========================================================================
+       MODAL PUBLICAR EN LA GALERIA DE LA COMUNIDAD (VUELAPELUCAS 3000)
+       ========================================================================== -->
+  <div class="modal-overlay" id="publishDialog">
+    <div class="win-dialog">
+      <div class="dialog-header">
+        <span>Publicar en la galería de la comunidad</span>
+        <button class="win-title-btn" id="btnClosePublish">✕</button>
+      </div>
+      <div class="dialog-contents">
+        <div class="dialog-group">
+          <span class="dialog-group-title">Nombre del dibujo</span>
+          <div class="dialog-row">
+            <input type="text" class="dialog-input" id="pubNombre" maxlength="80" placeholder="Ej: La nave del vuela">
+          </div>
+        </div>
+
+        <div class="dialog-group">
+          <span class="dialog-group-title">Autor</span>
+          <div class="dialog-row">
+            <input type="text" class="dialog-input" id="pubAutor" maxlength="60" placeholder="Tu nombre o @usuario">
+          </div>
+          <div class="pub-fsc-row">
+            <span id="pubFscStatus" class="pub-fsc-status">◌ Buscando sesión FSCAUTH...</span>
+            <a id="pubFscLink" class="pub-fsc-link" href="https://fullscreencode.com/fscauth/" target="_blank" rel="noopener">Logearse con FSCAUTH</a>
+          </div>
+        </div>
+
+        <div class="dialog-group">
+          <span class="dialog-group-title">Tamaño publicado</span>
+          <div class="dialog-row">
+            <select class="dialog-select" id="pubEscala">
+              <option value="1">1x - 256 x 256 px (Pixel art puro)</option>
+              <option value="2" selected>2x - 512 x 512 px (Recomendado)</option>
+              <option value="4">4x - 1024 x 1024 px (Alta resolución)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="retro-progress" id="pubProgress" style="display:none;">
+          <div class="retro-progress-bar" id="pubProgressBar"></div>
+        </div>
+        <div id="pubStatus" class="pub-status">Se publica en la galería pública de VUELAPELUCAS 3000.</div>
+
+        <div class="dialog-actions">
+          <button class="win-button win-button-primary" id="btnDoPublish">Publicar</button>
+          <button class="win-button" id="btnCancelPublish">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       VISOR DE UN DIBUJO PUBLICADO (?dibujo=<id>)
+       ========================================================================== -->
+  <div class="modal-overlay" id="viewDialog">
+    <div class="win-dialog">
+      <div class="dialog-header">
+        <span id="viewTitle">Dibujo de la comunidad</span>
+        <button class="win-title-btn" id="btnCloseView">✕</button>
+      </div>
+      <div class="dialog-contents">
+        <div class="pub-view-box">
+          <img id="viewImg" alt="Dibujo hecho con PanchoDraw">
+        </div>
+        <div class="dialog-actions">
+          <a class="win-button win-button-primary" id="viewBack" href="../index.html#comunidad">Ver en la galería</a>
+          <button class="win-button" id="btnAcceptView">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL ACERCA DE PAINT (VUELAPELUCAS 3000)
+       ========================================================================== -->
+  <div class="modal-overlay" id="aboutDialog">
+    <div class="win-dialog">
+      <div class="dialog-header">
+        <span>Acerca de Paint (VUELAPELUCAS 3000)</span>
+        <button class="win-title-btn" id="btnCloseAbout">✕</button>
+      </div>
+      <div class="dialog-contents">
+        <div style="display: flex; gap: 12px; align-items: flex-start;">
+          <svg style="width: 32px; height: 32px; flex-shrink: 0;" viewBox="0 0 16 16">
+            <rect x="2" y="2" width="12" height="12" fill="#ffd62c" />
+            <path d="M4 4h3v3H4zm5 0h3v3H9zm-3 4h4v3H6z" fill="#ef4720" />
+            <rect x="2" y="12" width="12" height="2" fill="#0e75fe" />
+          </svg>
+          <div>
+            <b>VUELAPELUCAS 3000 - Paint & Wiggly Studio</b><br>
+            Edición Retro Windows 95 con motor de trazo tembloroso (Squigglevision).<br><br>
+            • Lienzo de 256x256 píxeles con estética pixel art pura.<br>
+            • Algoritmo Bresenham para trazos continuos sin huecos.<br>
+            • Exportación con vecino más cercano en 256, 512, 1024 y 2048 px.<br>
+            • Compatible con navegadores modernos y computadoras de época (2005).<br>
+            • Paleta oficial de 12 colores del encuentro artístico.
+          </div>
+        </div>
+        <div class="dialog-actions">
+          <button class="win-button win-button-primary" id="btnAcceptAbout">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inputs ocultos para carga de archivos compatibles con navegadores de 2005 -->
+  <input type="file" id="inputLoadImg" accept="image/*" style="display:none;">
+  <input type="file" id="inputLoadProj" accept=".json,application/json" style="display:none;">
+
+  <!-- Scripts en estándar compatible ES3/ES5 -->
+  <script type="text/javascript" src="gif-encoder.js"></script>
+  <script type="text/javascript" src="app.js"></script>
+  <!-- Boton universal del ecosistema FullScreen (isotipo) -->
+  <script src="https://vps-4455523-x.dattaweb.com/fscauth/js/fsc-button.js" data-fsc-mode="flow" data-fsc-pos="bottom-left" data-fsc-size="34"></script>
+</body>
+</html>

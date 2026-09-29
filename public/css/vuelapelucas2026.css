@@ -366,7 +366,8 @@
 }
 
 /* el titulo ocupa su propia linea; los botones quedan juntos abajo */
-.vl-community-head .section-title {
+.vl-community-head .section-title,
+.vl-community-head .section-subtitle {
     flex: 1 0 100%;
     margin: 0;
 }
@@ -559,3 +560,165 @@
     .vl-gallery { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
     .vl-screen img { width: 78vw; }
 }
+
+/* =========================================================
+   PANCHODRAW + SUBSECCIONES DE CREACIONES DE LA COMUNIDAD
+   (PanchoDraw / Flyers / Juegos dentro de un mismo titulo)
+   ========================================================= */
+
+/* ---------- CTA del hero: hace tu propio arte ---------- */
+.vl-draw-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 2.4rem auto 0;
+    max-width: 720px;
+    padding: 1.5rem 1.8rem;
+    background: var(--secondary, #ffd62c);
+    color: #000000;
+    text-decoration: none;
+    border: 3px solid #000000;
+    border-radius: 22px;
+    box-shadow: 8px 8px 0 #000000;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    line-height: 1.25;
+}
+
+.vl-draw-cta:hover { transform: translate(-3px, -3px); box-shadow: 11px 11px 0 #000000; }
+
+.vl-draw-cta-k {
+    font-family: 'Bebas Neue', cursive;
+    letter-spacing: 0.14em;
+    font-size: 1.05rem;
+    background: #000000;
+    color: var(--secondary, #ffd62c);
+    border-radius: 999px;
+    padding: 0.15rem 0.9rem;
+}
+
+.vl-draw-cta-t {
+    font-family: 'Bebas Neue', cursive;
+    letter-spacing: 0.04em;
+    font-size: clamp(1.6rem, 4.6vw, 2.6rem);
+}
+
+.vl-draw-cta-s {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #1a1a1a;
+    max-width: 560px;
+}
+
+/* ---------- Subsecciones dentro de CREACIONES DE LA COMUNIDAD ---------- */
+.vl-sub {
+    margin-top: 3.4rem;
+    padding-top: 2.6rem;
+    border-top: 4px dashed rgba(0, 0, 0, 0.35);
+}
+
+.vl-sub:first-of-type { border-top: none; padding-top: 0; }
+
+.vl-sub-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem 1.2rem;
+    margin-bottom: 1.8rem;
+    text-align: center;
+}
+
+/* El titulo de la subseccion: pastilla blanca con stroke, un escalon
+   por debajo del titulo madre (section-title). */
+.vl-sub-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: clamp(1.9rem, 5vw, 2.9rem);
+    letter-spacing: 0.06em;
+    color: #ffffff;
+    background: #000000;
+    border: 3px solid #000000;
+    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.35);
+    border-radius: 999px;
+    padding: 0.15rem 1.6rem;
+    margin: 0;
+}
+
+.vl-sub-note {
+    flex: 1 0 100%;
+    margin: 0;
+    font-weight: 700;
+    color: #000000;
+    background: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 999px;
+    box-shadow: 3px 3px 0 #000000;
+    padding: 0.45rem 1.2rem;
+    max-width: 720px;
+}
+
+.vl-sub-count { color: var(--tertiary, #ef4720); }
+
+.vl-sub-cta {
+    font-size: 1.25rem;
+    padding: 0.7rem 1.9rem;
+}
+
+/* ---------- Grilla de dibujos de PanchoDraw ---------- */
+.vl-draw-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.2rem;
+}
+
+.vl-draw-grid figure {
+    margin: 0;
+    background: #ffffff;
+    border: 3px solid #000000;
+    border-radius: 16px;
+    box-shadow: 6px 6px 0 #000000;
+    overflow: hidden;
+    cursor: zoom-in;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.vl-draw-grid figure:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 #000000; }
+
+.vl-draw-grid img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: contain;
+    background: #ffffff;
+    border-bottom: 3px solid #000000;
+    image-rendering: pixelated;
+}
+
+.vl-draw-grid figcaption {
+    padding: 0.55rem 0.7rem 0.7rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: #111111;
+    overflow-wrap: anywhere;
+}
+
+.vl-draw-grid figcaption b {
+    display: block;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.15rem;
+    letter-spacing: 0.04em;
+    color: #000000;
+}
+
+.vl-draw-grid figcaption .vl-draw-autor {
+    display: inline-block;
+    margin-top: 0.2rem;
+    background: var(--secondary, #ffd62c);
+    border: 2px solid #000000;
+    border-radius: 999px;
+    padding: 0 0.6rem;
+    font-size: 0.78rem;
+}
+
+.vl-draw-grid .vl-empty { grid-column: 1 / -1; }

@@ -35,10 +35,10 @@ app.options('*', cors());
 app.use((req, res, next) => {
   res.setHeader('Content-Security-Policy', [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://unpkg.com https://cdn.jsdelivr.net",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://unpkg.com https://cdn.jsdelivr.net https://vps-4455523-x.dattaweb.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
-    "img-src 'self' data: blob: https://res.cloudinary.com https://*.cloudinary.com",
+    "img-src 'self' data: blob: https://res.cloudinary.com https://*.cloudinary.com https://vps-4455523-x.dattaweb.com",
     "connect-src 'self' https://fullscreencode.com https://vps-4455523-x.dattaweb.com https://res.cloudinary.com https://api.cloudinary.com",
     "media-src 'self' https://res.cloudinary.com https://*.cloudinary.com",
     "worker-src 'self' blob:",
@@ -51,6 +51,10 @@ app.use((req, res, next) => {
 app.get(['/shadres/backgroundshader.frag', `${BASE_PATH}/shadres/backgroundshader.frag`], (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'shaders', 'backgroundshader.frag'));
 });
+
+// El body JSON se usa para las inscripciones y para publicar dibujos de
+// PanchoDraw (llegan como data:image/png;base64) -> limite holgado pero acotado.
+app.use(express.json({ limit: '12mb' }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -65,6 +69,8 @@ app.get(['/hospedajes', `${BASE_PATH}/hospedajes`, '/hospedajes.html', `${BASE_P
 
 // API routes
 app.use(`${BASE_PATH}/api`, require('./routes/api'));
+// Creaciones de la comunidad (PanchoDraw) + indice FSCAUTH
+app.use(`${BASE_PATH}/api`, require('./routes/artworks'));
 
 // Health check
 app.get('/health', (req, res) => {

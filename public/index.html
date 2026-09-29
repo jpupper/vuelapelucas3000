@@ -8,8 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=5">
-    <link rel="stylesheet" href="css/vuelapelucas2026.css?v=4">
+    <link rel="stylesheet" href="css/styles.css?v=6">
+    <link rel="stylesheet" href="css/vuelapelucas2026.css?v=6">
 </head>
 <body>
 
@@ -22,6 +22,7 @@
             <a href="#festival">ENCUENTRO</a>
             <a href="#galeria">GALERIA</a>
             <a href="#comunidad">COMUNIDAD</a>
+            <a href="panchodraw/">PANCHODRAW</a>
             <a href="#juegos">JUEGOS</a>
             <a href="#hospedajes">HOSPEDAJES</a>
             <a href="anotate.html">ANOTATE</a>
@@ -56,6 +57,13 @@
                 <a href="anotate.html" class="btn-primary">¡ANOTATE YA!</a>
                 <a href="#galeria" class="btn-secondary">VER LA GALERIA</a>
             </div>
+
+            <!-- LINK DESTACADO: ESTUDIO DE DIBUJO DE LA COMUNIDAD -->
+            <a class="vl-draw-cta" href="panchodraw/">
+                <span class="vl-draw-cta-k">🎨 PANCHODRAW</span>
+                <span class="vl-draw-cta-t">HACE TU PROPIO ARTE DEL VUELAPELUCAS</span>
+                <span class="vl-draw-cta-s">Entrá al estudio de dibujo retro, dibujá tu nave y publicá tu creación en la galería de la comunidad →</span>
+            </a>
         </div>
         <div class="scroll-indicator">
             <img src="img/nave-vuelapelu.png" alt="" style="width:52px;transform:rotate(90deg)">
@@ -102,15 +110,76 @@
         </div>
     </section>
 
-    <!-- CREACIONES DE LA COMUNIDAD -->
+    <!-- CREACIONES DE LA COMUNIDAD (3 secciones: PanchoDraw, Flyers y Juegos) -->
     <section class="section" id="comunidad">
         <div class="container">
             <div class="vl-community-head">
                 <h2 class="section-title" style="text-align:center;margin:0">CREACIONES DE LA COMUNIDAD</h2>
+                <p class="section-subtitle" style="margin:0">Todo lo que hace la comunidad del Vuelapelucas 3000, junto en un solo lugar.</p>
                 <a class="btn-primary btn-cta" href="https://www.instagram.com/vuelapelucas3000/" target="_blank" rel="noopener">@VUELAPELUCAS3000</a>
                 <a class="btn-secondary btn-cta" href="https://objkt.com/collections/KT1GtVdpn2WDn2yooz2n663jg56h8F9Fe3c9" target="_blank" rel="noopener">VER MÁS EN OBJKT</a>
             </div>
-            <div class="vl-community-grid"></div>
+
+            <!-- 1) PANCHODRAW -->
+            <div class="vl-sub" id="comunidad-panchodraw">
+                <div class="vl-sub-head">
+                    <h3 class="vl-sub-title">PANCHODRAW</h3>
+                    <p class="vl-sub-note">Dibujos hechos por la comunidad en el estudio retro. <span id="count-draw" class="vl-sub-count"></span></p>
+                    <a class="btn-primary vl-sub-cta" href="panchodraw/">HACE TU DIBUJO →</a>
+                </div>
+                <div class="vl-draw-grid"></div>
+            </div>
+
+            <!-- 2) FLYERS -->
+            <div class="vl-sub" id="comunidad-flyers">
+                <div class="vl-sub-head">
+                    <h3 class="vl-sub-title">FLYERS</h3>
+                    <p class="vl-sub-note">Afiches y flyers de las ediciones del encuentro. <span id="count-flyers" class="vl-sub-count"></span></p>
+                </div>
+                <div class="vl-community-grid"></div>
+            </div>
+
+            <!-- 3) JUEGOS -->
+            <div class="vl-sub" id="comunidad-juegos">
+                <div class="vl-sub-head">
+                    <h3 class="vl-sub-title">JUEGOS</h3>
+                    <p class="vl-sub-note">Los videojuegos del universo Vuelapelucas 3000.</p>
+                </div>
+                <div class="vl-games">
+                    <a class="vl-game" href="panchodraw/">
+                        <img src="img/juegos/panchodraw.jpg" alt="PanchoDraw, el estudio de dibujo del Vuelapelucas 3000">
+                        <div class="vl-game-body">
+                            <h3>PANCHODRAW</h3>
+                            <p>El estudio de dibujo retro: hacé tu propia nave, tu flyer o lo que se te cante y publicalo en la galería.</p>
+                            <span class="vl-play">DIBUJAR</span>
+                        </div>
+                    </a>
+                    <a class="vl-game" href="https://fullscreencode.com/jpupper/nftsapps/vuela3000game/" target="_blank" rel="noopener">
+                        <img src="img/juegos/vuela3000game.jpg" alt="Vuela3000, el juego de la navecita">
+                        <div class="vl-game-body">
+                            <h3>VUELA 3000</h3>
+                            <p>El juego de la navecita: esquivá, dispará y sobreviví al vuelo por la galaxia peluquera.</p>
+                            <span class="vl-play">JUGAR</span>
+                        </div>
+                    </a>
+                    <a class="vl-game" href="https://fullscreencode.com/jpupper/nftsapps/pamparticles/" target="_blank" rel="noopener">
+                        <img src="img/juegos/pamparticles.jpg" alt="Pamparticles, arte generativo interactivo">
+                        <div class="vl-game-body">
+                            <h3>PAMPARTICLES</h3>
+                            <p>Sistema de partículas generativas: tocá la pantalla y armá tu propia composición pampeana.</p>
+                            <span class="vl-play">JUGAR</span>
+                        </div>
+                    </a>
+                    <a class="vl-game" href="https://fullscreencode.com/jpupper/nftsapps/pamilo/" target="_blank" rel="noopener">
+                        <img src="img/juegos/pamilo.jpg" alt="Pamilo generator">
+                        <div class="vl-game-body">
+                            <h3>PAMILO GENERATOR</h3>
+                            <p>Generador de personajes y formas: cada recarga es una pieza única del universo Pamilo.</p>
+                            <span class="vl-play">JUGAR</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -120,6 +189,14 @@
             <h2 class="section-title">JUEGOS</h2>
             <p class="section-subtitle">Los videojuegos del universo Vuelapelucas 3000, hechos por JPupper / Pamilo.</p>
             <div class="vl-games">
+                <a class="vl-game vl-game-draw" href="panchodraw/">
+                    <img src="img/juegos/panchodraw.jpg" alt="PanchoDraw, el estudio de dibujo del Vuelapelucas 3000">
+                    <div class="vl-game-body">
+                        <h3>PANCHODRAW</h3>
+                        <p>El estudio de dibujo retro del Vuelapelucas 3000: dibujá tu obra y publicala en la galería de la comunidad.</p>
+                        <span class="vl-play">DIBUJAR</span>
+                    </div>
+                </a>
                 <a class="vl-game" href="https://fullscreencode.com/jpupper/nftsapps/vuela3000game/" target="_blank" rel="noopener">
                     <img src="img/juegos/vuela3000game.jpg" alt="Vuela3000, el juego de la navecita">
                     <div class="vl-game-body">
@@ -231,6 +308,6 @@
 
     <script src="js/background-shader.js?v=2"></script>
     <script src="js/main.js?v=4"></script>
-    <script src="js/galeria.js?v=4"></script>
+    <script src="js/galeria.js?v=6"></script>
 </body>
 </html>

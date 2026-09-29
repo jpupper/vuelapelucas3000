@@ -1,0 +1,872 @@
+/* ==========================================================================
+   VUELAPELUCAS 3000 - Interfaz Idéntica a Windows 95 Paint
+   Compatible con navegadores modernos y retro (motores estilo 2005)
+   Fuentes bitmap: Silkscreen (UI) + Press Start 2P (título)
+   ========================================================================== */
+
+/* Fuentes bitmap de fallback local (sin internet) */
+@font-face {
+  font-family: 'PixelFallback';
+  src: local('Fixedsys'), local('Terminal'), local('Courier New');
+  font-display: swap;
+}
+
+/* Colores auténticos del sistema Windows 95 con fondo negro detrás de la ventana */
+html {
+  background-color: #000000;
+}
+
+body {
+  margin: 0;
+  padding: 8px;
+  background-color: #000000; /* Fondo negro detrás de la ventana */
+  font-family: 'Silkscreen', 'PixelFallback', 'Courier New', monospace;
+  font-size: 8px;
+  color: #000000;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  /* Sin anti-aliasing para pixel art puro */
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+  text-rendering: optimizeSpeed;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+body.fullscreen-mode {
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Biseles clásicos de Windows 95 */
+.win95-raised-outer {
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #000000;
+  border-bottom: 1px solid #000000;
+}
+
+.win95-raised {
+  border-top: 1px solid #dfdfdf;
+  border-left: 1px solid #dfdfdf;
+  border-right: 1px solid #808080;
+  border-bottom: 1px solid #808080;
+}
+
+.win95-sunken {
+  border-top: 1px solid #808080;
+  border-left: 1px solid #808080;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+}
+
+.win95-sunken-deep {
+  border-top: 2px solid #808080;
+  border-left: 2px solid #808080;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+}
+
+/* Ventana Principal de Paint */
+.paint-window {
+  background-color: #c0c0c0;
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #000000;
+  border-bottom: 2px solid #000000;
+  box-shadow: 2px 2px 0 #000000;
+  display: flex;
+  flex-direction: column;
+}
+
+.paint-window.maximized {
+  max-width: 100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 9999 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.paint-window.maximized .paint-workspace {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: calc(100vh - 110px);
+}
+
+/* Barra de Título Windows 95 */
+.win-titlebar {
+  background: #000080; /* Azul marino clásico */
+  color: #ffffff;
+  padding: 3px 3px 3px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: bold;
+  height: 22px;
+}
+
+.win-title-left {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.win-title-icon {
+  width: 16px;
+  height: 16px;
+  image-rendering: pixelated;
+}
+
+.win-title-text {
+  font-family: 'Press Start 2P', 'Silkscreen', 'PixelFallback', monospace;
+  font-size: 7px;
+  letter-spacing: 0.5px;
+  text-shadow: 1px 1px 0px rgba(0,0,0,0.5);
+  line-height: 1;
+}
+
+.win-title-controls {
+  display: flex;
+  gap: 2px;
+}
+
+.win-title-btn {
+  background: #c0c0c0;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #000000;
+  border-bottom: 1px solid #000000;
+  width: 16px;
+  height: 14px;
+  line-height: 12px;
+  font-size: 9px;
+  font-weight: bold;
+  font-family: "Marlett", 'Silkscreen', monospace;
+  text-align: center;
+  cursor: default;
+  outline: none;
+  padding: 0;
+}
+
+.win-title-btn:active {
+  border-top: 1px solid #000000;
+  border-left: 1px solid #000000;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  padding-top: 1px;
+  padding-left: 1px;
+}
+
+/* Barra de Menús Clásica de Windows 95 */
+.win-menubar {
+  background: #c0c0c0;
+  display: flex;
+  border-bottom: 1px solid #808080;
+  padding: 2px 2px;
+  position: relative;
+  z-index: 100;
+}
+
+.win-menu-item {
+  position: relative;
+}
+
+.win-menu-label {
+  padding: 2px 6px;
+  cursor: default;
+  border: 1px solid transparent;
+}
+
+.win-menu-label:hover, .win-menu-item.open .win-menu-label {
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #808080;
+  border-bottom: 1px solid #808080;
+  background: #d4d0c8;
+}
+
+.win-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #c0c0c0;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 2px solid #000000;
+  border-bottom: 2px solid #000000;
+  min-width: 180px;
+  box-shadow: 2px 2px 0 #000000;
+  padding: 2px;
+  z-index: 250;
+}
+
+.win-menu-item.open .win-dropdown {
+  display: block;
+}
+
+.win-dropdown-row {
+  padding: 3px 18px 3px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: default;
+  white-space: nowrap;
+}
+
+.win-dropdown-row:hover {
+  background: #000080;
+  color: #ffffff;
+}
+
+.win-dropdown-sep {
+  height: 1px;
+  border-top: 1px solid #808080;
+  border-bottom: 1px solid #ffffff;
+  margin: 3px 1px;
+}
+
+.win-shortcut {
+  font-size: 7px;
+  color: #555;
+  margin-left: 18px;
+}
+
+.win-dropdown-row:hover .win-shortcut {
+  color: #ffffff;
+}
+
+/* Barra de Accesos Rápidos de Vuelapelucas */
+.vuelapelucas-subbar {
+  background: #c0c0c0;
+  border-bottom: 1px solid #808080;
+  padding: 3px 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 8px;
+}
+
+.win-button {
+  background: #c0c0c0;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #000000;
+  border-bottom: 1px solid #000000;
+  padding: 2px 8px;
+  font-family: inherit;
+  font-size: 8px;
+  cursor: default;
+  outline: none;
+}
+
+.win-button:active, .win-button.active {
+  border-top: 1px solid #000000;
+  border-left: 1px solid #000000;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  background: #d4d0c8;
+  padding-top: 3px;
+  padding-left: 9px;
+  padding-right: 7px;
+  padding-bottom: 1px;
+}
+
+.win-button-primary {
+  font-weight: bold;
+}
+
+.sep-vertical {
+  width: 2px;
+  height: 18px;
+  border-left: 1px solid #808080;
+  border-right: 1px solid #ffffff;
+  margin: 0 4px;
+}
+
+/* Área de Trabajo Principal (Caja de Herramientas + Lienzo) */
+.paint-workspace {
+  display: flex;
+  background: #808080;
+  border-top: 1px solid #808080;
+  min-height: 480px;
+}
+
+/* Caja de Herramientas Exacta de Windows 95 (16 herramientas en 2 columnas) */
+.toolbox-container {
+  width: 58px;
+  background: #c0c0c0;
+  border-right: 1px solid #808080;
+  padding: 3px 3px 4px 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: 25px 25px;
+  grid-auto-rows: 25px;
+  gap: 1px;
+}
+
+.tool-cell {
+  width: 25px;
+  height: 25px;
+  background: #c0c0c0;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #000000;
+  border-bottom: 1px solid #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.tool-cell:active, .tool-cell.selected {
+  border-top: 1px solid #000000;
+  border-left: 1px solid #000000;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  background: #e0e0e0;
+}
+
+.tool-cell svg, .tool-cell img {
+  width: 16px;
+  height: 16px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* Sub-panel de Opciones de Herramienta Windows 95 */
+.tool-options-panel {
+  width: 50px;
+  height: 66px;
+  margin-top: 6px;
+  background: #c0c0c0;
+  border-top: 1px solid #808080;
+  border-left: 1px solid #808080;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  box-sizing: border-box;
+}
+
+/* Sub-opciones de Formas (Contorno, Relleno, Ambos) */
+.shape-mode-item {
+  width: 44px;
+  height: 18px;
+  margin: 1px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  border: 1px solid transparent;
+}
+
+.shape-mode-item.selected {
+  background: #000080;
+}
+
+.shape-box-icon {
+  width: 32px;
+  height: 12px;
+  box-sizing: border-box;
+}
+
+/* Sub-opciones de Pincel (4 tamaños x 3 formas = matriz clásica) */
+.brush-grid-options {
+  display: grid;
+  grid-template-columns: repeat(3, 14px);
+  grid-template-rows: repeat(4, 14px);
+  gap: 1px;
+}
+
+.brush-tip-opt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  border: 1px solid transparent;
+}
+
+.brush-tip-opt.selected {
+  background: #000080;
+}
+
+.brush-tip-opt.selected div {
+  background: #ffffff !important;
+}
+
+/* Sub-opciones de Grosor de Línea */
+.line-width-opt {
+  width: 44px;
+  height: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  border: 1px solid transparent;
+}
+
+.line-width-opt.selected {
+  background: #000080;
+}
+
+.line-width-opt.selected .line-bar {
+  background: #ffffff !important;
+}
+
+.line-bar {
+  background: #000000;
+  width: 34px;
+}
+
+/* Sub-panel de Temblor / Squigglevision (Wiggly Engine) */
+.wiggly-control-box {
+  width: 50px;
+  margin-top: 6px;
+  border-top: 1px solid #808080;
+  border-left: 1px solid #808080;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  padding: 3px 2px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.wiggly-title {
+  font-size: 8px;
+  font-weight: bold;
+  margin-bottom: 2px;
+  text-transform: uppercase;
+}
+
+.wiggly-select {
+  font-family: inherit;
+  font-size: 9px;
+  width: 100%;
+  border: 1px solid #808080;
+  background: #ffffff;
+  padding: 0;
+}
+
+/* Contenedor del Lienzo */
+.canvas-outer-viewport {
+  flex: 1;
+  background: #808080; /* Fondo gris oscuro característico de Paint */
+  overflow: auto;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.canvas-frame {
+  background: #ffffff;
+  border-top: 2px solid #000000;
+  border-left: 2px solid #000000;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+  display: inline-block;
+  line-height: 0;
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+  position: relative;
+}
+
+/* Canvas de 256 x 256 píxeles exactos */
+#paintCanvas {
+  display: block;
+  width: 512px;  /* 2x en pantalla por defecto para comodidad visual */
+  height: 512px; /* 2x en pantalla */
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  cursor: crosshair;
+  background: #ffffff;
+}
+
+/* Cuadrícula pixelada */
+.canvas-frame.show-grid::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: 16px 16px;
+  background-image: 
+    linear-gradient(to right, rgba(0,0,0,0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0,0,0,0.08) 1px, transparent 1px);
+  pointer-events: none;
+}
+
+/* Barra de Paleta de Colores Windows 95 */
+.color-box-bar {
+  background: #c0c0c0;
+  border-top: 1px solid #ffffff;
+  padding: 4px 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Muestra superpuesta de Color 1 y Color 2 */
+.color-current-preview {
+  width: 32px;
+  height: 32px;
+  position: relative;
+  background: #c0c0c0;
+  border-top: 1px solid #808080;
+  border-left: 1px solid #808080;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  flex-shrink: 0;
+}
+
+.color-sample-sec {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: 16px;
+  height: 16px;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #000000;
+  border-bottom: 1px solid #000000;
+  background-color: #ffffff;
+}
+
+.color-sample-pri {
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: 16px;
+  height: 16px;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #000000;
+  border-bottom: 1px solid #000000;
+  background-color: #000000;
+  z-index: 2;
+}
+
+/* Paleta de dos filas con los colores oficiales de VUELAPELUCAS 3000 */
+.color-grid {
+  display: grid;
+  grid-template-rows: 15px 15px;
+  grid-auto-flow: column;
+  gap: 1px;
+  background: #c0c0c0;
+  border-top: 1px solid #808080;
+  border-left: 1px solid #808080;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  padding: 1px;
+}
+
+.color-swatch {
+  width: 15px;
+  height: 15px;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #808080;
+  border-bottom: 1px solid #808080;
+  cursor: default;
+  box-sizing: border-box;
+}
+
+.color-swatch:active {
+  border-top: 1px solid #808080;
+  border-left: 1px solid #808080;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+}
+
+.color-custom-btn {
+  width: 15px;
+  height: 15px;
+  background: #e0e0e0;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #808080;
+  border-bottom: 1px solid #808080;
+  font-size: 10px;
+  line-height: 12px;
+  text-align: center;
+  cursor: default;
+}
+
+.festival-badge {
+  margin-left: auto;
+  font-family: 'Silkscreen', 'Courier New', monospace;
+  font-size: 10px;
+  font-weight: bold;
+  background: #000000;
+  color: #ffd62c;
+  padding: 3px 6px;
+  border-top: 1px solid #808080;
+  border-left: 1px solid #808080;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+}
+
+/* Barra de Estado Windows 95 */
+.win-statusbar {
+  background: #c0c0c0;
+  border-top: 1px solid #ffffff;
+  display: flex;
+  padding: 2px;
+  gap: 2px;
+  font-size: 8px;
+}
+
+.status-cell {
+  border-top: 1px solid #808080;
+  border-left: 1px solid #808080;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  padding: 2px 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.status-main {
+  flex: 1;
+}
+
+.status-coords, .status-dim, .status-fps {
+  width: 90px;
+  text-align: center;
+  font-family: 'Silkscreen', monospace;
+  font-size: 8px;
+}
+
+/* ==========================================================================
+   Modales Retro Windows 95
+   ========================================================================== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.win-dialog {
+  background: #c0c0c0;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #000000;
+  border-bottom: 2px solid #000000;
+  box-shadow: 2px 2px 0 #000000;
+  width: 92%;
+  max-width: 480px;
+  padding: 2px;
+}
+
+.dialog-header {
+  background: #000080;
+  color: #ffffff;
+  padding: 2px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: bold;
+}
+
+.dialog-contents {
+  padding: 10px;
+}
+
+.dialog-group {
+  border-top: 1px solid #808080;
+  border-left: 1px solid #808080;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  padding: 8px;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.dialog-group-title {
+  position: absolute;
+  top: -8px;
+  left: 8px;
+  background: #c0c0c0;
+  padding: 0 4px;
+  font-size: 8px;
+  font-weight: bold;
+}
+
+.dialog-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 5px 0;
+}
+
+.dialog-select, .dialog-input {
+  font-family: inherit;
+  font-size: 8px;
+  border-top: 1px solid #808080;
+  border-left: 1px solid #808080;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  background: #ffffff;
+  padding: 2px 4px;
+  flex: 1;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+/* Vista previa de exportación */
+.export-preview-container {
+  width: 100%;
+  height: 130px;
+  background: #555555;
+  border-top: 1px solid #808080;
+  border-left: 1px solid #808080;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#exportPreviewCanvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  border: 1px solid #000000;
+  background: #ffffff;
+  max-width: 120px;
+  max-height: 120px;
+}
+
+/* Barra de progreso retro */
+.retro-progress {
+  display: none;
+  height: 16px;
+  background: #ffffff;
+  border-top: 1px solid #808080;
+  border-left: 1px solid #808080;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  margin-top: 6px;
+}
+
+.retro-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: #000080;
+}
+
+/* =========================================================
+   PUBLICAR EN LA GALERIA DE LA COMUNIDAD + volver al sitio
+   (VUELAPELUCAS 3000)
+   ========================================================= */
+.vl-back-link {
+  position: fixed;
+  top: 8px;
+  right: 10px;
+  z-index: 900;
+  font-family: 'Silkscreen', monospace;
+  font-size: 10px;
+  line-height: 1.4;
+  text-decoration: none;
+  color: #ffd62c;
+  background: #000080;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #000000;
+  border-bottom: 2px solid #000000;
+  padding: 4px 8px;
+}
+.vl-back-link:hover { background: #ef4720; color: #ffffff; }
+
+/* Boton PUBLICAR de la barra rapida */
+.win-button-publish {
+  font-weight: bold;
+  background: #ffd62c;
+  color: #000000;
+}
+.win-button-publish:disabled { opacity: 0.6; cursor: default; }
+
+/* Fila de FSCAUTH dentro del dialogo de publicacion */
+.pub-fsc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+.pub-fsc-status { font-size: 8px; color: #000080; }
+.pub-fsc-status.is-on { color: #008000; font-weight: bold; }
+.pub-fsc-link { font-size: 8px; color: #0000ee; text-decoration: underline; cursor: pointer; }
+.pub-fsc-link.is-hidden { display: none; }
+.pub-status { font-size: 8px; text-align: center; margin-top: 6px; line-height: 1.5; }
+.pub-status.is-ok { color: #008000; font-weight: bold; }
+.pub-status.is-err { color: #c00000; font-weight: bold; }
+
+/* Visor del dibujo publicado */
+.pub-view-box {
+  background: #808080;
+  border-top: 1px solid #404040;
+  border-left: 1px solid #404040;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  padding: 6px;
+  text-align: center;
+}
+.pub-view-box img {
+  max-width: 100%;
+  max-height: 320px;
+  display: block;
+  margin: 0 auto;
+  background: #ffffff;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+}

@@ -4,15 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Vuelapelucas 3000</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- estilos base del sitio: mismas variables, tipografias y estetica -->
+    <link rel="stylesheet" href="css/styles.css?v=5">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* =========================================================
+           ADMIN — misma estetica que la pagina principal:
+           contenedores BLANCOS, stroke negro 3px, sombra dura,
+           tipografia Bebas Neue + Inter, acento amarillo pop.
+           ========================================================= */
+
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Inter', -apple-system, sans-serif;
             background: transparent;
-            color: #fff;
+            color: #000000;
             min-height: 100vh;
-            padding: 2rem;
+            padding: 0 0 5rem;
         }
+
         #vuelapelucas-bg {
             position: fixed;
             top: 0;
@@ -23,105 +34,291 @@
             pointer-events: none;
             display: block;
         }
-        .admin-container { max-width: 1400px; margin: 0 auto; }
-        h1 { color: #ff6b35; font-size: 2.5rem; margin-bottom: 0.5rem; }
-        .subtitle { color: #ffd166; margin-bottom: 2rem; }
-        .login-form {
-            max-width: 400px;
-            margin: 5rem auto;
-            background: rgba(255,255,255,0.05);
-            padding: 3rem;
-            border-radius: 20px;
+
+        .admin-page {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2.2rem 1.6rem 0;
+        }
+
+        /* ---------- BARRA SUPERIOR (misma que anotate/hospedajes) ---------- */
+        .admin-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 1.1rem 2rem;
+            background: #ffffff;
+            border: 3px solid #000000;
+            border-radius: 50px;
+            box-shadow: 6px 6px 0px #000000;
+            margin-bottom: 2.5rem;
+        }
+
+        .admin-header .brand {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2rem;
+            letter-spacing: 0.05em;
+            color: #000000;
+            line-height: 1;
+        }
+
+        .admin-header .brand b { color: var(--tertiary, #ef4720); }
+
+        .admin-header .admin-tag {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.25rem;
+            letter-spacing: 0.14em;
+            color: #000000;
+            background: var(--secondary, #ffd62c);
+            border: 2px solid #000000;
+            border-radius: 50px;
+            padding: 0.3rem 1.2rem;
+            box-shadow: 3px 3px 0px #000000;
+        }
+
+        .admin-header .back-link {
+            color: #000000;
+            font-weight: 800;
+            font-size: 0.95rem;
+            text-decoration: none;
+            border: 2px solid #000000;
+            background: #ffffff;
+            border-radius: 50px;
+            padding: 0.55rem 1.4rem;
+            box-shadow: 3px 3px 0px #000000;
+            transition: all 0.15s ease;
+        }
+
+        .admin-header .back-link:hover {
+            background: var(--secondary, #ffd62c);
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0px #000000;
+        }
+
+        /* ---------- CONTENEDOR BLANCO GENERICO ---------- */
+        .admin-card {
+            background: #ffffff;
+            color: #000000;
+            border: 3px solid #000000;
+            border-radius: 24px;
+            box-shadow: 8px 8px 0px #000000;
+            padding: 2.5rem 2.2rem;
+        }
+
+        /* ---------- LOGIN ---------- */
+        .login-card {
+            max-width: 460px;
+            margin: 4rem auto 0;
             text-align: center;
+            padding: 3rem 2.5rem;
         }
-        .login-form input {
+
+        .login-card h1 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 3rem;
+            letter-spacing: 0.04em;
+            color: #000000;
+            margin-bottom: 0.3rem;
+            line-height: 1;
+        }
+
+        .login-card .subtitle {
+            color: #444444;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+
+        .login-card input {
             width: 100%;
-            padding: 1rem;
-            margin: 1rem 0;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 10px;
-            color: #fff;
+            background: #f8f9fa;
+            border: 2px solid #000000;
+            border-radius: 12px;
+            padding: 0.95rem 1.1rem;
+            color: #000000;
             font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s ease;
         }
-        .login-form button {
+
+        .login-card input::placeholder { color: #888888; }
+
+        .login-card input:focus {
+            outline: none;
+            background: #ffffff;
+            box-shadow: 4px 4px 0px #000000;
+        }
+
+        .login-card button {
             width: 100%;
-            padding: 1rem;
-            background: linear-gradient(135deg, #ff6b35, #ec4899);
-            border: none;
-            border-radius: 10px;
-            color: #fff;
-            font-size: 1.2rem;
+            margin-top: 1.2rem;
+            background: var(--secondary, #ffd62c);
+            color: #000000;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.8rem;
+            letter-spacing: 0.05em;
+            padding: 0.9rem;
+            border: 3px solid #000000;
+            border-radius: 50px;
+            box-shadow: 5px 5px 0px #000000;
             cursor: pointer;
-            margin-top: 1rem;
+            transition: all 0.15s ease;
         }
+
+        .login-card button:hover {
+            background: #ffde47;
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0px #000000;
+        }
+
+        .login-card button:active {
+            transform: translate(2px, 2px);
+            box-shadow: 3px 3px 0px #000000;
+        }
+
+        /* ---------- CABECERA DEL PANEL ---------- */
+        .panel-head {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .panel-head h1 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: clamp(2.4rem, 5vw, 3.4rem);
+            letter-spacing: 0.04em;
+            color: #000000;
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+
+        .panel-head .subtitle { color: #444444; font-weight: 600; }
+
+        /* ---------- BARRA DE ACCIONES ---------- */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-btn {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.25rem;
+            letter-spacing: 0.06em;
+            background: #ffffff;
+            color: #000000;
+            border: 3px solid #000000;
+            border-radius: 999px;
+            padding: 0.5rem 1.5rem;
+            box-shadow: 4px 4px 0px #000000;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+        }
+
+        .toolbar-btn:hover {
+            background: var(--secondary, #ffd62c);
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px #000000;
+        }
+
+        .toolbar-btn:active { transform: translate(1px, 1px); box-shadow: 3px 3px 0px #000000; }
+
+        .toolbar-btn.csv {
+            background: var(--green, #04ba65);
+            color: #ffffff;
+        }
+
+        .toolbar-btn.csv:hover { background: #05a95a; }
+
+        .toolbar-btn.csv:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: 4px 4px 0px #000000; }
+
+        /* ---------- STATS ---------- */
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
+            justify-items: start;
         }
+
         .stat-card {
-            background: rgba(255,255,255,0.05);
-            padding: 2rem;
-            border-radius: 15px;
+            background: #ffffff;
+            color: #000000;
+            width: 100%;
+            max-width: 320px;
+            padding: 1.8rem 1.6rem;
+            border: 3px solid #000000;
+            border-radius: 20px;
+            box-shadow: 7px 7px 0px #000000;
             text-align: center;
-            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
         }
-        .stat-number { font-size: 3rem; color: #ff6b35; font-weight: bold; }
-        .stat-label { color: rgba(255,255,255,0.7); margin-top: 0.5rem; }
 
-        /* --- BARRA DE ACCIONES --- */
-        .toolbar {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 0.8rem;
-            flex-wrap: wrap;
-            margin-bottom: 1.5rem;
-        }
-        .toolbar-btn {
-            background: rgba(255,255,255,0.1);
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.15);
-            padding: 0.8rem 1.5rem;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1rem;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            transition: background 0.2s ease, transform 0.2s ease;
-        }
-        .toolbar-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-1px); }
-        .toolbar-btn.csv { background: linear-gradient(135deg, #059669, #10b981); border-color: transparent; font-weight: 600; }
-        .toolbar-btn.csv:hover { background: linear-gradient(135deg, #047857, #059669); }
-        .toolbar-btn.csv:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+        .stat-card:hover { transform: translate(-3px, -3px); box-shadow: 10px 10px 0px #000000; }
 
-        /* --- TABLA ---
-           overflow-x:auto (antes era hidden) para que la ultima columna NO quede recortada.
-           La columna Accion va sticky a la derecha para que el boton siempre se vea. */
+        .stat-number {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 3.6rem;
+            line-height: 1;
+            color: var(--tertiary, #ef4720);
+        }
+
+        .stat-label {
+            color: #333333;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            margin-top: 0.4rem;
+        }
+
+        /* ---------- TABLA ---------- */
         .table-container {
-            background: rgba(255,255,255,0.03);
-            border-radius: 15px;
+            background: #ffffff;
+            border: 3px solid #000000;
+            border-radius: 20px;
+            box-shadow: 8px 8px 0px #000000;
             overflow-x: auto;
             overflow-y: visible;
-            border: 1px solid rgba(255,255,255,0.1);
             -webkit-overflow-scrolling: touch;
         }
+
         table { width: 100%; border-collapse: collapse; }
+
         th, td { padding: 0.9rem 1rem; text-align: left; vertical-align: top; }
+
         th {
-            background: #3a2318;
-            color: #ffd166;
+            background: var(--secondary, #ffd62c);
+            color: #000000;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.15rem;
+            letter-spacing: 0.06em;
+            font-weight: 400;
             white-space: nowrap;
+            border-bottom: 3px solid #000000;
             position: sticky;
             top: 0;
             z-index: 2;
         }
-        td { border-bottom: 1px solid rgba(255,255,255,0.05); }
-        tr:hover td { background: rgba(255,255,255,0.03); }
+
+        td {
+            border-bottom: 1px solid #e6e6e6;
+            color: #111111;
+            font-weight: 500;
+        }
+
+        tbody tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #fffbe8; }
+
         .col-lg { min-width: 200px; max-width: 320px; white-space: pre-wrap; word-break: break-word; }
         .col-md { min-width: 130px; white-space: nowrap; }
         .col-sm { min-width: 90px; white-space: nowrap; }
@@ -132,80 +329,117 @@
             right: 0;
             min-width: 96px;
             text-align: center;
-            background: #17172a;
-            box-shadow: -8px 0 12px -8px rgba(0,0,0,0.9);
+            background: #ffffff;
+            box-shadow: -8px 0 12px -8px rgba(0, 0, 0, 0.35);
         }
-        th.col-accion { background: #3a2318; z-index: 3; }
-        tr:hover td.col-accion { background: #1d1d33; }
+
+        th.col-accion { background: var(--secondary, #ffd62c); z-index: 3; }
+        tr:hover td.col-accion { background: #fffbe8; }
 
         .delete-btn {
-            background: #ef4444;
-            color: #fff;
-            border: none;
-            padding: 0.5rem 0.9rem;
-            border-radius: 5px;
-            cursor: pointer;
+            background: var(--tertiary, #ef4720);
+            color: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 8px;
+            padding: 0.45rem 0.85rem;
             font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 3px 3px 0px #000000;
+            transition: all 0.15s ease;
         }
-        .delete-btn:hover { background: #dc2626; }
+
+        .delete-btn:hover {
+            background: #d63c17;
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px #000000;
+        }
 
         .badge-rol {
             display: inline-block;
-            padding: 0.25rem 0.6rem;
-            border-radius: 20px;
-            background: rgba(255,107,53,0.2);
-            border: 1px solid rgba(255,107,53,0.4);
-            color: #ffd166;
+            padding: 0.25rem 0.7rem;
+            border-radius: 50px;
+            background: var(--secondary, #ffd62c);
+            border: 2px solid #000000;
+            box-shadow: 2px 2px 0px #000000;
+            color: #000000;
             font-size: 0.85rem;
+            font-weight: 800;
             white-space: nowrap;
         }
-        .loading { text-align: center; padding: 3rem; color: rgba(255,255,255,0.5); }
-        .error { color: #ef4444; text-align: center; padding: 2rem; }
-        .sin-datos { text-align: center; padding: 2rem; color: rgba(255,255,255,0.5); }
+
+        .loading, .sin-datos {
+            text-align: center;
+            padding: 2.5rem;
+            color: #444444;
+            font-weight: 600;
+        }
+
+        .error {
+            text-align: center;
+            padding: 2rem;
+            color: var(--tertiary, #ef4720);
+            font-weight: 800;
+        }
+
         @media (max-width: 768px) {
-            body { padding: 1rem; }
-            .admin-container { max-width: 100%; }
+            .admin-page { padding: 1.2rem 1rem 0; }
+            .admin-header { border-radius: 24px; justify-content: center; text-align: center; }
+            .admin-card { padding: 1.8rem 1.4rem; }
+            .panel-head { justify-content: center; text-align: center; }
+            .login-card { margin-top: 1.5rem; padding: 2.2rem 1.5rem; }
         }
     </style>
 </head>
 <body>
-    <div class="admin-container">
-        <div id="login-section" class="login-form">
-            <h1>🔐 Admin</h1>
-            <p class="subtitle">Vuelapelucas 3000 - Panel de Administración</p>
-            <input type="password" id="admin-pass" placeholder="Contraseña de administrador">
-            <button onclick="login()">Ingresar</button>
-        </div>
+    <div class="admin-page">
+        <header class="admin-header">
+            <span class="brand">VUELAPELUCAS <b>3000</b></span>
+            <span class="admin-tag">PANEL DE ADMINISTRACIÓN</span>
+            <a class="back-link" href="index.html">← VOLVER AL SITIO</a>
+        </header>
 
-        <div id="admin-section" style="display: none;">
-            <div class="toolbar">
-                <button class="toolbar-btn csv" id="btn-csv" onclick="exportarCSV()">⬇️ Exportar CSV</button>
-                <button class="toolbar-btn" onclick="logout()">Cerrar Sesión</button>
+        <div class="admin-container">
+            <div id="login-section" class="admin-card login-card">
+                <h1>🔐 Admin</h1>
+                <p class="subtitle">Vuelapelucas 3000 - Panel de Administración</p>
+                <input type="password" id="admin-pass" placeholder="Contraseña de administrador">
+                <button onclick="login()">Ingresar</button>
             </div>
-            <h1>📊 Panel de Administración</h1>
-            <p class="subtitle">Vuelapelucas 3000 - Inscripciones</p>
 
-            <div class="stats" id="stats"></div>
+            <div id="admin-section" style="display: none;">
+                <div class="admin-card panel-head">
+                    <div>
+                        <h1>📊 Panel de Administración</h1>
+                        <p class="subtitle">Vuelapelucas 3000 - Inscripciones</p>
+                    </div>
+                    <div class="toolbar">
+                        <button class="toolbar-btn csv" id="btn-csv" onclick="exportarCSV()">⬇️ Exportar CSV</button>
+                        <button class="toolbar-btn" onclick="logout()">Cerrar Sesión</button>
+                    </div>
+                </div>
 
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="col-md">Nombre</th>
-                            <th class="col-md">Apellido</th>
-                            <th class="col-lg">Email</th>
-                            <th class="col-sm">Teléfono</th>
-                            <th class="col-sm">Ciudad</th>
-                            <th class="col-md">Rol</th>
-                            <th class="col-lg">Cómo colabora</th>
-                            <th class="col-lg">Espec. técnicas</th>
-                            <th class="col-sm">Hospedaje</th>
-                            <th class="col-sm">Fecha</th>
-                            <th class="col-accion">Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody id="inscripciones-body"></tbody>
-                </table>
+                <div class="stats" id="stats"></div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="col-md">Nombre</th>
+                                <th class="col-md">Apellido</th>
+                                <th class="col-lg">Email</th>
+                                <th class="col-sm">Teléfono</th>
+                                <th class="col-sm">Ciudad</th>
+                                <th class="col-md">Rol</th>
+                                <th class="col-lg">Cómo colabora</th>
+                                <th class="col-lg">Espec. técnicas</th>
+                                <th class="col-sm">Hospedaje</th>
+                                <th class="col-sm">Fecha</th>
+                                <th class="col-accion">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inscripciones-body"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -373,6 +607,6 @@
             if (e.key === 'Enter') login();
         });
     </script>
-    <script src="js/background-shader.js?v=1"></script>
+    <script src="js/background-shader.js?v=2"></script>
 </body>
 </html>
