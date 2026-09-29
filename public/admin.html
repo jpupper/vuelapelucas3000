@@ -152,7 +152,50 @@
             box-shadow: 4px 4px 0px #000000;
         }
 
-        .login-card button {
+        /* Campo de contraseña con el "ojito" para ver lo que escribís.
+           OJO: el boton de Ingresar va con clase propia (.login-btn) para que
+           estos estilos no le peguen tambien al ojito. */
+        .pass-wrap {
+            position: relative;
+            display: block;
+        }
+
+        .pass-wrap input { padding-right: 3.6rem; }
+
+        .login-card .pass-eye {
+            position: absolute;
+            top: 50%;
+            right: 0.75rem;
+            transform: translateY(-50%);
+            width: 42px;
+            height: 42px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            line-height: 1;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 50%;
+            box-shadow: 2px 2px 0px #000000;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .login-card .pass-eye:hover {
+            background: var(--secondary, #ffd62c);
+            transform: translateY(-50%) translate(-1px, -1px);
+            box-shadow: 3px 3px 0px #000000;
+        }
+
+        .login-card .pass-eye:active {
+            transform: translateY(-50%) translate(1px, 1px);
+            box-shadow: 1px 1px 0px #000000;
+        }
+
+        .login-card .login-btn {
             width: 100%;
             margin-top: 1.2rem;
             background: var(--secondary, #ffd62c);
@@ -168,13 +211,13 @@
             transition: all 0.15s ease;
         }
 
-        .login-card button:hover {
+        .login-card .login-btn:hover {
             background: #ffde47;
             transform: translate(-2px, -2px);
             box-shadow: 7px 7px 0px #000000;
         }
 
-        .login-card button:active {
+        .login-card .login-btn:active {
             transform: translate(2px, 2px);
             box-shadow: 3px 3px 0px #000000;
         }
@@ -515,8 +558,12 @@
             <div id="login-section" class="admin-card login-card">
                 <h1>🔐 Admin</h1>
                 <p class="subtitle">Vuelapelucas 3000 - Panel de Administración</p>
-                <input type="password" id="admin-pass" placeholder="Contraseña de administrador">
-                <button onclick="login()">Ingresar</button>
+                <div class="pass-wrap">
+                    <input type="password" id="admin-pass" placeholder="Contraseña de administrador" autocomplete="current-password">
+                    <button type="button" class="pass-eye" id="btn-pass-eye" onclick="togglePass()"
+                            aria-label="Mostrar u ocultar la contraseña" aria-pressed="false" title="Ver la contraseña">👁</button>
+                </div>
+                <button class="login-btn" onclick="login()">Ingresar</button>
             </div>
 
             <div id="admin-section" style="display: none;">
@@ -738,6 +785,18 @@
         }
 
         /* ==================== LOGIN ==================== */
+        // Ojo de la contraseña: alterna entre oculta y visible.
+        function togglePass() {
+            const inp = document.getElementById('admin-pass');
+            const btn = document.getElementById('btn-pass-eye');
+            const ver = inp.type === 'password';
+            inp.type = ver ? 'text' : 'password';
+            btn.textContent = ver ? '🙈' : '👁';
+            btn.setAttribute('aria-pressed', ver ? 'true' : 'false');
+            btn.title = ver ? 'Ocultar la contraseña' : 'Ver la contraseña';
+            inp.focus();
+        }
+
         async function login() {
             adminPass = document.getElementById('admin-pass').value;
             const ok = await loadInscripciones();
