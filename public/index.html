@@ -308,13 +308,15 @@
     </a>
 
     <!-- FONDO WebGL: lo sirve el JP Shader Editor con jpshadereditorInclude.
-         El shader vive en la galeria y se edita ahi:
-           https://fullscreencode.com/jpshadereditor/shader.html?shader=vuelapelucas-fondo
+         Ahora levanta una COMPOSICION del NodeEditor (no un shader suelto):
+           composicion: nodeeditor-0857 ("videosintedge", autor jpupper)
+           caja de fondo: ndlf4r28qv (su OUTPUT)
+         Se edita ahi: https://fullscreencode.com/jpshadereditor/nodeeditor.html?comp=nodeeditor-0857
          La pagina NO trae el shader codeado: pide el plan de render al backend y lo
-         aplica (se actualiza solo cada 20s cuando se vuelve a guardar el shader).
-         Panel de control en vivo: tecla S.  (antes: js/background-shader.js local) -->
+         aplica (se actualiza solo cada 20s cuando se vuelve a guardar la composicion).
+         Panel de control en vivo: tecla S.  (antes: data-shader="vuelapelucas-fondo") -->
     <script src="https://vps-4455523-x.dattaweb.com/jpshadereditor/include.js"
-            data-shader="vuelapelucas-fondo"></script>
+            data-comp="nodeeditor-0857" data-pass="ndlf4r28qv"></script>
     <script src="js/main.js?v=4"></script>
     <script src="js/galeria.js?v=7"></script>
     <!-- Boton universal del ecosistema FullScreen: lleva al perfil de FSCAUTH -->

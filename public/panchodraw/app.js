@@ -1891,9 +1891,50 @@
     : 'https://vps-4455523-x.dattaweb.com/vuelapelucas3000_2';
   // Tecnico (server -> server): la verificacion de sesion va directo al VPS.
   var FSC_API = 'https://vps-4455523-x.dattaweb.com/fscauth';
-  var FSC_PASSPORT = 'https://fullscreencode.com/fscauth/';
+  var FSC_AUTH_PUBLIC = 'https://fullscreencode.com/fscauth/';
+  // LOGIN DIRECTO: el boton manda a la pantalla de login de FSCAUTH y, al entrar,
+  // el SSO VUELVE a ESTA misma pagina con ?token=&username=... (lo capturamos abajo).
+  // Asi el usuario no queda tirado en el pasaporte ni tiene que volver a mano.
+  var FSC_LOGIN = FSC_AUTH_PUBLIC + 'login.html?redirect=' +
+    encodeURIComponent(location.origin + location.pathname) + '&origin=vuelapelucas';
 
   var fscSesion = null;
+  var fscToken = '';          // token del ecosistema: va como Bearer al publicar
+
+  // --- Sesion FSCAUTH en el cliente -----------------------------------------
+  // La pagina vive en fullscreencode.com, el MISMO origen que fscauth: despues
+  // del login el token queda en localStorage y lo leemos de ahi (confiable).
+  // La cookie cross-site queda solo como respaldo (los navegadores bloquean
+  // cookies de terceros, por eso el boton "no andaba bien").
+  function fscLs(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }
+  function fscLsSet(k, v) { try { if (v) localStorage.setItem(k, v); } catch (e) {} }
+
+  // Retorno del SSO: fscauth/login.html vuelve con ?token=&username=&userId=.
+  // Guardamos la sesion y limpiamos la URL (para no dejar el token a la vista).
+  function fscCapturarRetorno() {
+    var q;
+    try { q = new URLSearchParams(location.search); } catch (e) { return; }
+    var tok = q.get('token'), usr = q.get('username');
+    if (!tok || !usr) return;
+    fscLsSet('token', tok);
+    fscLsSet('username', usr);
+    fscLsSet('userId', q.get('userId') || '');
+    fscLsSet('role', q.get('role') || '');
+    ['token', 'username', 'userId', 'role', 'ssoset'].forEach(function (k) { q.delete(k); });
+    var resto = q.toString();
+    try { history.replaceState({}, document.title, location.pathname + (resto ? '?' + resto : '')); } catch (e) {}
+  }
+
+  function fscSesionLocal() {
+    var tok = fscLs('token'), usr = fscLs('username');
+    if (!tok || !usr) return null;
+    return { username: usr, id: fscLs('userId'), token: tok };
+  }
+
+  function fscAplicar(s) {
+    if (s) { fscSesion = s; if (s.token) fscToken = s.token; }
+    fscPintaSesion();
+  }
 
   var btnQuickPublish = document.getElementById('btnQuickPublish');
   var menuPublicar = document.getElementById('menuPublicar');
@@ -1925,15 +1966,18 @@
       pubFscStatus.innerHTML = 'Se publica sin usuario (solo nombre y autor).';
       pubFscLink.className = 'pub-fsc-link';
       pubFscLink.innerHTML = 'Logearse con FSCAUTH';
+      pubFscLink.title = 'Entrá con tu cuenta FullScreen y tu dibujo queda en tu perfil';
     }
-    pubFscLink.href = FSC_PASSPORT;
+    // Sin sesion: a LOGIN (y vuelve aca). Con sesion el click no navega (ver abajo).
+    pubFscLink.href = FSC_LOGIN;
   }
 
   // Click en "Logearse con FSCAUTH":
-  //  - sin sesion  -> te lleva al pasaporte (fullscreencode.com/fscauth/)
+  //  - sin sesion  -> va al LOGIN de FSCAUTH y al entrar VUELVE a esta pagina
+  //                   (ya logueado, con el AUTOR completado).
   //  - con sesion  -> NO te saca de la pagina: completa AUTOR y te deja logueado
   pubFscLink.onclick = function (e) {
-    if (!fscSesion) return;                      // sin sesion: va al pasaporte
+    if (!fscSesion) return;                      // sin sesion: navega a FSC_LOGIN
     if (e && e.preventDefault) e.preventDefault();
     pubAutor.value = '@' + fscSesion.username;
     pubFscStatus.className = 'pub-fsc-status is-on';
@@ -1943,14 +1987,17 @@
   };
 
   function fscCheck() {
+    // 1) Volvimos del login? (?token=&username=) -> guardar y limpiar la URL.
+    fscCapturarRetorno();
+    // 2) Sesion en localStorage (mismo origen que fscauth: la via confiable).
+    var local = fscSesionLocal();
+    if (local) { fscAplicar(local); return; }
+    // 3) Respaldo: cookie cross-site del ecosistema, verificada por el VPS.
     if (typeof fetch !== 'function') { fscPintaSesion(); return; }
     fetch(FSC_API + '/api/auth/verify', { credentials: 'include' })
       .then(function (r) { return r.json(); })
       .then(function (d) {
-        if (d && d.loggedIn && d.user) {
-          fscSesion = { username: d.user.username, id: d.user.id };
-        }
-        fscPintaSesion();
+        fscAplicar((d && d.loggedIn && d.user) ? { username: d.user.username, id: d.user.id, token: '' } : null);
       })
       .catch(function () { fscPintaSesion(); });
   }
@@ -2056,10 +2103,16 @@
         pubMsg('Subiendo la animación del trazo...');
       }
 
+      // El token va TAMBIEN como Bearer: asi el VPS identifica al autor aunque el
+      // navegador bloquee la cookie cross-site (el server ya lo acepta, la cookie
+      // queda como respaldo). Sin esto el dibujo NO se indexaba en FSCAUTH.
+      var pubHeaders = { 'Content-Type': 'application/json' };
+      if (fscToken) pubHeaders['Authorization'] = 'Bearer ' + fscToken;
+
       fetch(API_BASE + '/api/artworks', {
         method: 'POST',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
+        headers: pubHeaders,
         body: JSON.stringify({ nombre: nombre, autor: autor, escala: scale, image: dataUrl, gif: gifUrl || '' })
       }).then(function (r) {
         return r.json().then(function (d) { return { ok: r.ok, d: d }; });
@@ -2085,8 +2138,12 @@
   pubNombre.onkeydown = function (e) { if (e.key === 'Enter' || e.keyCode === 13) doPublish(); };
 
   // Al abrir la pagina ya se consulta la sesión FSCAUTH (así el botón sabe si
-  // tenés que loguearte o si ya puede usar tu usuario).
+  // tenés que loguearte o si ya puede usar tu usuario). Si volvimos del LOGIN
+  // (?token=&username=) la capturamos al instante.
+  fscCapturarRetorno();
   setTimeout(fscCheck, 400);
+  // Si te logueaste en OTRA pestaña, al volver acá el botón se actualiza solo.
+  window.addEventListener('focus', function () { if (!fscSesion) fscCheck(); });
 
   // F9 = publicar (sin pisar los atajos de dibujo)
   window.addEventListener('keydown', function (e) {
