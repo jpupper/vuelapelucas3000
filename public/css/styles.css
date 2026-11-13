@@ -871,3 +871,42 @@ h1, h2, h3, h4 {
         bottom: 1.2rem;
     }
 }
+
+
+/* =========================================================
+   RIFA — tarjetas en la página principal
+   ========================================================= */
+.vl-rifa {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.4rem;
+    max-width: 940px;
+    margin: 0 auto;
+}
+.vl-rifa-card {
+    background: #ffffff;
+    border: 3px solid #000000;
+    border-radius: 22px;
+    box-shadow: 7px 7px 0px #000000;
+    padding: 1.6rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: .7rem;
+}
+.vl-rifa-card-alt { background: var(--secondary, #ffd62c); }
+.vl-rifa-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.9rem;
+    line-height: 1.02;
+    letter-spacing: .02em;
+    margin: 0;
+    color: #000000;
+}
+.vl-rifa-text { margin: 0; font-size: .95rem; line-height: 1.5; color: #1a1a1a; }
+.vl-rifa-cta { margin-top: auto; align-self: flex-start; }
+@media (max-width: 760px) {
+    .vl-rifa { grid-template-columns: 1fr; gap: 1rem; }
+    .vl-rifa-card { padding: 1.2rem; box-shadow: 5px 5px 0 #000; }
+    .vl-rifa-title { font-size: 1.6rem; }
+    .vl-rifa-cta { width: 100%; text-align: center; align-self: stretch; }
+}

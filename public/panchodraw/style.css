@@ -870,3 +870,61 @@ body.fullscreen-mode {
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
 }
+
+
+/* ============================================================
+   INGRESO JPCONNECT (login del ecosistema, estilo Windows 95)
+   ============================================================ */
+.win-button-fsc {
+  background: #c0c0c0;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #808080;
+  border-bottom: 2px solid #808080;
+  font-family: 'Silkscreen', 'Courier New', monospace;
+  font-size: 9px;
+  padding: 4px 8px;
+  cursor: default;
+  color: #000080;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.win-button-fsc:hover { background: #d4d0c8; color: #0e75fe; }
+.win-button-fsc:active {
+  border-top: 2px solid #808080;
+  border-left: 2px solid #808080;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+}
+.win-button-fsc.is-on {
+  background: #0e75fe;
+  color: #ffffff;
+  border-color: #ffffff #000080 #000080 #ffffff;
+}
+.win-button-fsc.is-on:hover { background: #229cff; color: #ffffff; }
+
+.win-dialog-fsc { width: 320px; }
+.fsc-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  background: #ffffff;
+  border-top: 2px solid #808080;
+  border-left: 2px solid #808080;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+  margin-bottom: 8px;
+}
+.fsc-avatar { width: 34px; height: 34px; object-fit: contain; flex-shrink: 0; }
+.fsc-datos { min-width: 0; }
+.fsc-user {
+  font-family: 'Silkscreen', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: #000080;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fsc-sub { font-size: 10px; color: #404040; margin-top: 2px; }

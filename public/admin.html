@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <!-- estilos base del sitio: mismas variables, tipografias y estetica -->
-    <link rel="stylesheet" href="css/styles.css?v=7">
+    <link rel="stylesheet" href="css/styles.css?v=8">
     <style>
         /* =========================================================
            ADMIN — misma estetica que la pagina principal:
@@ -544,6 +544,182 @@
             .panel-head { justify-content: center; text-align: center; }
             .login-card { margin-top: 1.5rem; padding: 2.2rem 1.5rem; }
         }
+
+        /* ================= RIFA (admin) ================= */
+        .card-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.5rem;
+            letter-spacing: .03em;
+            margin: 0 0 .9rem;
+            color: #000;
+        }
+        .rifa-mini-hint { font-family: 'Inter', sans-serif; font-size: .72rem; font-weight: 600; color: #666; letter-spacing: 0; }
+        .rifa-config {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: .8rem;
+            margin-bottom: .8rem;
+        }
+        .rifa-field { display: flex; flex-direction: column; gap: .25rem; font-family: 'Inter', sans-serif; }
+        .rifa-field span { font-size: .64rem; font-weight: 800; letter-spacing: .12em; color: #444; }
+        .rifa-field input, .rifa-field textarea {
+            font-family: 'Inter', sans-serif;
+            font-size: .92rem;
+            padding: .5rem .6rem;
+            border: 2px solid #000;
+            border-radius: 9px;
+            background: #fff;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .rifa-field small { font-size: .7rem; color: #777; }
+        .rifa-field-wide { margin-bottom: .8rem; }
+        .rifa-check { display: flex; align-items: center; gap: .5rem; font-size: .86rem; font-weight: 600; margin-bottom: .8rem; }
+        .rifa-check input { width: 18px; height: 18px; }
+        .rifa-stats-mini { display: flex; flex-wrap: wrap; gap: .5rem; }
+        .rifa-stats-mini span {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.15rem;
+            background: var(--secondary, #ffd62c);
+            border: 2px solid #000;
+            border-radius: 50px;
+            padding: .1rem .8rem;
+        }
+        .admin-carton {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+            gap: .3rem;
+            border: 2px solid #000;
+            border-radius: 12px;
+            padding: .6rem;
+            background: #fafafa;
+            max-height: 420px;
+            overflow-y: auto;
+        }
+        .admin-num {
+            aspect-ratio: 1/1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.05rem;
+            border: 2px solid #000;
+            border-radius: 6px;
+            background: #fff;
+            cursor: default;
+        }
+        .admin-num.is-vendido { background: #b9b9b9; color: #555; cursor: pointer; }
+        .admin-num.is-vendido:hover { background: #ff9c9c; }
+        .rifa-tabla-wrap { overflow-x: auto; border: 2px solid #000; border-radius: 12px; }
+        .rifa-tabla { width: 100%; border-collapse: collapse; font-size: .84rem; min-width: 720px; }
+        .rifa-tabla th {
+            text-align: left;
+            font-size: .64rem;
+            letter-spacing: .1em;
+            background: #eee;
+            border-bottom: 2px solid #000;
+            padding: .5rem .6rem;
+        }
+        .rifa-tabla td { padding: .45rem .6rem; border-bottom: 1px solid #ddd; vertical-align: top; }
+        .rifa-tabla tr:last-child td { border-bottom: 0; }
+        .rifa-tabla-vacia { text-align: center; color: #777; padding: 1.2rem; }
+        .rifa-premios-admin { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: .8rem; }
+        .rifa-premio-card { border: 2px solid #000; border-radius: 12px; padding: .7rem; background: #fff; display: flex; flex-direction: column; gap: .4rem; }
+        .rifa-premio-card img { width: 100%; height: 120px; object-fit: cover; border: 2px solid #000; border-radius: 8px; }
+        .rifa-premio-card h4 { margin: 0; font-family: 'Bebas Neue', cursive; font-size: 1.25rem; line-height: 1.05; }
+        .rifa-premio-card p { margin: 0; font-size: .8rem; color: #444; }
+        .rifa-premio-card .meta { font-size: .72rem; font-weight: 700; color: #000; }
+        .rifa-premio-card .acciones { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: auto; }
+        .rifa-badge { font-size: .6rem; font-weight: 800; letter-spacing: .1em; padding: .1rem .45rem; border-radius: 50px; border: 2px solid #000; }
+        .rifa-badge.aprobado { background: #b6f5d3; }
+        .rifa-badge.pendiente { background: #ffe8a3; }
+        .rifa-badge.descartado { background: #ffc7c2; }
+        .mini-btn2 {
+            font-family: 'Inter', sans-serif;
+            font-size: .68rem;
+            font-weight: 800;
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 7px;
+            padding: .3rem .5rem;
+            cursor: pointer;
+        }
+        .mini-btn2:hover { background: var(--secondary, #ffd62c); }
+        .mini-btn2.danger:hover { background: #ff8080; }
+
+        /* ================= REMERAS (admin) ================= */
+        .remera-config {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: .8rem;
+            margin-bottom: .8rem;
+        }
+        .remera-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+        .remera-admin-card {
+            background: #fff;
+            border: 3px solid #000;
+            border-radius: 16px;
+            box-shadow: 5px 5px 0 #000;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .remera-admin-card.inactiva { opacity: .5; }
+        .remera-admin-card .foto { background: #e3e3e3; border-bottom: 3px solid #000; aspect-ratio: 2/3; overflow: hidden; }
+        .remera-admin-card .foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .remera-admin-card .datos { padding: .6rem .7rem; display: flex; flex-direction: column; gap: .3rem; font-size: .8rem; font-weight: 600; }
+        .remera-admin-card .datos b { font-family: 'Bebas Neue', cursive; font-size: 1.15rem; letter-spacing: .04em; line-height: 1.05; }
+        .remera-admin-card .acciones { display: flex; flex-wrap: wrap; gap: .35rem; padding: 0 .7rem .8rem; margin-top: auto; }
+        .rem-comprob-mini { width: 62px; height: 62px; object-fit: cover; border: 2px solid #000; border-radius: 8px; display: block; }
+        .rem-comprob-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: .7rem; }
+        .rem-comprob-item {
+            border: 2px solid #000;
+            border-radius: 10px;
+            padding: .4rem;
+            background: #fff;
+            text-align: center;
+            font-size: .7rem;
+            font-weight: 700;
+            color: #000;
+            text-decoration: none;
+            box-shadow: 3px 3px 0 #000;
+        }
+        .rem-comprob-item img { width: 100%; height: 150px; object-fit: contain; background: #f2f2f2; border: 2px solid #000; border-radius: 8px; display: block; margin-bottom: .3rem; }
+        .rem-badge {
+            font-size: .6rem;
+            font-weight: 800;
+            letter-spacing: .08em;
+            padding: .1rem .45rem;
+            border-radius: 50px;
+            border: 2px solid #000;
+            display: inline-block;
+            background: #fff;
+        }
+        .rem-badge.pendiente { background: #ffe8a3; }
+        .rem-badge.pagado { background: #b6f5d3; }
+        .rem-badge.enviado { background: #c9e0ff; }
+        .rem-badge.entregado { background: #d7ffcf; }
+        .rem-badge.cancelado { background: #ffc7c2; }
+        /* la tabla de compras tiene 12 columnas: sin ancho mínimo se aprieta */
+        .rem-tabla-compras { min-width: 1240px; }
+        .rem-tabla-compras td, .rem-tabla-compras th { white-space: nowrap; }
+        .rem-tabla-compras td:nth-child(5),
+        .rem-tabla-compras td:nth-child(8) { white-space: normal; min-width: 160px; max-width: 230px; }
+        .rem-tabla-compras td:nth-child(3) { white-space: normal; min-width: 150px; max-width: 210px; }
+        .rem-stat-plata { font-size: clamp(1.4rem, 3vw, 2.1rem); }
+        @media (max-width: 900px) {
+            .remera-config { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 560px) {
+            .remera-config { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 900px) {
+            .rifa-config { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 560px) {
+            .rifa-config { grid-template-columns: 1fr; }
+            .admin-carton { grid-template-columns: repeat(auto-fill, minmax(36px, 1fr)); }
+        }
     </style>
 </head>
 <body>
@@ -572,6 +748,8 @@
                     <button class="tab" data-tab="dibujos">DIBUJOS <span class="tab-n" id="tabn-dibujos"></span></button>
                     <button class="tab" data-tab="galeria">GALERÍA <span class="tab-n" id="tabn-galeria"></span></button>
                     <button class="tab" data-tab="flyers">FLYERS <span class="tab-n" id="tabn-flyers"></span></button>
+                    <button class="tab" data-tab="rifa">RIFA <span class="tab-n" id="tabn-rifa"></span></button>
+                    <button class="tab" data-tab="remeras">REMERAS <span class="tab-n" id="tabn-remeras"></span></button>
                     <button class="toolbar-btn" onclick="logout()">Cerrar Sesión</button>
                 </div>
 
@@ -719,6 +897,198 @@
 
                     <div class="media-grid" id="flyers-grid"></div>
                 </div>
+
+                <!-- ================= RIFA ================= -->
+                <div class="panel" id="panel-rifa">
+                    <div class="admin-card panel-head">
+                        <div>
+                            <h1>🎟️ Rifa del festival</h1>
+                            <p class="subtitle">Números, premios y sorteo del último día. Los premios los ofrece la comunidad.</p>
+                        </div>
+                        <div class="toolbar">
+                            <button class="toolbar-btn" onclick="rifaRecargar()">↻ Recargar</button>
+                            <button class="toolbar-btn save" onclick="rifaGuardarConfig()">💾 Guardar ajustes</button>
+                        </div>
+                    </div>
+
+                    <!-- AJUSTES -->
+                    <div class="admin-card">
+                        <h2 class="card-title">Ajustes de la rifa</h2>
+                        <div class="rifa-config">
+                            <label class="rifa-field">
+                                <span>CANTIDAD DE NÚMEROS</span>
+                                <input type="number" id="rifaTotal" min="10" max="9999" step="1" value="100">
+                                <small>Se genera el tablero del 1 al total (mínimo 10, máximo 9999).</small>
+                            </label>
+                            <label class="rifa-field">
+                                <span>VALOR DEL NÚMERO</span>
+                                <input type="text" id="rifaPrecio" maxlength="60" placeholder="Ej: $5.000 / 1 colaboración">
+                            </label>
+                            <label class="rifa-field">
+                                <span>FECHA DEL SORTEO</span>
+                                <input type="text" id="rifaCierre" maxlength="60" placeholder="Último día del festival">
+                            </label>
+                            <label class="rifa-field">
+                                <span>LINK DE PAGO (opcional)</span>
+                                <input type="text" id="rifaMpLink" maxlength="300" placeholder="MercadoPago / alias / CBU">
+                            </label>
+                        </div>
+                        <label class="rifa-field rifa-field-wide">
+                            <span>ACLARACIÓN PÚBLICA</span>
+                            <textarea id="rifaInfo" rows="2" maxlength="300" placeholder="Texto que aparece arriba del cartón."></textarea>
+                        </label>
+                        <label class="rifa-check">
+                            <input type="checkbox" id="rifaAbierta" checked>
+                            <span>Rifa abierta (permite anotar premios y comprar números)</span>
+                        </label>
+                        <div class="rifa-stats-mini" id="rifaResumen"></div>
+                    </div>
+
+                    <!-- TABLERO -->
+                    <div class="admin-card">
+                        <h2 class="card-title">Tablero de números <span class="rifa-mini-hint">(gris = vendido · tocá uno para liberarlo)</span></h2>
+                        <div class="admin-carton" id="adminCarton"></div>
+                    </div>
+
+                    <!-- VENDIDOS -->
+                    <div class="admin-card">
+                        <h2 class="card-title">Números vendidos <span class="tab-n" id="rifaVendidosN"></span></h2>
+                        <div class="rifa-tabla-wrap">
+                            <table class="rifa-tabla">
+                                <thead>
+                                    <tr><th>N°</th><th>Comprador</th><th>Usuario</th><th>Contacto</th><th>Nota</th><th>Fecha</th><th></th></tr>
+                                </thead>
+                                <tbody id="rifaVendidosBody">
+                                    <tr><td colspan="7" class="rifa-tabla-vacia">Cargá la rifa para ver los números vendidos.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- PREMIOS -->
+                    <div class="admin-card">
+                        <h2 class="card-title">Premios anotados <span class="tab-n" id="rifaPremiosN"></span></h2>
+                        <p class="hint">Los premios anotados con sesión JPCONNECT entran aprobados; los anónimos quedan pendientes hasta que los apruebes.</p>
+                        <div class="rifa-premios-admin" id="rifaPremiosAdmin">
+                            <p class="rifa-tabla-vacia">Cargá la rifa para ver los premios.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= REMERAS ================= -->
+                <div class="panel" id="panel-remeras">
+                    <div class="admin-card panel-head">
+                        <div>
+                            <h1>👕 Remeras y compras</h1>
+                            <p class="subtitle">Catálogo de remeras del festival y todos los pedidos que llegan del formulario.</p>
+                        </div>
+                        <div class="toolbar">
+                            <button class="toolbar-btn" onclick="remRecargar()">↻ Recargar</button>
+                            <button class="toolbar-btn save" onclick="remGuardarConfig()">💾 Guardar ajustes</button>
+                        </div>
+                    </div>
+
+                    <!-- AJUSTES -->
+                    <div class="admin-card">
+                        <h2 class="card-title">Ajustes de la tienda</h2>
+                        <div class="remera-config">
+                            <label class="rifa-field">
+                                <span>PRECIO DE LA REMERA</span>
+                                <input type="number" id="remPrecio" min="100" step="100" value="50000">
+                                <small>En pesos, sin puntos. Se usa como precio por defecto de cada remera.</small>
+                            </label>
+                            <label class="rifa-field">
+                                <span>WHATSAPP DE PEDIDOS</span>
+                                <input type="text" id="remWhatsapp" maxlength="40" placeholder="2954541104">
+                                <small>Ahí se manda el mensaje con el pedido completo.</small>
+                            </label>
+                            <label class="rifa-field">
+                                <span>ALIAS / CBU (opcional)</span>
+                                <input type="text" id="remAlias" maxlength="120" placeholder="vuelapelucas.mp">
+                                <small>Para transferir. No se muestra todavía en la página.</small>
+                            </label>
+                        </div>
+                        <label class="rifa-field rifa-field-wide">
+                            <span>INSTRUCCIONES PARA EL COMPRADOR (opcional)</span>
+                            <textarea id="remInstrucciones" rows="2" maxlength="400" placeholder="Ej: transferí y subí el comprobante, si no lo tenés mandalo por WhatsApp."></textarea>
+                        </label>
+                        <label class="rifa-check">
+                            <input type="checkbox" id="remAbierta" checked>
+                            <span>Tienda abierta (permite que la gente mande pedidos)</span>
+                        </label>
+                        <div class="rifa-stats-mini" id="remResumen"></div>
+                    </div>
+
+                    <!-- LISTA DE REMERAS -->
+                    <div class="admin-card">
+                        <h2 class="card-title">Remeras <span class="tab-n" id="remListaN"></span></h2>
+                        <p class="hint">Estas son las remeras que aparecen en la cinta de la portada y en la página de compra.
+                            <b>Activa/Inactiva</b> la saca o la pone en la página sin borrarla. Para borrar, tocá <b>Borrar</b> dos veces.</p>
+
+                        <div class="add-box">
+                            <div>
+                                <label for="remNombre">Nombre de la remera</label>
+                                <input class="mini-input" type="text" id="remNombre" maxlength="90" placeholder="REMERA X PANCHO DEL PUEBLO">
+                            </div>
+                            <div>
+                                <label for="remDesc">Descripción (opcional)</label>
+                                <input class="mini-input" type="text" id="remDesc" maxlength="240" placeholder="Estampa en serigrafía">
+                            </div>
+                            <div>
+                                <label for="remPrecioNueva">Precio (vacío = el de ajustes)</label>
+                                <input class="mini-input" type="number" id="remPrecioNueva" min="100" step="100" placeholder="50000">
+                            </div>
+                            <div>
+                                <label for="remOrden">Orden</label>
+                                <input class="mini-input" type="number" id="remOrden" step="1" placeholder="0">
+                            </div>
+                            <div>
+                                <label for="remFile">Foto de la remera (PNG / JPG / WEBP)</label>
+                                <input class="file-input" type="file" id="remFile" accept="image/*">
+                            </div>
+                            <div style="display:flex; align-items:flex-end;">
+                                <button class="toolbar-btn" id="btn-add-remera" onclick="remAgregarRemera()">➕ Agregar remera</button>
+                            </div>
+                        </div>
+
+                        <div class="remera-grid" id="remGridAdmin">
+                            <p class="rifa-tabla-vacia">Cargá las remeras para verlas acá.</p>
+                        </div>
+                    </div>
+
+                    <!-- COMPRAS -->
+                    <div class="admin-card">
+                        <h2 class="card-title">Compras <span class="tab-n" id="remComprasN"></span></h2>
+                        <p class="hint">Todos los formularios que mandó la gente. El comprobante de pago es opcional, así que hay pedidos sin comprobante.</p>
+                        <div class="stats" id="remStatsCompras"></div>
+                        <div class="toolbar" style="margin-bottom:1rem">
+                            <button class="toolbar-btn csv" onclick="remExportarCSV()">⬇️ Exportar CSV</button>
+                        </div>
+                        <div class="rifa-tabla-wrap">
+                            <table class="rifa-tabla rem-tabla-compras">
+                                <thead>
+                                    <tr>
+                                        <th>Pedido</th><th>Fecha</th><th>Remera</th><th>Talle</th><th>Nombre y apellido</th>
+                                        <th>Mail</th><th>Teléfono</th><th>Sucursal Correo</th><th>Precio</th>
+                                        <th>Comprobante</th><th>Estado</th><th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="remComprasBody">
+                                    <tr><td colspan="12" class="rifa-tabla-vacia">Cargá la sección para ver las compras.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- COMPROBANTES -->
+                    <div class="admin-card">
+                        <h2 class="card-title">Comprobantes recibidos <span class="tab-n" id="remComprobN"></span></h2>
+                        <p class="hint">Cada imagen que subieron en el formulario. Tocá una para verla en grande.</p>
+                        <div class="rem-comprob-grid" id="remComprobGrid">
+                            <p class="rifa-tabla-vacia">Todavía no hay comprobantes.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -806,6 +1176,8 @@
             cargarDibujos();
             cargarGaleria();
             cargarFlyers();
+            rifaRecargar();
+            remRecargar();
         }
 
         function logout() {
@@ -823,8 +1195,205 @@
                 b.classList.add('is-active');
                 document.querySelectorAll('.panel').forEach((p) => p.classList.remove('is-active'));
                 document.getElementById('panel-' + b.dataset.tab).classList.add('is-active');
+                if (b.dataset.tab === 'rifa') rifaRecargar();
+                if (b.dataset.tab === 'remeras') remRecargar();
             });
         });
+
+        /* ==================== RIFA ==================== */
+        const RIFA_API = API + '/rifa';
+        // (esc() ya existe más arriba en este script)
+        let rifaData = { total: 100, numeros: [], premios: [], config: {} };
+
+        async function rifaRecargar() {
+            try {
+                const [cfgR, numR, preR] = await Promise.all([
+                    fetch(RIFA_API + '/config?pass=' + encodeURIComponent(adminPass), { cache: 'no-store' }),
+                    fetch(RIFA_API + '/numeros?pass=' + encodeURIComponent(adminPass), { cache: 'no-store' }),
+                    fetch(RIFA_API + '/premios?pass=' + encodeURIComponent(adminPass), { cache: 'no-store' })
+                ]);
+                const cfg = await cfgR.json();
+                const num = await numR.json();
+                const pre = await preR.json();
+                if (cfg && cfg.ok) {
+                    const c = cfg.config || {};
+                    document.getElementById('rifaTotal').value = c.total || 100;
+                    document.getElementById('rifaPrecio').value = c.precio || '';
+                    document.getElementById('rifaCierre').value = c.cierre || '';
+                    document.getElementById('rifaMpLink').value = c.mpLink || '';
+                    document.getElementById('rifaInfo').value = c.info || '';
+                    document.getElementById('rifaAbierta').checked = c.abierta !== false;
+                    rifaData.config = c;
+                }
+                if (num && num.ok) {
+                    rifaData.total = num.total;
+                    rifaData.numeros = num.numeros || [];
+                }
+                if (pre && pre.ok) rifaData.premios = pre.premios || [];
+                rifaPintar();
+            } catch (e) {
+                console.error('[RIFA] recargar:', e);
+                toast('No se pudo cargar la rifa', 'err');
+            }
+        }
+
+        function rifaPintar() {
+            const total = rifaData.total || 100;
+            const vendidos = {};
+            rifaData.numeros.forEach((n) => { vendidos[n.numero] = n; });
+            const cantVendidos = Object.keys(vendidos).length;
+
+            document.getElementById('tabn-rifa').textContent = cantVendidos;
+            document.getElementById('rifaVendidosN').textContent = cantVendidos;
+            document.getElementById('rifaPremiosN').textContent = rifaData.premios.length;
+            document.getElementById('rifaResumen').innerHTML =
+                '<span>' + total + ' números</span>' +
+                '<span>' + cantVendidos + ' vendidos</span>' +
+                '<span>' + (total - cantVendidos) + ' disponibles</span>' +
+                '<span>' + rifaData.premios.length + ' premios</span>';
+
+            // tablero
+            let h = '';
+            for (let n = 1; n <= total; n++) {
+                const v = vendidos[n];
+                h += '<div class="admin-num' + (v ? ' is-vendido' : '') + '" data-n="' + n + '" ' +
+                     'title="' + (v ? 'Vendido a ' + (v.comprador || '') : 'Libre') + '">' + n + '</div>';
+            }
+            const cont = document.getElementById('adminCarton');
+            cont.innerHTML = h;
+            cont.onclick = (e) => {
+                const cel = e.target.closest('.admin-num');
+                if (!cel || !cel.classList.contains('is-vendido')) return;
+                const n = parseInt(cel.dataset.n, 10);
+                const v = vendidos[n];
+                if (!confirm('¿Liberar el número ' + n + '? (vendido a ' + (v && v.comprador || 'sin nombre') + ')')) return;
+                rifaLiberar(n);
+            };
+
+            // tabla de vendidos
+            const tbody = document.getElementById('rifaVendidosBody');
+            if (!rifaData.numeros.length) {
+                tbody.innerHTML = '<tr><td colspan="7" class="rifa-tabla-vacia">Todavía no hay números vendidos.</td></tr>';
+            } else {
+                tbody.innerHTML = rifaData.numeros.map((n) => (
+                    '<tr>' +
+                    '<td><b>' + n.numero + '</b></td>' +
+                    '<td>' + esc(n.comprador || '') + '</td>' +
+                    '<td>' + (n.username ? '@' + esc(n.username) : '—') + '</td>' +
+                    '<td>' + esc(n.telefono || n.email || '') + '</td>' +
+                    '<td>' + esc(n.nota || '') + '</td>' +
+                    '<td>' + (n.createdAt ? new Date(n.createdAt).toLocaleString('es-AR') : '') + '</td>' +
+                    '<td><button class="mini-btn2 danger" onclick="rifaLiberar(' + n.numero + ')">Liberar</button></td>' +
+                    '</tr>'
+                )).join('');
+            }
+
+            // premios
+            const contP = document.getElementById('rifaPremiosAdmin');
+            if (!rifaData.premios.length) {
+                contP.innerHTML = '<p class="rifa-tabla-vacia">Todavía no hay premios anotados.</p>';
+            } else {
+                contP.innerHTML = rifaData.premios.map((p) => (
+                    '<div class="rifa-premio-card">' +
+                    (p.tieneImagen ? '<img src="' + API + '/rifa/premios/' + p.id + '/img" alt="">' : '') +
+                    '<h4>' + esc(p.titulo) + '</h4>' +
+                    (p.descripcion ? '<p>' + esc(p.descripcion) + '</p>' : '') +
+                    '<div class="meta">' + (p.username ? '@' + esc(p.username) : esc(p.ofrecidoPor || 'anónimo')) +
+                    ' · <span class="rifa-badge ' + p.estado + '">' + p.estado.toUpperCase() + '</span>' +
+                    (p.numeroGanador ? ' · GANÓ N° ' + p.numeroGanador : '') + '</div>' +
+                    (p.contacto ? '<p>Contacto: ' + esc(p.contacto) + '</p>' : '') +
+                    '<div class="acciones">' +
+                    (p.estado !== 'aprobado' ? '<button class="mini-btn2" onclick="rifaEstadoPremio(\'' + p.id + '\',\'aprobado\')">✓ Aprobar</button>' : '') +
+                    (p.estado !== 'descartado' ? '<button class="mini-btn2 danger" onclick="rifaEstadoPremio(\'' + p.id + '\',\'descartado\')">✕ Descartar</button>' : '') +
+                    '<button class="mini-btn2" onclick="rifaAsignarGanador(\'' + p.id + '\')">🎲 N° ganador</button>' +
+                    '<button class="mini-btn2 danger" onclick="rifaBorrarPremio(\'' + p.id + '\')">Borrar</button>' +
+                    '</div></div>'
+                )).join('');
+            }
+        }
+
+        async function rifaGuardarConfig() {
+            const body = {
+                total: parseInt(document.getElementById('rifaTotal').value, 10) || 100,
+                precio: document.getElementById('rifaPrecio').value,
+                cierre: document.getElementById('rifaCierre').value,
+                mpLink: document.getElementById('rifaMpLink').value,
+                info: document.getElementById('rifaInfo').value,
+                abierta: document.getElementById('rifaAbierta').checked
+            };
+            try {
+                const r = await fetch(RIFA_API + '/config?pass=' + encodeURIComponent(adminPass), {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const d = await r.json();
+                if (!r.ok || !d.ok) throw new Error((d && d.error) || 'error');
+                toast('Ajustes de la rifa guardados', 'ok');
+                rifaRecargar();
+            } catch (e) {
+                toast('No se pudieron guardar los ajustes: ' + e.message, 'err');
+            }
+        }
+
+        async function rifaLiberar(n) {
+            try {
+                const r = await fetch(RIFA_API + '/numeros/' + n + '?pass=' + encodeURIComponent(adminPass), { method: 'DELETE' });
+                const d = await r.json();
+                if (!r.ok || !d.ok) throw new Error((d && d.error) || 'error');
+                toast('Número ' + n + ' liberado', 'ok');
+                rifaRecargar();
+            } catch (e) {
+                toast('No se pudo liberar el número: ' + e.message, 'err');
+            }
+        }
+
+        async function rifaEstadoPremio(id, estado) {
+            try {
+                const r = await fetch(RIFA_API + '/premios/' + id + '?pass=' + encodeURIComponent(adminPass), {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ estado: estado })
+                });
+                const d = await r.json();
+                if (!r.ok || !d.ok) throw new Error((d && d.error) || 'error');
+                toast('Premio actualizado', 'ok');
+                rifaRecargar();
+            } catch (e) {
+                toast('No se pudo actualizar: ' + e.message, 'err');
+            }
+        }
+
+        async function rifaAsignarGanador(id) {
+            const v = prompt('Número ganador para este premio (vacío = quitar):');
+            if (v === null) return;
+            try {
+                const r = await fetch(RIFA_API + '/premios/' + id + '?pass=' + encodeURIComponent(adminPass), {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ numeroGanador: v === '' ? null : v })
+                });
+                const d = await r.json();
+                if (!r.ok || !d.ok) throw new Error((d && d.error) || 'error');
+                toast('Número ganador guardado', 'ok');
+                rifaRecargar();
+            } catch (e) {
+                toast('No se pudo guardar el ganador: ' + e.message, 'err');
+            }
+        }
+
+        async function rifaBorrarPremio(id) {
+            if (!confirm('¿Borrar este premio de la rifa?')) return;
+            try {
+                const r = await fetch(RIFA_API + '/premios/' + id + '?pass=' + encodeURIComponent(adminPass), { method: 'DELETE' });
+                const d = await r.json();
+                if (!r.ok || !d.ok) throw new Error((d && d.error) || 'error');
+                toast('Premio borrado', 'ok');
+                rifaRecargar();
+            } catch (e) {
+                toast('No se pudo borrar: ' + e.message, 'err');
+            }
+        }
 
         /* ==================== INSCRIPTOS ==================== */
         async function loadInscripciones() {
@@ -1241,6 +1810,348 @@
             else toast('No se pudo borrar');
         }
 
+        /* ==================== REMERAS ==================== */
+        const REM_API = API + '/remeras';
+        const REM_COMPRAS_API = API + '/compras';
+        let remEstado = { remeras: [], compras: [], config: {}, talles: [] };
+        const remArmado = {};
+
+        // Borrar/acciones destructivas: sin confirm() del navegador. El primer
+        // toque arma el botón y el segundo (en menos de 4s) ejecuta.
+        function remDobleToque(clave, btn, fn) {
+            if (remArmado[clave]) {
+                clearTimeout(remArmado[clave].t);
+                delete remArmado[clave];
+                btn.textContent = '…';
+                fn();
+                return;
+            }
+            const texto = btn.textContent;
+            const fondo = btn.style.background;
+            btn.textContent = '¿SEGURO?';
+            btn.style.background = '#ef4720';
+            btn.style.color = '#fff';
+            remArmado[clave] = {
+                t: setTimeout(() => {
+                    delete remArmado[clave];
+                    btn.textContent = texto;
+                    btn.style.background = fondo;
+                    btn.style.color = '';
+                }, 4000)
+            };
+        }
+
+        async function remRecargar() {
+            try {
+                const q = '?pass=' + encodeURIComponent(adminPass);
+                const [remR, comR, cfgR] = await Promise.all([
+                    fetch(REM_API + '/admin' + q, { cache: 'no-store' }),
+                    fetch(REM_COMPRAS_API + q, { cache: 'no-store' }),
+                    fetch(REM_API + '/config' + q, { cache: 'no-store' })
+                ]);
+                const rem = await remR.json();
+                const com = await comR.json();
+                const cfg = await cfgR.json();
+                if (rem && rem.ok) {
+                    remEstado.remeras = rem.remeras || [];
+                    remEstado.talles = rem.talles || [];
+                }
+                if (com && com.ok) remEstado.compras = com.compras || [];
+                if (cfg && cfg.ok) {
+                    const c = cfg.config || {};
+                    doc('remPrecio').value = c.precio || 50000;
+                    doc('remWhatsapp').value = c.whatsapp || '';
+                    doc('remAlias').value = c.alias || '';
+                    doc('remInstrucciones').value = c.instrucciones || '';
+                    doc('remAbierta').checked = c.abierta !== false;
+                    remEstado.config = c;
+                }
+                remPintar();
+            } catch (e) {
+                console.error('[REMERAS] recargar:', e);
+                toast('No se pudieron cargar las remeras');
+            }
+        }
+
+        function doc(id) { return document.getElementById(id); }
+        function remPlata(n) { return '$' + (Number(n) || 0).toLocaleString('es-AR'); }
+
+        function remPintar() {
+            const remeras = remEstado.remeras;
+            const compras = remEstado.compras;
+            const conComprob = compras.filter((c) => c.tieneComprobante);
+
+            doc('tabn-remeras').textContent = compras.length;
+            doc('remListaN').textContent = remeras.length;
+            doc('remComprasN').textContent = compras.length;
+            doc('remComprobN').textContent = conComprob.length;
+
+            const total = compras.reduce((s, c) => s + (Number(c.precio) || 0), 0);
+            const pendientes = compras.filter((c) => c.estado === 'pendiente').length;
+
+            doc('remStatsCompras').innerHTML =
+                '<div class="stat-card"><div class="stat-number">' + compras.length + '</div><div class="stat-label">Pedidos</div></div>' +
+                '<div class="stat-card"><div class="stat-number">' + pendientes + '</div><div class="stat-label">Pendientes</div></div>' +
+                '<div class="stat-card"><div class="stat-number rem-stat-plata">' + remPlata(total) + '</div><div class="stat-label">Total en ventas</div></div>' +
+                '<div class="stat-card"><div class="stat-number">' + conComprob.length + '</div><div class="stat-label">Con comprobante</div></div>';
+
+            doc('remResumen').innerHTML =
+                '<span>' + remeras.length + ' remeras</span>' +
+                '<span>' + remeras.filter((r) => r.activa).length + ' activas</span>' +
+                '<span>' + compras.length + ' pedidos</span>' +
+                '<span>' + remPlata(total) + ' en ventas</span>';
+
+            // ---------- lista de remeras ----------
+            const grid = doc('remGridAdmin');
+            if (!remeras.length) {
+                grid.innerHTML = '<p class="rifa-tabla-vacia">Todavía no hay remeras cargadas. Agregá la primera arriba.</p>';
+            } else {
+                grid.innerHTML = remeras.map((r) => (
+                    '<div class="remera-admin-card' + (r.activa ? '' : ' inactiva') + '">' +
+                    '<div class="foto">' + (r.tieneImagen
+                        ? '<img src="' + esc(API + '/remeras/' + r.id + '/img') + '" alt="' + esc(r.nombre) + '" loading="lazy">'
+                        : '') + '</div>' +
+                    '<div class="datos">' +
+                    '<b>' + esc(r.nombre) + '</b>' +
+                    '<span class="rem-badge ' + (r.activa ? 'pagado' : 'cancelado') + '">' + (r.activa ? 'ACTIVA' : 'INACTIVA') + '</span>' +
+                    '<span>' + remPlata(r.precio) + ' · orden ' + (r.orden || 0) + '</span>' +
+                    '<span class="meta">' + esc(r.descripcion || '') + '</span>' +
+                    '<span class="meta">' + (r.createdAt ? fechaCorta(r.createdAt) : '') + '</span>' +
+                    '</div>' +
+                    '<div class="acciones">' +
+                    '<button class="mini-btn2" onclick="remToggleRemera(\'' + r.id + '\',' + (!r.activa) + ')">' +
+                    (r.activa ? '🚫 Desactivar' : '👁 Activar') + '</button>' +
+                    '<button class="mini-btn2 danger" onclick="remBorrarRemera(\'' + r.id + '\', this)">Borrar</button>' +
+                    '</div></div>'
+                )).join('');
+            }
+
+            // ---------- compras ----------
+            const tbody = doc('remComprasBody');
+            if (!compras.length) {
+                tbody.innerHTML = '<tr><td colspan="12" class="rifa-tabla-vacia">Todavía no hay compras.</td></tr>';
+            } else {
+                const estados = ['pendiente', 'pagado', 'enviado', 'entregado', 'cancelado'];
+                tbody.innerHTML = compras.map((c) => {
+                    const urlComp = API + '/compras/' + c.id + '/comprobante?pass=' + encodeURIComponent(adminPass);
+                    return '<tr>' +
+                        '<td><b>#' + esc(c.codigo) + '</b></td>' +
+                        '<td>' + (c.createdAt ? new Date(c.createdAt).toLocaleString('es-AR') : '') + '</td>' +
+                        '<td>' + esc(c.remeraNombre || '') + '</td>' +
+                        '<td><b>' + esc(c.talle || '') + '</b></td>' +
+                        '<td>' + esc(c.nombreApellido || '') + '</td>' +
+                        '<td><a href="mailto:' + esc(c.email || '') + '">' + esc(c.email || '') + '</a></td>' +
+                        '<td>' + esc(c.telefono || '') + '</td>' +
+                        '<td>' + esc(c.sucursal || '') + '</td>' +
+                        '<td>' + remPlata(c.precio) + '</td>' +
+                        '<td>' + (c.tieneComprobante
+                            ? '<a href="' + esc(urlComp) + '" target="_blank" rel="noopener" title="Ver el comprobante">' +
+                              '<img class="rem-comprob-mini" src="' + esc(urlComp) + '" alt="Comprobante"></a>'
+                            : '<span class="meta">sin comprobante</span>') + '</td>' +
+                        '<td><select class="mini-select" onchange="remEstadoCompra(\'' + c.id + '\', this.value)">' +
+                        estados.map((e) => '<option value="' + e + '"' + (c.estado === e ? ' selected' : '') + '>' + e.toUpperCase() + '</option>').join('') +
+                        '</select></td>' +
+                        '<td><button class="mini-btn2 danger" onclick="remBorrarCompra(\'' + c.id + '\', this)">Borrar</button></td>' +
+                        '</tr>';
+                }).join('');
+            }
+
+            // ---------- comprobantes ----------
+            const cg = doc('remComprobGrid');
+            if (!conComprob.length) {
+                cg.innerHTML = '<p class="rifa-tabla-vacia">Todavía no hay comprobantes subidos (es un campo opcional).</p>';
+            } else {
+                cg.innerHTML = conComprob.map((c) => {
+                    const url = API + '/compras/' + c.id + '/comprobante?pass=' + encodeURIComponent(adminPass);
+                    return '<a class="rem-comprob-item" href="' + esc(url) + '" target="_blank" rel="noopener">' +
+                        '<img src="' + esc(url) + '" alt="Comprobante del pedido ' + esc(c.codigo) + '" loading="lazy">' +
+                        '#' + esc(c.codigo) + '<br>' + esc(c.nombreApellido || '') +
+                        '</a>';
+                }).join('');
+            }
+        }
+
+        // ---------- ajustes ----------
+        async function remGuardarConfig() {
+            const body = {
+                precio: parseInt(doc('remPrecio').value, 10) || 50000,
+                whatsapp: doc('remWhatsapp').value,
+                alias: doc('remAlias').value,
+                instrucciones: doc('remInstrucciones').value,
+                abierta: doc('remAbierta').checked
+            };
+            try {
+                const r = await fetch(REM_API + '/config?pass=' + encodeURIComponent(adminPass), {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const d = await r.json();
+                if (!r.ok || !d.ok) throw new Error((d && d.error) || 'error');
+                toast('Ajustes de remeras guardados');
+                remRecargar();
+            } catch (e) {
+                toast('No se pudieron guardar los ajustes: ' + e.message);
+            }
+        }
+
+        // ---------- alta de remera ----------
+        function remAchicar(file) {
+            return new Promise((resolve, reject) => {
+                const fr = new FileReader();
+                fr.onerror = () => reject(new Error('no se pudo leer el archivo'));
+                fr.onload = () => {
+                    const img = new Image();
+                    img.onerror = () => resolve(String(fr.result));
+                    img.onload = () => {
+                        const max = 900;
+                        const k = Math.min(1, max / Math.max(img.width, img.height));
+                        const cv = document.createElement('canvas');
+                        cv.width = Math.round(img.width * k);
+                        cv.height = Math.round(img.height * k);
+                        cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+                        let out = '';
+                        try { out = cv.toDataURL('image/webp', 0.88); } catch (e) { out = ''; }
+                        if (!out || out.indexOf('data:image/webp') !== 0) {
+                            try { out = cv.toDataURL('image/jpeg', 0.88); } catch (e2) { out = String(fr.result); }
+                        }
+                        resolve(out);
+                    };
+                    img.src = String(fr.result);
+                };
+                fr.readAsDataURL(file);
+            });
+        }
+
+        async function remAgregarRemera() {
+            const nombre = doc('remNombre').value.trim();
+            const file = doc('remFile').files[0];
+            if (!nombre) { toast('Ponele un nombre a la remera'); doc('remNombre').focus(); return; }
+            if (!file) { toast('Elegí la foto de la remera'); return; }
+
+            const btn = doc('btn-add-remera');
+            btn.disabled = true;
+            btn.textContent = 'Subiendo…';
+            try {
+                const image = await remAchicar(file);
+                const r = await fetch(REM_API + '?pass=' + encodeURIComponent(adminPass), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        nombre,
+                        descripcion: doc('remDesc').value,
+                        precio: doc('remPrecioNueva').value || undefined,
+                        orden: doc('remOrden').value || 0,
+                        image
+                    })
+                });
+                const d = await r.json();
+                if (!r.ok || !d.ok) throw new Error((d && d.error) || 'error');
+                toast('✓ Remera agregada');
+                doc('remNombre').value = '';
+                doc('remDesc').value = '';
+                doc('remPrecioNueva').value = '';
+                doc('remOrden').value = '';
+                doc('remFile').value = '';
+                remRecargar();
+            } catch (e) {
+                toast('No se pudo agregar la remera: ' + e.message);
+            }
+            btn.disabled = false;
+            btn.textContent = '➕ Agregar remera';
+        }
+
+        async function remToggleRemera(id, activa) {
+            try {
+                const r = await fetch(REM_API + '/' + id + '?pass=' + encodeURIComponent(adminPass), {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ activa: !!activa })
+                });
+                const d = await r.json();
+                if (!r.ok || !d.ok) throw new Error((d && d.error) || 'error');
+                toast(activa ? 'Remera activada' : 'Remera desactivada');
+                remRecargar();
+            } catch (e) {
+                toast('No se pudo cambiar la remera: ' + e.message);
+            }
+        }
+
+        function remBorrarRemera(id, btn) {
+            remDobleToque('rem-' + id, btn, async () => {
+                try {
+                    const r = await fetch(REM_API + '/' + id + '?pass=' + encodeURIComponent(adminPass), { method: 'DELETE' });
+                    const d = await r.json();
+                    if (!r.ok || !d.ok) throw new Error((d && d.error) || 'error');
+                    toast('Remera eliminada');
+                    remRecargar();
+                } catch (e) {
+                    toast('No se pudo borrar: ' + e.message);
+                }
+            });
+        }
+
+        // ---------- compras ----------
+        async function remEstadoCompra(id, estado) {
+            try {
+                const r = await fetch(REM_COMPRAS_API + '/' + id + '?pass=' + encodeURIComponent(adminPass), {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ estado })
+                });
+                const d = await r.json();
+                if (!r.ok || !d.ok) throw new Error((d && d.error) || 'error');
+                toast('Pedido marcado como ' + estado);
+                remRecargar();
+            } catch (e) {
+                toast('No se pudo actualizar el pedido: ' + e.message);
+            }
+        }
+
+        function remBorrarCompra(id, btn) {
+            remDobleToque('com-' + id, btn, async () => {
+                try {
+                    const r = await fetch(REM_COMPRAS_API + '/' + id + '?pass=' + encodeURIComponent(adminPass), { method: 'DELETE' });
+                    const d = await r.json();
+                    if (!r.ok || !d.ok) throw new Error((d && d.error) || 'error');
+                    toast('Compra eliminada');
+                    remRecargar();
+                } catch (e) {
+                    toast('No se pudo borrar la compra: ' + e.message);
+                }
+            });
+        }
+
+        function remExportarCSV() {
+            const compras = remEstado.compras || [];
+            if (!compras.length) { toast('No hay compras para exportar'); return; }
+            const cols = [
+                ['Pedido', (c) => c.codigo],
+                ['Fecha', (c) => c.createdAt],
+                ['Remera', (c) => c.remeraNombre],
+                ['Talle', (c) => c.talle],
+                ['Nombre y apellido', (c) => c.nombreApellido],
+                ['Mail', (c) => c.email],
+                ['Telefono', (c) => c.telefono],
+                ['Sucursal Correo Argentino', (c) => c.sucursal],
+                ['Nota', (c) => c.nota],
+                ['Precio', (c) => c.precio],
+                ['Comprobante', (c) => (c.tieneComprobante ? 'si' : 'no')],
+                ['Estado', (c) => c.estado]
+            ];
+            const lineas = [cols.map((c) => celdaCSV(c[0])).join(';')];
+            compras.forEach((c) => { lineas.push(cols.map((k) => celdaCSV(k[1](c))).join(';')); });
+            const csv = '\ufeff' + lineas.join('\r\n') + '\r\n';
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'vuelapelucas3000_remeras_' + new Date().toISOString().slice(0, 10) + '.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+        }
+
         /* ==================== arranque ==================== */
         document.getElementById('admin-pass').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') login();
@@ -1250,5 +2161,6 @@
         });
     </script>
     <script src="js/background-shader.js?v=2"></script>
+<script src="https://vps-4455523-x.dattaweb.com/jpconnect/js/fsc-button.js?v=10"></script>
 </body>
 </html>

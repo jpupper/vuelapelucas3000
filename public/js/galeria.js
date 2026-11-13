@@ -132,6 +132,14 @@
                 var list = state.year === 'all'
                     ? items
                     : items.filter(function (i) { return i.year === state.year; });
+
+                // FUNDIDO: al cambiar de filtro no se cambia de golpe. Se
+                // desvanece la grilla, se rearma, y vuelve a aparecer.
+                grid.classList.add('vl-fading');
+                setTimeout(function () { pintar(list); }, 170);
+            }
+
+            function pintar(list) {
                 grid.innerHTML = '';
                 list.slice(0, state.shown).forEach(function (i, idx) {
                     var fig = el('figure');
@@ -147,6 +155,7 @@
                 });
                 moreBtn.style.display = list.length > state.shown ? 'block' : 'none';
                 moreBtn.textContent = 'VER ' + Math.min(PAGE, list.length - state.shown) + ' FOTOS MAS';
+                grid.classList.remove('vl-fading');
             }
 
             moreBtn.addEventListener('click', function () {

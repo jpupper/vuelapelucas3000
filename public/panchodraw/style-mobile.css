@@ -1,0 +1,364 @@
+/* ============================================================================
+   PANCHODRAW · adaptación a celular y tablet
+   ----------------------------------------------------------------------------
+   Se carga DESPUÉS de style.css (ver el <link> en index.html). Todo lo de acá
+   está dentro de media queries, así que el diseño de escritorio —el Paint de
+   Windows 95 con su marco, menús y barra de estado— queda exactamente igual.
+
+   El problema que resuelve: panchodraw era la única página del sitio sin
+   <meta viewport> y sin una sola media query. En un celular el navegador la
+   dibujaba con un lienzo virtual de 980 px y el usuario veía la ventana
+   achicada, con las herramientas de 24 px imposibles de tocar.
+   ========================================================================== */
+
+/* ── reglas comunes a táctil (sin importar el ancho) ────────────────────── */
+@media (pointer: coarse) {
+  /* nada de selección de texto ni menús contextuales al dibujar seguido */
+  .paint-window, .canvas-outer-viewport { -webkit-touch-callout: none; }
+  .canvas-frame canvas { touch-action: none; }
+  /* los sliders/selectores nativos un poco más altos, para el dedo */
+  .wiggly-select { min-height: 30px; }
+}
+
+/* ── TABLET ──────────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  body { padding: 4px; }
+
+  .paint-window { max-width: 100%; }
+
+  .vl-back-link {
+    display: inline-block;
+    font-size: 9px;
+    padding: 6px 8px;
+    margin-bottom: 4px;
+  }
+
+  /* el marco deja de ser una ventana con alto fijo: la página hace scroll */
+  .paint-workspace {
+    height: auto;
+    min-height: 0;
+    flex-wrap: wrap;
+  }
+
+  /* barra de accesos rápidos: dos filas con scroll horizontal si hace falta */
+  .vuelapelucas-subbar {
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 4px;
+  }
+  .vuelapelucas-subbar .win-button {
+    flex: 1 1 auto;
+    min-height: 34px;
+    font-size: 9px;
+  }
+  .vuelapelucas-subbar .sep-vertical { display: none; }
+
+  /* caja de herramientas: 13 celdas en una franja que se puede deslizar */
+  .toolbox-container {
+    width: 100%;
+    flex-direction: row;
+    align-items: flex-start;
+    border-right: 0;
+    border-bottom: 1px solid #808080;
+    padding: 4px;
+    gap: 6px;
+    overflow-x: auto;
+  }
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+    flex: 1 1 auto;
+  }
+  .tool-cell {
+    width: auto;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .tool-cell svg { width: 22px; height: 22px; }
+
+  /* opciones de la herramienta activa: fila propia, al lado de la paleta */
+  .tool-options-panel {
+    flex: 1 1 100%;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .wiggly-control-box { flex: 0 0 auto; align-self: flex-start; width: auto; max-width: 45%; box-sizing: border-box; }
+  .wiggly-select { width: 100%; max-width: 100%; box-sizing: border-box; }
+
+  /* lienzo: ocupa el ancho disponible y se adapta al alto de la pantalla */
+  .canvas-outer-viewport {
+    width: 100%;
+    flex: 1 1 100%;
+    padding: 8px;
+    min-height: 0;
+    align-items: flex-start;
+  }
+  .canvas-frame canvas {
+    max-width: 100%;
+    height: auto !important;
+    display: block;
+  }
+
+  /* paleta: 12 colores que entren en el ancho */
+  .color-box-bar { flex-wrap: wrap; gap: 6px; padding: 6px; }
+  .color-grid { flex: 1 1 auto; }
+  .color-swatch { width: 28px; height: 28px; }
+
+  /* barra de estado: se achica pero sigue informando */
+  .win-statusbar { flex-wrap: wrap; font-size: 7px; }
+  .status-cell.status-main { flex: 1 1 100%; }
+}
+
+/* ── CELULAR ─────────────────────────────────────────────────────────────── */
+@media (max-width: 620px) {
+  body { padding: 0; background: #c0c0c0; }
+
+  /* en vertical, la ventana ocupa toda la pantalla (sin marco decorativo) */
+  .paint-window {
+    max-width: none;
+    width: 100%;
+    min-height: 100dvh;
+    border: 0;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* El link "volver" NO va flotando: al ser fixed heredaba top:8px de style.css
+     y acá se le sumaba bottom:8px, así que se estiraba a TODO el alto de la
+     pantalla (188x828 en 390x844) y tapaba la mitad derecha del lienzo: los
+     mousemove morían ahí y por eso se dibujaba un punto pero no el arrastre. */
+  .vl-back-link {
+    position: static;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 4px 8px;
+    font-size: 8px;
+    line-height: 1.25;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: #c0c0c0;
+    color: #000;
+    border: 2px solid;
+    border-color: #fff #000 #000 #fff;
+  }
+
+  /* barra de título: se queda con lo esencial */
+  .win-titlebar { padding: 3px 4px; min-height: 26px; }
+  .win-title-text { font-size: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .win-title-icon { width: 14px; height: 14px; flex: 0 0 auto; }
+  .win-title-btn { min-width: 24px; min-height: 22px; }
+  /* minimizar no tiene sentido en una pantalla llena */
+  #btnWinMin { display: none; }
+
+  /* la página es una columna: el link "volver" arriba (22 px) y la ventana
+     ocupando EXACTAMENTE el resto. Antes la ventana era 100dvh y, al sumarle
+     el link, se pasaba 22 px: la barra de estado quedaba fuera de pantalla. */
+  html, body {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+  }
+  body { display: flex; flex-direction: column; margin: 0; padding: 0; }
+  .paint-window {
+    height: auto;
+    max-height: none;
+    flex: 1 1 0;          /* base 0: se estira a TODO el alto que queda */
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* menús: scroll horizontal, que no se corten */
+  .win-menubar {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding: 0 2px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .win-menu-label { min-height: 26px; display: flex; align-items: center; }
+
+  /* accesos rápidos: lo importante primero */
+  .vuelapelucas-subbar {
+    padding: 4px;
+    gap: 4px;
+    background: #c0c0c0;
+  }
+  /* 3 columnas: los 8 accesos entran en 3 filas y le devuelven ~100 px al lienzo
+     (con 2 columnas la barra medía 219 px y el dibujo quedaba chico) */
+  .vuelapelucas-subbar .win-button {
+    flex: 1 1 calc(33.33% - 4px);
+    min-height: 34px;
+    max-height: 34px;
+    font-size: 8.5px;
+    padding: 2px 3px;
+    line-height: 1.1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .vuelapelucas-subbar .win-button-primary,
+  .vuelapelucas-subbar .win-button-publish {
+    flex: 1 1 100%;
+    max-height: 36px;
+    min-height: 36px;
+  }
+
+  /* herramientas en 7 columnas, 40 px de alto cada una */
+  .tools-grid { grid-template-columns: repeat(7, 1fr); gap: 2px; align-content: start; }
+  .tool-cell { height: 34px; min-height: 0; }
+  .tool-cell svg { width: 19px; height: 19px; }
+
+  .tool-options-panel { padding: 3px; gap: 3px; }
+  .wiggly-control-box { width: 100%; max-width: 100%; }
+  .wiggly-control-box .wiggly-title { font-size: 7px; }
+  .wiggly-select { width: 100%; max-width: 100%; min-height: 32px; font-size: 10px; }
+
+  /* herramientas compactas en alto: cada píxel acá es un píxel más de lienzo */
+  .toolbox-container { padding: 3px; }
+  .tools-grid { gap: 1px; }
+
+  /* LIENZO: el centro de todo. Se ajusta al espacio real de la pantalla. */
+  .paint-workspace {
+    flex: 1 1 auto;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 0;
+  }
+  .toolbox-container { flex: 0 0 auto; }
+  .canvas-outer-viewport {
+    padding: 6px;
+    align-items: center;
+    justify-content: center;
+    background: #808080;
+    flex: 1 1 0;            /* se queda con TODO el alto que sobra */
+    min-height: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;  /* sin esto el padding de 6px lo sacaba a 402 px */
+    overflow: hidden;
+  }
+  .canvas-frame { max-width: 100%; box-sizing: border-box; }
+  /* la caja de herramientas y la paleta no crecen: el alto sobrante es del lienzo */
+  .toolbox-container, .color-box-bar, .vuelapelucas-subbar, .win-statusbar { flex: 0 0 auto; }
+  .canvas-frame {
+    max-width: 100%;
+    line-height: 0;
+  }
+  .canvas-frame canvas {
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+  .canvas-outer-viewport { overflow: hidden; }
+
+  /* el botón flotante del ecosistema (z-index 2147483000) queda justo encima de
+     la paleta; en el celular se lo lleva al margen inferior del lienzo */
+  #fscBadgeWrap, .fsc-pill-fija {
+    top: auto !important;
+    bottom: calc(100dvh - 100%) !important;
+    transform: scale(.82);
+    transform-origin: bottom right;
+  }
+
+  /* paleta */
+  /* Paleta en celular: 6 columnas x 2 filas EXACTAS. La hoja base traía
+     `grid-template-rows: 15px 15px` + `grid-auto-flow: column`, así que acá hay
+     que redefinir todo: si no, los swatches de 30px se pisan entre sí y el
+     contenedor se ve roto (era el bug del celu). */
+  .color-box-bar {
+    padding: 6px;
+    gap: 8px;
+    position: relative;
+    z-index: 700;
+    flex-wrap: nowrap;
+    align-items: center;
+    box-sizing: border-box;
+  }
+  .color-current-preview { flex: 0 0 auto; width: 34px; height: 34px; }
+  .color-grid {
+    display: grid;
+    flex: 1 1 auto;
+    min-width: 0;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-rows: repeat(2, 30px);
+    grid-auto-flow: row;
+    gap: 3px;
+    padding: 2px;
+    box-sizing: border-box;
+  }
+  .color-swatch {
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  /* barra de estado: sólo coordenadas y tamaño, en una línea */
+  .win-statusbar { font-size: 7px; padding: 2px; }
+  .status-cell.status-main { display: none; }
+  .status-cell { padding: 2px 4px; }
+
+  /* diálogos (exportar / publicar): pantalla completa con scroll propio */
+  .modal-overlay { padding: 0 !important; align-items: stretch !important; }
+  .win-dialog {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 100dvh;
+    overflow-y: auto;
+    border: 0 !important;
+  }
+  .win-dialog .dialog-header { position: sticky; top: 0; z-index: 2; }
+  .dialog-option,
+  .export-option { min-height: 44px; }
+}
+
+/* ── celular apaisado: el lienzo manda ──────────────────────────────────── */
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 520px) {
+  .win-menubar,
+  .win-statusbar { display: none; }
+  .vuelapelucas-subbar .win-button { flex: 1 1 auto; min-height: 30px; font-size: 8px; }
+  .tools-grid { grid-template-columns: repeat(13, 1fr); }
+  .tool-cell { height: 30px; }
+  .tool-cell svg { width: 16px; height: 16px; }
+  .canvas-frame canvas { max-height: calc(100dvh - 190px); }
+  .color-box-bar { padding: 3px; }
+  .color-swatch { height: 22px; }
+}
+
+
+/* ============================================================
+   INGRESO JPCONNECT EN CELULAR
+   ============================================================ */
+@media (max-width: 900px) {
+  .vuelapelucas-subbar .win-button-fsc {
+    flex: 1 1 100%;
+    min-height: 34px;
+    font-size: 9px;
+  }
+  .win-dialog-fsc { width: auto; max-width: 92vw; }
+  .win-dialog-fsc .dialog-actions {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .win-dialog-fsc .dialog-actions .win-button {
+    flex: 1 1 100%;
+    min-height: 38px;
+  }
+}
+@media (max-width: 620px) {
+  .win-dialog-fsc .fsc-user { font-size: 13px; }
+  .win-dialog-fsc .fsc-sub { font-size: 9px; }
+}

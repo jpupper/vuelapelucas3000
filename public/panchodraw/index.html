@@ -2,12 +2,18 @@
 <html lang="es">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <!-- viewport: SIN esto el celular dibuja la página en un lienzo virtual de 980 px
+       y las herramientas quedan del tamaño de una uña (era el problema en mobile). -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+  <meta name="theme-color" content="#000080">
   <title>dibujo.bmp - Paint (VUELAPELUCAS 3000)</title>
   <!-- Fuentes bitmap / pixel art -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&family=VT323&family=Share+Tech+Mono&display=swap">
-  <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" type="text/css" href="style.css?v=4">
+  <!-- adaptación a celular/tablet (todo en media queries: el escritorio no cambia) -->
+  <link rel="stylesheet" type="text/css" href="style-mobile.css?v=4">
 </head>
 <body>
 
@@ -116,6 +122,7 @@
       <div class="sep-vertical"></div>
       <button class="win-button win-button-primary" id="btnQuickExport" title="Exportar en 256, 512, 1024 o 2048 px">💾 EXPORTAR (PNG / GIF / VIDEO)</button>
       <button class="win-button win-button-publish" id="btnQuickPublish" title="Publicar el dibujo en la galería pública de VUELAPELUCAS 3000">🌐 PUBLICAR EN LA GALERÍA</button>
+      <button class="win-button win-button-fsc" id="btnFscLogin" title="Entrar con tu cuenta JPCONNECT">👤 JPCONNECT: ENTRAR</button>
     </div>
 
     <!-- Área de Trabajo Principal: Caja de Herramientas y Visor del Lienzo -->
@@ -434,7 +441,7 @@
           </div>
           <div class="pub-fsc-row">
             <span id="pubFscStatus" class="pub-fsc-status">◌ Buscando sesión FSCAUTH...</span>
-            <a id="pubFscLink" class="pub-fsc-link" href="https://fullscreencode.com/fscauth/" target="_blank" rel="noopener">Logearse con FSCAUTH</a>
+            <a id="pubFscLink" class="pub-fsc-link" href="https://fullscreencode.com/jpconnect/" target="_blank" rel="noopener">Logearse con FSCAUTH</a>
           </div>
         </div>
 
@@ -457,6 +464,36 @@
         <div class="dialog-actions">
           <button class="win-button win-button-primary" id="btnDoPublish">Publicar</button>
           <button class="win-button" id="btnCancelPublish">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       SESIÓN JPCONNECT (login del ecosistema, con el estilo de PanchoDraw)
+       ========================================================================== -->
+  <div class="modal-overlay" id="fscDialog">
+    <div class="win-dialog win-dialog-fsc">
+      <div class="dialog-header">
+        <span>Cuenta JPCONNECT</span>
+        <button class="win-title-btn" id="btnCloseFsc">✕</button>
+      </div>
+      <div class="dialog-contents">
+        <div class="fsc-box">
+          <img id="fscAvatar" class="fsc-avatar" alt="JPCONNECT"
+               src="https://fullscreencode.com/jpconnect/img/isotipo-sin-fondo.png"
+               referrerpolicy="no-referrer">
+          <div class="fsc-datos">
+            <div class="fsc-user" id="fscUserName">@usuario</div>
+            <div class="fsc-sub">Sesión activa del ecosistema FullScreen</div>
+          </div>
+        </div>
+        <div class="pub-status" id="fscDialogMsg">Lo que guardes se sube solo a tu cuenta.</div>
+        <div class="dialog-actions">
+          <a class="win-button win-button-primary" id="fscPerfilLink"
+             href="https://fullscreencode.com/jpconnect/" target="_blank" rel="noopener">MI PERFIL</a>
+          <button class="win-button" id="btnFscLogout">Cerrar sesión</button>
+          <button class="win-button" id="btnAcceptFsc">Aceptar</button>
         </div>
       </div>
     </div>
@@ -522,8 +559,8 @@
 
   <!-- Scripts en estándar compatible ES3/ES5 -->
   <script type="text/javascript" src="gif-encoder.js"></script>
-  <script type="text/javascript" src="app.js?v=2"></script>
-  <!-- Boton universal del ecosistema FullScreen (isotipo) -->
-  <script src="https://vps-4455523-x.dattaweb.com/fscauth/js/fsc-button.js" data-fsc-mode="flow" data-fsc-pos="bottom-left" data-fsc-size="34"></script>
+  <script type="text/javascript" src="app.js?v=3"></script>
+  <!-- (se quitó el botón universal del ecosistema: acá el ingreso es JPCONNECT
+       integrado, con el estilo de PanchoDraw) -->
 </body>
 </html>

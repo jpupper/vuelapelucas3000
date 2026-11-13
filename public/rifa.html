@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5, viewport-fit=cover">
+  <meta name="theme-color" content="#ffd62c">
+  <title>RIFA — Vuelapelucas 3000</title>
+  <meta name="description" content="La rifa del Vuelapelucas 3000: elegí tus números, mirá los premios y anotá el tuyo.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css?v=8">
+  <link rel="stylesheet" href="css/rifa.css?v=2">
+</head>
+<body>
+
+  <!-- mismo fondo y navegación que la página principal -->
+  <header class="vl-nav">
+    <a class="vl-brand" href="index.html">
+      VUELAPELUCAS <b>3000</b>
+    </a>
+    <nav>
+      <a href="index.html#festival">ENCUENTRO</a>
+      <a href="index.html#galeria">GALERIA</a>
+      <a href="index.html#comunidad">COMUNIDAD</a>
+      <a href="panchodraw/">PANCHODRAW</a>
+      <a href="rifa.html" class="is-active">RIFA</a>
+      <a href="anotate.html">ANOTATE</a>
+    </nav>
+  </header>
+
+  <main class="rifa-page">
+
+    <!-- ================= PORTADA ================= -->
+    <section class="rifa-hero">
+      <p class="rifa-kicker">ÚLTIMO DÍA DEL FESTIVAL</p>
+      <h1 class="rifa-title">RIFA <span>VUELAPELUCAS</span></h1>
+      <p class="rifa-lead" id="rifaLead">Cargando la rifa…</p>
+      <div class="rifa-stats" id="rifaStats">
+        <div class="rifa-stat"><b id="statTotal">—</b><small>NÚMEROS</small></div>
+        <div class="rifa-stat"><b id="statVendidos">—</b><small>VENDIDOS</small></div>
+        <div class="rifa-stat"><b id="statDisponibles">—</b><small>DISPONIBLES</small></div>
+        <div class="rifa-stat"><b id="statPremios">—</b><small>PREMIOS</small></div>
+      </div>
+      <div class="rifa-hero-actions">
+        <a class="rifa-btn rifa-btn-yellow" href="#carton" id="ctaComprar">COMPRAR TU RIFA</a>
+        <a class="rifa-btn rifa-btn-white" href="#premios">VER LOS PREMIOS</a>
+        <a class="rifa-btn rifa-btn-white" href="#anotar-premio">INSCRIBIR TU PREMIO</a>
+      </div>
+    </section>
+
+    <!-- ================= CARTÓN DE NÚMEROS ================= -->
+    <section class="rifa-block" id="carton">
+      <div class="rifa-block-head">
+        <h2 class="rifa-h2">CARTÓN DE NÚMEROS</h2>
+        <p class="rifa-sub">Tocá los números que querés. Los grises ya están vendidos; los amarillos son tu selección.</p>
+      </div>
+      <div class="carton-toolbar">
+        <div class="carton-legend">
+          <span><i class="dot dot-libre"></i>LIBRE</span>
+          <span><i class="dot dot-vendido"></i>VENDIDO</span>
+          <span><i class="dot dot-mio"></i>TU ELECCIÓN</span>
+        </div>
+        <div class="carton-picker">
+          <input type="text" id="numManual" inputmode="numeric" placeholder="N°" aria-label="Número a buscar" maxlength="4">
+          <button type="button" class="rifa-mini" id="btnAgregarNumero">AGREGAR</button>
+          <button type="button" class="rifa-mini" id="btnRandom">🎲 AL AZAR</button>
+        </div>
+      </div>
+
+      <div class="carton-grid" id="cartonGrid" aria-live="polite"></div>
+
+      <div class="carton-panel" id="cartonPanel">
+        <div class="carton-panel-head">
+          <b id="selCount">0 números elegidos</b>
+          <button type="button" class="rifa-mini" id="btnLimpiarSel">LIMPIAR</button>
+        </div>
+        <div class="carton-chips" id="selChips"><span class="carton-empty">Todavía no elegiste ninguno.</span></div>
+
+        <div class="carton-form">
+          <label>TU NOMBRE
+            <input type="text" id="compNombre" maxlength="80" placeholder="Nombre y apellido">
+          </label>
+          <label>WHATSAPP / TELÉFONO
+            <input type="tel" id="compTel" maxlength="40" placeholder="11 5555 5555">
+          </label>
+          <label>EMAIL (opcional)
+            <input type="email" id="compEmail" maxlength="80" placeholder="tu@mail.com">
+          </label>
+          <label>NOTA (opcional)
+            <input type="text" id="compNota" maxlength="140" placeholder="Ej: los pago en la puerta">
+          </label>
+        </div>
+
+        <div class="carton-fsc" id="cartonFsc">
+          <span id="cartonFscTxt">◌ Sin sesión JPCONNECT: tus números quedan con el nombre que escribas.</span>
+          <button type="button" class="rifa-mini" id="btnFscCarton">ENTRAR CON JPCONNECT</button>
+        </div>
+
+        <div class="rifa-msg" id="cartonMsg"></div>
+        <button type="button" class="rifa-btn rifa-btn-yellow rifa-btn-block" id="btnComprar">COMPRAR TU RIFA</button>
+        <p class="carton-fine">Al confirmar, tus números quedan reservados y aparecen en el tablero. El pago se coordina con la organización.</p>
+      </div>
+    </section>
+
+    <!-- ================= PREMIOS ================= -->
+    <section class="rifa-block" id="premios">
+      <div class="rifa-block-head">
+        <h2 class="rifa-h2">PREMIOS DE LA RIFA</h2>
+        <p class="rifa-sub">Cada premio lo ofrece alguien de la comunidad. Se sortean todos el último día del festival.</p>
+      </div>
+      <div class="premios-grid" id="premiosGrid">
+        <p class="rifa-vacio">Cargando premios…</p>
+      </div>
+    </section>
+
+    <!-- ================= INSCRIBIR UN PREMIO ================= -->
+    <section class="rifa-block" id="anotar-premio">
+      <div class="rifa-block-head">
+        <h2 class="rifa-h2">INSCRIBIR TU PREMIO</h2>
+        <p class="rifa-sub">¿Tenés algo para donar a la rifa? Anotalo acá: tu premio queda vinculado a tu cuenta JPCONNECT.</p>
+      </div>
+
+      <div class="premio-form" id="premioForm">
+        <div class="premio-fsc" id="premioFsc">
+          <img id="premioAvatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23c0c0c0'/%3E%3Ccircle cx='16' cy='12' r='5' fill='%23808080'/%3E%3Cpath d='M5 30c0-6 5-9 11-9s11 3 11 9' fill='%23808080'/%3E%3C/svg%3E" alt="">
+          <div>
+            <b id="premioFscUser">Sin sesión</b>
+            <small id="premioFscSub">Entrá con JPCONNECT para que el premio figure a tu nombre de usuario.</small>
+          </div>
+          <button type="button" class="rifa-mini" id="btnFscPremio">ENTRAR</button>
+        </div>
+
+        <label class="premio-field">QUÉ PREMIO OFRECÉS *
+          <input type="text" id="prTitulo" maxlength="110" placeholder="Ej: Remera del Vuelapelucas / Obra / Cena / Clase de VJ">
+        </label>
+        <label class="premio-field">DESCRIPCIÓN
+          <textarea id="prDesc" rows="3" maxlength="400" placeholder="Contá qué es, medidas, condiciones, dónde se retira…"></textarea>
+        </label>
+        <div class="premio-row">
+          <label class="premio-field">TU NOMBRE VISIBLE *
+            <input type="text" id="prNombre" maxlength="80" placeholder="Cómo querés figurar">
+          </label>
+          <label class="premio-field">CONTACTO (opcional)
+            <input type="text" id="prContacto" maxlength="120" placeholder="WhatsApp, IG o email">
+          </label>
+        </div>
+
+        <label class="premio-field">FOTO DEL PREMIO (opcional)
+          <input type="file" id="prFoto" accept="image/*">
+        </label>
+        <div class="premio-preview" id="prPreview" hidden>
+          <img id="prPreviewImg" alt="Vista previa del premio">
+          <button type="button" class="rifa-mini" id="btnQuitarFoto">QUITAR FOTO</button>
+        </div>
+
+        <div class="rifa-msg" id="premioMsg"></div>
+        <button type="button" class="rifa-btn rifa-btn-yellow rifa-btn-block" id="btnEnviarPremio">INSCRIBIR MI PREMIO EN LA RIFA</button>
+      </div>
+    </section>
+
+    <p class="rifa-foot">Vuelapelucas 3000 · La rifa se sortea el último día del festival. <a href="index.html">Volver a la página principal</a></p>
+  </main>
+
+  <!-- mismo shader de fondo que la página principal -->
+  <canvas id="vuelapelucas-bg"></canvas>
+  <script src="https://vps-4455523-x.dattaweb.com/jpshadereditor/include.js"></script>
+  <script src="js/rifa.js?v=2"></script>
+</body>
+</html>

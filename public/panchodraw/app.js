@@ -943,13 +943,91 @@
     }
   }
 
+
+  /* ── GUARDAR EN CELULAR ─────────────────────────────────────────────────
+     `a.download` funciona en escritorio y en Android/Chrome, pero en iOS
+     (Safari, Chrome iOS, y cualquier navegador embebido de Instagram/WhatsApp)
+     NO descarga: el click se ignora en silencio. Este respaldo muestra la
+     imagen en un visor con el instructivo de "mantener presionado", que es la
+     forma en que iOS guarda archivos. */
+  function guardarEnCelular(url, nombre) {
+    var viejo = document.getElementById('visorGuardar');
+    if (viejo) viejo.parentNode.removeChild(viejo);
+
+    var capa = document.createElement('div');
+    capa.id = 'visorGuardar';
+    capa.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.88);display:flex;' +
+      'flex-direction:column;align-items:center;justify-content:center;padding:14px;box-sizing:border-box;' +
+      "font-family:'Silkscreen','Courier New',monospace;color:#fff;text-align:center;";
+
+    var txt = document.createElement('div');
+    txt.style.cssText = 'font-size:11px;line-height:1.5;margin-bottom:10px;max-width:34em;';
+    txt.innerHTML = '<b>Para guardar la imagen</b><br>Mantené presionada la imagen y elegí ' +
+      '<b>“Guardar imagen”</b> / <b>“Agregar a Fotos”</b>.';
+    capa.appendChild(txt);
+
+    var img = document.createElement('img');
+    img.src = url;
+    img.alt = nombre;
+    img.style.cssText = 'max-width:92vw;max-height:64vh;image-rendering:pixelated;' +
+      'border:3px solid #fff;background:#fff;';
+    capa.appendChild(img);
+
+    var pie = document.createElement('div');
+    pie.style.cssText = 'margin-top:10px;font-size:9px;opacity:.8;';
+    pie.textContent = nombre;
+    capa.appendChild(pie);
+
+    var cerrar = document.createElement('button');
+    cerrar.type = 'button';
+    cerrar.textContent = '✕  CERRAR';
+    cerrar.style.cssText = 'margin-top:12px;padding:10px 18px;font:inherit;font-size:11px;cursor:pointer;' +
+      'background:#c0c0c0;color:#000;border:2px solid;border-color:#fff #000 #000 #fff;';
+    cerrar.onclick = function () { if (capa.parentNode) capa.parentNode.removeChild(capa); };
+    capa.appendChild(cerrar);
+
+    document.body.appendChild(capa);
+  }
+
+  // ¿este navegador realmente respeta a.download?
+  function soportaDescarga() {
+    var a = document.createElement('a');
+    return a.download !== undefined && !/iPhone|iPad|iPod/.test(navigator.userAgent);
+  }
+
+  // descarga con respaldo: intenta el clásico y, si es un dispositivo que no
+  // baja archivos, muestra el visor para guardar con el dedo.
+  function bajarArchivo(href, nombre) {
+    // Con sesión activa, guardar la imagen también la deja en tu cuenta JPCONNECT.
+    if (/\.png$/i.test(nombre) && typeof fscAutoGuardar === 'function') {
+      try { fscAutoGuardar(); } catch (e) {}
+    }
+    var esImagen = /\.png$|\.gif$/i.test(nombre);
+    if (soportaDescarga() || !esImagen) {
+      var a = document.createElement('a');
+      a.download = nombre;
+      a.href = href;
+      document.body.appendChild(a);
+      try { a.click(); } catch (e) { }
+      document.body.removeChild(a);
+      // si sigue acá, en iOS no pasó nada: se ofrece el visor
+      if (!soportaDescarga()) guardarEnCelular(href, nombre);
+      return;
+    }
+    guardarEnCelular(href, nombre);
+  }
+
   // --- EVENTOS DEL RATÓN EN LIENZO 256x256 ---
   function getCanvasCoords(e) {
     var rect = canvas.getBoundingClientRect();
     var scaleX = state.canvasWidth / rect.width;
     var scaleY = state.canvasHeight / rect.height;
-    var x = Math.floor((e.clientX - rect.left) * scaleX);
-    var y = Math.floor((e.clientY - rect.top) * scaleY);
+    // táctil: el punto está en e.touches / e.changedTouches, no en clientX
+    var src = e;
+    if (e.changedTouches && e.changedTouches.length) src = e.changedTouches[0];
+    else if (e.touches && e.touches.length) src = e.touches[0];
+    var x = Math.floor((src.clientX - rect.left) * scaleX);
+    var y = Math.floor((src.clientY - rect.top) * scaleY);
     return {
       x: Math.max(0, Math.min(state.canvasWidth - 1, x)),
       y: Math.max(0, Math.min(state.canvasHeight - 1, y))
@@ -960,6 +1038,58 @@
     if (e.preventDefault) e.preventDefault();
     return false;
   };
+
+  /* ── TÁCTIL (celular / tablet) ──────────────────────────────────────────
+     Los navegadores táctiles NO disparan mousedown/mousemove: sin esto, en el
+     celular se ve el Paint pero no se puede dibujar. Se traduce el toque a los
+     mismos handlers del mouse (un toque = botón izquierdo), con
+     preventDefault para que no scrollee ni haga zoom mientras se dibuja. */
+  function simularMouse(tipo, src, boton) {
+    var ev = {
+      clientX: src.clientX, clientY: src.clientY,
+      button: (boton === undefined ? 0 : boton),
+      preventDefault: function () { },
+      stopPropagation: function () { },
+      target: canvas
+    };
+    if (tipo === 'down' && typeof canvas.onmousedown === 'function') canvas.onmousedown(ev);
+    else if (tipo === 'move' && typeof canvas.onmousemove === 'function') canvas.onmousemove(ev);
+    else if (tipo === 'up' && typeof window.onmouseup === 'function') window.onmouseup(ev);
+  }
+
+  canvas.addEventListener('touchstart', function (e) {
+    if (e.touches.length > 1) return;      // dos dedos: dejar el zoom del navegador
+    e.preventDefault();
+    simularMouse('down', e.changedTouches[0], 0);
+  }, { passive: false });
+
+  canvas.addEventListener('touchmove', function (e) {
+    if (e.touches.length > 1) return;
+    e.preventDefault();
+    simularMouse('move', e.changedTouches[0], 0);
+  }, { passive: false });
+
+  function finToque(e) {
+    e.preventDefault();
+    var t = (e.changedTouches && e.changedTouches[0]) || { clientX: 0, clientY: 0 };
+    simularMouse('up', t, 0);
+  }
+  canvas.addEventListener('touchend', finToque, { passive: false });
+  canvas.addEventListener('touchcancel', finToque, { passive: false });
+
+  /* ARRASTRE A PRUEBA DE BALAS: mientras se dibuja, el trazo sigue aunque el
+     puntero salga del lienzo o pase por encima de cualquier capa (el link
+     "volver", el botón del ecosistema, la paleta). Antes, si un elemento
+     flotante se cruzaba, los mousemove no llegaban al canvas y quedaba sólo
+     el punto inicial: el arrastre "no funcionaba". */
+  window.addEventListener('mousemove', function (e) {
+    if (!state.isDrawing) return;
+    if (e.target === canvas) return;          // ese ya lo maneja el canvas
+    if (typeof getCanvasCoords !== 'function') return;
+    var pos = getCanvasCoords(e);
+    if (pos.x < 0 || pos.y < 0 || pos.x > 255 || pos.y > 255) return;   // fuera del área útil
+    if (typeof canvas.onmousemove === 'function') canvas.onmousemove(e);
+  });
 
   canvas.onmousemove = function (e) {
     var pos = getCanvasCoords(e);
@@ -1271,11 +1401,18 @@
     state.zoom = factor;
     canvas.style.width = (256 * factor) + 'px';
     canvas.style.height = (256 * factor) + 'px';
-    document.getElementById('btnQuickZoom').innerHTML = '🔍 Zoom: ' + (factor * 100) + '%';
+    document.getElementById('btnQuickZoom').innerHTML = '🔍 Zoom: ' + Math.round(factor * 100) + '%';
   }
 
   document.getElementById('btnQuickZoom').onclick = function () {
-    var next = (state.zoom === 1) ? 2 : ((state.zoom === 2) ? 4 : ((state.zoom === 4) ? 8 : 1));
+    // cicla 1x → 2x → 4x → 8x → 1x; con un zoom continuo (ej. 1.45x) se
+    // redondea al paso siguiente para no quedar en un valor raro.
+    var pasos = [1, 2, 4, 8];
+    var next = 2;
+    for (var i = 0; i < pasos.length; i++) {
+      if (state.zoom < pasos[i] - 0.001) { next = pasos[i]; break; }
+      next = 1;   // ya estaba en 8x
+    }
     setZoom(next);
   };
 
@@ -1707,12 +1844,8 @@
       outCtx.drawImage(canvas, 0, 0, 256, 256, 0, 0, targetDim, targetDim);
 
       exportProgressBar.style.width = '100%';
-      var a = document.createElement('a');
-      a.download = 'vuelapelucas_3000_' + targetDim + 'x' + targetDim + '.png';
-      a.href = outCanvas.toDataURL('image/png');
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      bajarArchivo(outCanvas.toDataURL('image/png'),
+                   'vuelapelucas_3000_' + targetDim + 'x' + targetDim + '.png');
 
       exportStatusMsg.innerHTML = '✓ PNG exportado con éxito (' + targetDim + 'x' + targetDim + ' px)';
       btnExecuteExport.disabled = false;
@@ -1757,18 +1890,8 @@
 
         setTimeout(function () {
           var gifResult = encoder.render();
-          var a = document.createElement('a');
-          a.download = 'vuelapelucas_3000_' + targetDim + 'x' + targetDim + '.gif';
-
-          if (typeof gifResult === 'string') {
-            a.href = gifResult;
-          } else {
-            var url = URL.createObjectURL(gifResult);
-            a.href = url;
-          }
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
+          var urlGif = (typeof gifResult === 'string') ? gifResult : URL.createObjectURL(gifResult);
+          bajarArchivo(urlGif, 'vuelapelucas_3000_' + targetDim + 'x' + targetDim + '.gif');
 
           exportProgressBar.style.width = '100%';
           exportStatusMsg.innerHTML = '✓ GIF animado generado con éxito (' + targetDim + 'x' + targetDim + ' px)';
@@ -1855,6 +1978,8 @@
   document.getElementById('menuGuardar').onclick = function () {
     document.getElementById('selExportFormat').value = 'json';
     document.getElementById('btnExecuteExport').click();
+    // Con sesión JPCONNECT, guardar también sube la obra a tu cuenta.
+    if (typeof fscAutoGuardar === 'function') fscAutoGuardar();
   };
 
   inputLoadImg.onchange = function (e) {
@@ -1890,8 +2015,8 @@
     ? (location.protocol + '//' + location.host + '/vuelapelucas3000_2')
     : 'https://vps-4455523-x.dattaweb.com/vuelapelucas3000_2';
   // Tecnico (server -> server): la verificacion de sesion va directo al VPS.
-  var FSC_API = 'https://vps-4455523-x.dattaweb.com/fscauth';
-  var FSC_AUTH_PUBLIC = 'https://fullscreencode.com/fscauth/';
+  var FSC_API = 'https://vps-4455523-x.dattaweb.com/jpconnect';
+  var FSC_AUTH_PUBLIC = 'https://fullscreencode.com/jpconnect/';
   // LOGIN DIRECTO: el boton manda a la pantalla de login de FSCAUTH y, al entrar,
   // el SSO VUELVE a ESTA misma pagina con ?token=&username=... (lo capturamos abajo).
   // Asi el usuario no queda tirado en el pasaporte ni tiene que volver a mano.
@@ -1947,13 +2072,42 @@
   var pubFscStatus = document.getElementById('pubFscStatus');
   var pubFscLink = document.getElementById('pubFscLink');
   var btnDoPublish = document.getElementById('btnDoPublish');
+  var btnFscLogin = document.getElementById('btnFscLogin');
+  var statusTextEl = document.getElementById('statusText');
 
   function pubMsg(txt, cls) {
     pubStatus.className = 'pub-status' + (cls ? ' ' + cls : '');
     pubStatus.innerHTML = txt;
   }
 
+  // Aviso corto en la barra de estado (reemplaza el texto de ayuda por unos segundos)
+  var statusTimer = null;
+  function statusAviso(txt, ms) {
+    if (!statusTextEl) return;
+    if (!statusAviso.original) statusAviso.original = statusTextEl.innerHTML;
+    statusTextEl.innerHTML = txt;
+    if (statusTimer) clearTimeout(statusTimer);
+    statusTimer = setTimeout(function () {
+      statusTextEl.innerHTML = statusAviso.original;
+      statusTimer = null;
+    }, ms || 6000);
+  }
+
+  function fscPintaBoton() {
+    if (!btnFscLogin) return;
+    if (fscSesion) {
+      btnFscLogin.className = 'win-button win-button-fsc is-on';
+      btnFscLogin.innerHTML = '👤 @' + fscSesion.username;
+      btnFscLogin.title = 'Sesión JPCONNECT activa: lo que guardes va a tu cuenta';
+    } else {
+      btnFscLogin.className = 'win-button win-button-fsc';
+      btnFscLogin.innerHTML = '👤 JPCONNECT: ENTRAR';
+      btnFscLogin.title = 'Entrá con tu cuenta FullScreen y lo que guardes queda en tu perfil';
+    }
+  }
+
   function fscPintaSesion() {
+    fscPintaBoton();
     if (fscSesion) {
       pubFscStatus.className = 'pub-fsc-status is-on';
       pubFscStatus.innerHTML = '● Sesión FSCAUTH activa: @' + fscSesion.username;
@@ -2130,6 +2284,130 @@
     });
   }
 
+  // ============================================================
+  // 💾 GUARDADO AUTOMÁTICO EN LA CUENTA JPCONNECT
+  // ------------------------------------------------------------
+  // Con sesión activa, GUARDAR el dibujo lo sube solo a la galería atada a tu
+  // cuenta, con el mismo protocolo del ecosistema: el token de FSCAUTH va como
+  // Bearer a /api/artworks, el servidor lo valida contra JPCONNECT y la obra
+  // queda indexada en el perfil. Sin sesión no se sube nada (sólo el archivo).
+  // ============================================================
+  var fscUltimaHuella = null;    // evita subir dos veces el mismo dibujo
+  var fscGuardando = false;
+
+  // Huella del dibujo: sirve para no subir dos veces lo mismo y para no subir
+  // un lienzo en blanco. Se calcula sobre el MODELO (trazo + fondo raster) y no
+  // sobre el canvas visible, porque el temblor lo redibuja en cada frame y la
+  // huella cambiaría siempre (con el canvas, el dedupe nunca funcionaba).
+  function fscHuella() {
+    try {
+      var st = state.strokes || [];
+      var h = 17, i, s, pts;
+      h = (h * 31 + st.length) | 0;
+      for (i = 0; i < st.length; i++) {
+        s = st[i];
+        pts = (s && s.points && s.points.length) || 0;
+        h = (h * 131 + pts) | 0;
+        if (s && s.points && pts) {
+          var ult = s.points[pts - 1];
+          h = (h * 31 + Math.round((ult.x || 0) * 7) + Math.round((ult.y || 0) * 13)) | 0;
+        }
+        h = (h * 31 + (s && s.color ? s.color.length : 0) + (s && s.size ? s.size * 3 : 0)) | 0;
+      }
+      // Fondo raster (bote de pintura, imágenes cargadas, texto estampado)
+      var d = bgCtx.getImageData(0, 0, 256, 256).data;
+      var tinta = 0;
+      for (i = 0; i < d.length; i += 4) {
+        if (!(d[i] > 240 && d[i + 1] > 240 && d[i + 2] > 240)) tinta++;
+        if ((i % 397) === 0) h = (h * 31 + d[i]) | 0;
+      }
+      return { h: h, vacio: (st.length === 0 && tinta < 12) };
+    } catch (e) {
+      return { h: 0, vacio: false };
+    }
+  }
+
+  function fscNombreAuto() {
+    var t = '';
+    try { t = document.getElementById('winTitleText').innerHTML; } catch (e) {}
+    t = String(t || '').replace(/\.bmp[\s\S]*$/i, '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+    if (!t || /^dibujo$/i.test(t)) {
+      var d = new Date(), p2 = function (n) { return (n < 10 ? '0' : '') + n; };
+      t = 'PanchoDraw ' + p2(d.getDate()) + '/' + p2(d.getMonth() + 1) + ' ' + p2(d.getHours()) + ':' + p2(d.getMinutes());
+    }
+    return t.slice(0, 80);
+  }
+
+  function fscAutoGuardar(cb) {
+    if (!fscSesion || !fscToken) { if (cb) cb(false); return; }
+    if (fscGuardando) { if (cb) cb(false); return; }
+    var info = fscHuella();
+    if (info.vacio) { if (cb) cb(false); return; }          // lienzo en blanco: no se sube
+    if (info.h === fscUltimaHuella) { if (cb) cb(true); return; }   // ya está guardado
+
+    var dataUrl;
+    try {
+      dataUrl = pubSnapshot(2);
+    } catch (e) {
+      if (cb) cb(false);
+      return;
+    }
+
+    fscGuardando = true;
+    statusAviso('Guardando en tu cuenta JPCONNECT...', 30000);
+
+    fetch(API_BASE + '/api/artworks', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + fscToken },
+      body: JSON.stringify({
+        nombre: fscNombreAuto(),
+        autor: '@' + fscSesion.username,
+        escala: 2,
+        image: dataUrl,
+        gif: ''
+      })
+    }).then(function (r) {
+      return r.json().then(function (d) { return { ok: r.ok, d: d }; });
+    }).then(function (res) {
+      if (!res.ok) throw new Error((res.d && res.d.error) || 'no se pudo guardar');
+      fscUltimaHuella = info.h;
+      statusAviso('✓ Guardado en tu cuenta JPCONNECT (@' + fscSesion.username + ')');
+      if (cb) cb(true);
+    }).catch(function () {
+      statusAviso('⚠ No se pudo guardar en JPCONNECT (probá entrar de nuevo)');
+      if (cb) cb(false);
+    }).then(function () {
+      fscGuardando = false;
+    });
+  }
+  window.fscAutoGuardar = fscAutoGuardar;   // por si hace falta desde la consola
+
+  // --- Botón de ingreso / de cuenta ---
+  if (btnFscLogin) {
+    btnFscLogin.onclick = function () {
+      if (!fscSesion) { location.href = FSC_LOGIN; return; }
+      document.getElementById('fscUserName').textContent = '@' + fscSesion.username;
+      document.getElementById('fscDialogMsg').innerHTML =
+        'Sesión activa. Lo que guardes se sube solo a tu cuenta JPCONNECT.';
+      openModal('fscDialog');
+    };
+  }
+  function cerrarFsc() { closeModal('fscDialog'); }
+  document.getElementById('btnCloseFsc').onclick = cerrarFsc;
+  document.getElementById('btnAcceptFsc').onclick = cerrarFsc;
+  document.getElementById('btnFscLogout').onclick = function () {
+    ['token', 'username', 'userId', 'role'].forEach(function (k) {
+      try { localStorage.removeItem(k); } catch (e) {}
+    });
+    fscSesion = null;
+    fscToken = '';
+    fscUltimaHuella = null;
+    fscPintaSesion();
+    cerrarFsc();
+    statusAviso('Sesión JPCONNECT cerrada. Ahora guardás sólo en tu dispositivo.');
+  };
+
   if (btnQuickPublish) btnQuickPublish.onclick = openPublishDialog;
   if (menuPublicar) menuPublicar.onclick = openPublishDialog;
   if (btnDoPublish) btnDoPublish.onclick = doPublish;
@@ -2208,6 +2486,75 @@
       setTool('text');
     }
   };
+
+  // ── ZOOM ADAPTADO A LA PANTALLA ────────────────────────────────────────
+  // El lienzo es de 256x256. En escritorio se ve al 200% (512 px); en un
+  // celular de 390 px eso no entra, así que se elige el zoom que mejor llena
+  // el ancho disponible (siempre entre 100% y 400%, sin deformar: el canvas
+  // es cuadrado y el factor se aplica igual en X e Y).
+  function zoomQueEntra() {
+    // Se mide el espacio REAL disponible alrededor del lienzo (la suma de lo que
+    // ocupan la barra de título, menú, accesos, herramientas y paleta), no una
+    // resta a ojo: con una resta fija el lienzo quedaba en 256 px (100%).
+    var ancho = Math.min(window.innerWidth, document.documentElement.clientWidth || 9999);
+    var vp = document.getElementById('canvasViewport');
+    var altoVisible = window.innerHeight;
+    var disponibleAncho = Math.max(180, ancho - 24);
+    var disponibleAlto = Math.max(180, altoVisible - 360);
+    if (vp) {
+      // espacio REAL del visor, descontando su padding y el marco del lienzo
+      // (bordes + sombra): si no, el 2x "entra" justo y desborda 4 px.
+      var cs = window.getComputedStyle(vp);
+      var pad = parseFloat(cs.paddingTop || 0) + parseFloat(cs.paddingBottom || 0);
+      var r = vp.getBoundingClientRect();
+      disponibleAlto = Math.max(180, r.height - pad - 10);
+      disponibleAncho = Math.max(180, Math.min(r.width, ancho) - parseFloat(cs.paddingLeft || 0) - parseFloat(cs.paddingRight || 0) - 10);
+    }
+    var cabe = Math.min(disponibleAncho, disponibleAlto) / 256;
+    // El factor se aplica en CSS (ancho = 256 * zoom), así que NO hace falta
+    // saltar de 1x a 2x: se usa el mayor factor continuo que entra, con un
+    // margen del 4% para que el marco nunca toque el borde. En un celular de
+    // 390 px eso da ~1.45x (371 px) en vez de quedarse en 256 px.
+    var factor = Math.floor((cabe * 0.96) * 20) / 20;   // pasos de 0.05
+    if (factor < 1) factor = 1;
+    if (factor > 8) factor = 8;
+    return factor;
+  }
+
+  (function ajustarZoom() {
+    var esChico = window.innerWidth <= 900;
+    // se mide en el frame siguiente: recién ahí el layout tiene los altos finales
+    if (esChico) {
+      requestAnimationFrame(function () {
+        setZoom(zoomQueEntra());
+        // y una vez más cuando las fuentes pixeladas terminan de cargar
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(function () { if (!state.zoomManual) setZoom(zoomQueEntra()); });
+        }
+      });
+    } else {
+      setZoom(2);
+    }
+    var t;
+    window.addEventListener('resize', function () {
+      clearTimeout(t);
+      t = setTimeout(function () {
+        // sólo se reajusta si el usuario está en la pantalla chica y no forzó
+        // un zoom a mano desde el botón (state.zoomManual)
+        if (window.innerWidth <= 900 && !state.zoomManual) setZoom(zoomQueEntra());
+      }, 180);
+    });
+  })();
+
+  // si el usuario cambia el zoom a mano, no se lo pisamos en cada resize
+  var btnZoom = document.getElementById('btnQuickZoom');
+  if (btnZoom) {
+    var zoomOriginal = btnZoom.onclick;
+    btnZoom.onclick = function (ev) {
+      state.zoomManual = true;
+      if (typeof zoomOriginal === 'function') zoomOriginal.call(this, ev);
+    };
+  }
 
   // Iniciar con lienzo en blanco
   invalidateCache();

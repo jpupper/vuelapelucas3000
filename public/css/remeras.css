@@ -1,0 +1,453 @@
+/* =========================================================
+   REMERAS DEL VUELAPELUCAS 3000
+   Dos usos: la galeria que pasa en el index (#remeras) y la
+   pagina de compra (compraremera.html). Misma estetica que el
+   resto del sitio: contenedores blancos, stroke negro 3px,
+   sombra dura, Bebas Neue + Inter.
+   ========================================================= */
+
+/* ================= CINTA QUE PASA (index) ================= */
+/* el nav es sticky: sin esto, el ancla #remeras queda tapada arriba */
+#remeras { scroll-margin-top: 92px; }
+
+.vl-remeras-marquee {
+    position: relative;
+    margin: 0 0 1.8rem;
+    padding: 1.1rem 0;
+    background: #ffffff;
+    border: 3px solid #000;
+    border-radius: 26px;
+    box-shadow: 8px 8px 0 #000;
+    overflow: hidden;
+}
+
+/* difuminado a los costados para que la cinta "entre" y "salga" */
+.vl-remeras-marquee::before,
+.vl-remeras-marquee::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 54px;
+    z-index: 2;
+    pointer-events: none;
+}
+.vl-remeras-marquee::before { left: 0; background: linear-gradient(90deg, #fff 25%, rgba(255, 255, 255, 0)); }
+.vl-remeras-marquee::after { right: 0; background: linear-gradient(270deg, #fff 25%, rgba(255, 255, 255, 0)); }
+
+.vl-remeras-track {
+    display: flex;
+    align-items: stretch;
+    gap: 1rem;
+    width: max-content;
+    padding: 0 1rem;
+    animation: vl-remeras-scroll 42s linear infinite;
+}
+
+.vl-remeras-marquee:hover .vl-remeras-track,
+.vl-remeras-marquee:focus-within .vl-remeras-track {
+    animation-play-state: paused;
+}
+
+@keyframes vl-remeras-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vl-remeras-track { animation: none; flex-wrap: wrap; width: auto; justify-content: center; }
+}
+
+.vl-remera-slide {
+    display: flex;
+    flex-direction: column;
+    width: 210px;
+    flex: 0 0 210px;
+    background: #fff;
+    border: 3px solid #000;
+    border-radius: 18px;
+    box-shadow: 5px 5px 0 #000;
+    overflow: hidden;
+    text-decoration: none;
+    color: #000;
+    transition: transform .16s ease, box-shadow .16s ease;
+}
+
+.vl-remera-slide:hover,
+.vl-remera-slide:focus-visible {
+    transform: translate(-3px, -3px);
+    box-shadow: 8px 8px 0 #000;
+}
+
+.vl-remera-slide .vl-remera-foto {
+    background: #e3e3e3;
+    border-bottom: 3px solid #000;
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+}
+
+.vl-remera-slide .vl-remera-foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.vl-remera-slide .vl-remera-info {
+    padding: .5rem .6rem .7rem;
+    display: flex;
+    flex-direction: column;
+    gap: .15rem;
+}
+
+.vl-remera-slide .vl-remera-nombre {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.15rem;
+    line-height: 1.05;
+    letter-spacing: .03em;
+}
+
+.vl-remera-slide .vl-remera-precio {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.35rem;
+    line-height: 1;
+    color: var(--tertiary, #ef4720);
+}
+
+.vl-remeras-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.vl-remeras-nota {
+    font-weight: 600;
+    color: #000;
+    background: #fff;
+    border: 3px solid #000;
+    border-radius: 50px;
+    padding: .5rem 1.1rem;
+    box-shadow: 4px 4px 0 #000;
+}
+
+/* ================= PAGINA DE COMPRA ================= */
+/* link activo del nav (vuelapelucas2026.css no lo define) */
+.vl-nav nav a.is-active {
+    background: var(--secondary, #ffd62c);
+    border-color: #000;
+}
+
+.rem-page {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 2.6rem 1.3rem 5rem;
+}
+
+.rem-hero {
+    text-align: center;
+    padding: 1rem .5rem 2.2rem;
+}
+
+.rem-kicker {
+    display: inline-block;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.1rem;
+    letter-spacing: .26em;
+    color: #000;
+    background: var(--secondary, #ffd62c);
+    border: 2px solid #000;
+    border-radius: 50px;
+    padding: .3rem 1rem;
+    box-shadow: 4px 4px 0 #000;
+    margin-bottom: .9rem;
+}
+
+.rem-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: clamp(2.8rem, 10vw, 6rem);
+    line-height: .92;
+    color: #fff;
+    -webkit-text-stroke: 3px #000;
+    paint-order: stroke fill;
+    text-shadow: 6px 6px 0 #000;
+    margin: 0 0 .6rem;
+}
+.rem-title span { color: var(--secondary, #ffd62c); }
+
+.rem-lead {
+    max-width: 42rem;
+    margin: 0 auto;
+    font-size: 1.02rem;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000;
+}
+
+.rem-block {
+    background: #ffffff;
+    border: 3px solid #000;
+    border-radius: 24px;
+    box-shadow: 8px 8px 0 #000;
+    padding: 1.6rem 1.5rem;
+    margin-bottom: 1.6rem;
+}
+
+.rem-h2 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: clamp(1.5rem, 4vw, 2.1rem);
+    letter-spacing: .04em;
+    line-height: 1;
+    margin: 0 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    flex-wrap: wrap;
+}
+
+.rem-h2 small {
+    font-family: 'Inter', sans-serif;
+    font-size: .78rem;
+    font-weight: 600;
+    color: #666;
+    letter-spacing: 0;
+}
+
+.rem-vacio {
+    text-align: center;
+    font-weight: 600;
+    color: #555;
+    padding: 1rem;
+}
+
+/* ---------- grilla de remeras ---------- */
+.rem-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 1rem;
+}
+
+.rem-card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 3px solid #000;
+    border-radius: 16px;
+    box-shadow: 5px 5px 0 #000;
+    overflow: hidden;
+    cursor: pointer;
+    text-align: left;
+    padding: 0;
+    font-family: inherit;
+    transition: transform .14s ease, box-shadow .14s ease, background .14s ease;
+}
+
+.rem-card:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 #000; }
+
+.rem-card .rem-card-foto {
+    background: #e3e3e3;
+    border-bottom: 3px solid #000;
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+}
+.rem-card .rem-card-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.rem-card .rem-card-info { padding: .5rem .6rem .65rem; }
+.rem-card .rem-card-nombre { font-family: 'Bebas Neue', cursive; font-size: 1.1rem; line-height: 1.05; letter-spacing: .03em; display: block; }
+.rem-card .rem-card-precio { font-family: 'Bebas Neue', cursive; font-size: 1.3rem; line-height: 1.1; color: var(--tertiary, #ef4720); display: block; }
+.rem-card .rem-card-desc { font-size: .76rem; font-weight: 600; color: #555; }
+
+.rem-card.is-sel {
+    background: var(--secondary, #ffd62c);
+    transform: translate(-3px, -3px);
+    box-shadow: 9px 9px 0 #000;
+}
+.rem-card.is-sel .rem-card-nombre::after { content: " ✓"; }
+
+/* ---------- talles ---------- */
+.rem-talles { display: flex; flex-wrap: wrap; gap: .6rem; }
+
+.rem-talle {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.4rem;
+    letter-spacing: .06em;
+    min-width: 66px;
+    padding: .35rem .9rem;
+    background: #fff;
+    color: #000;
+    border: 3px solid #000;
+    border-radius: 14px;
+    box-shadow: 4px 4px 0 #000;
+    cursor: pointer;
+    transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+}
+.rem-talle:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #000; }
+.rem-talle.is-sel { background: var(--secondary, #ffd62c); }
+
+/* ---------- formulario ---------- */
+.rem-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.rem-field {
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.05rem;
+    letter-spacing: .06em;
+}
+
+.rem-field-wide { grid-column: 1 / -1; }
+.rem-field .rem-opt { font-family: 'Inter', sans-serif; font-size: .72rem; font-weight: 700; color: #777; letter-spacing: 0; }
+
+.rem-field input,
+.rem-field textarea {
+    font-family: 'Inter', sans-serif;
+    font-size: .98rem;
+    font-weight: 600;
+    padding: .7rem .8rem;
+    border: 2px solid #000;
+    border-radius: 11px;
+    background: #f8f9fa;
+    color: #000;
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, .15);
+    width: 100%;
+    box-sizing: border-box;
+}
+.rem-field input:focus,
+.rem-field textarea:focus { outline: none; background: #fff; box-shadow: 4px 4px 0 #000; }
+.rem-field input.rem-falta,
+.rem-field textarea.rem-falta { border-color: var(--tertiary, #ef4720); background: #ffeeea; }
+
+.rem-field input[type="file"] {
+    font-size: .84rem;
+    border-style: dashed;
+    background: #fffbe8;
+    padding: .55rem;
+}
+
+.rem-preview { margin-top: .6rem; }
+.rem-preview img {
+    max-width: 190px;
+    max-height: 190px;
+    border: 3px solid #000;
+    border-radius: 12px;
+    box-shadow: 4px 4px 0 #000;
+    display: block;
+}
+.rem-preview .rem-mini { margin-top: .5rem; }
+
+/* ---------- resumen ---------- */
+.rem-resumen { background: #fffbe8; }
+
+.rem-resumen-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .45rem 0;
+    border-bottom: 2px dotted #000;
+    font-weight: 700;
+    font-size: .95rem;
+}
+.rem-resumen-row span { font-family: 'Bebas Neue', cursive; letter-spacing: .08em; font-size: 1.05rem; }
+.rem-resumen-row b { text-align: right; }
+.rem-resumen-row.rem-total { border-bottom: none; padding-top: .8rem; }
+.rem-resumen-row.rem-total span { font-size: 1.5rem; }
+.rem-resumen-row.rem-total b { font-family: 'Bebas Neue', cursive; font-size: 2rem; line-height: 1; color: var(--tertiary, #ef4720); }
+
+.rem-msg {
+    display: none;
+    margin-top: 1rem;
+    padding: .8rem 1rem;
+    border: 3px solid #000;
+    border-radius: 14px;
+    font-weight: 700;
+    box-shadow: 4px 4px 0 #000;
+    background: #ffeeea;
+}
+.rem-msg.is-on { display: block; }
+.rem-msg.ok { background: #b6f5d3; }
+
+.rem-btn {
+    display: block;
+    width: 100%;
+    margin-top: 1.1rem;
+    font-family: 'Bebas Neue', cursive;
+    font-size: clamp(1.3rem, 4vw, 1.9rem);
+    letter-spacing: .05em;
+    text-align: center;
+    padding: .85rem 1rem;
+    background: var(--secondary, #ffd62c);
+    color: #000;
+    border: 3px solid #000;
+    border-radius: 50px;
+    box-shadow: 6px 6px 0 #000;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform .14s ease, box-shadow .14s ease, background .14s ease;
+}
+.rem-btn:hover { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 #000; background: #ffde47; }
+.rem-btn:active { transform: translate(2px, 2px); box-shadow: 3px 3px 0 #000; }
+.rem-btn[disabled] { opacity: .6; cursor: not-allowed; transform: none; box-shadow: 6px 6px 0 #000; }
+.rem-btn.rem-btn-wa { background: var(--green, #04ba65); color: #fff; }
+.rem-btn.rem-btn-wa:hover { background: #05a95a; }
+
+.rem-fine {
+    font-size: .82rem;
+    font-weight: 600;
+    color: #444;
+    margin-top: .8rem;
+    text-align: center;
+}
+
+.rem-mini {
+    display: inline-block;
+    font-family: 'Bebas Neue', cursive;
+    letter-spacing: .05em;
+    font-size: 1.05rem;
+    padding: .3rem 1rem;
+    background: #fff;
+    color: #000;
+    border: 2px solid #000;
+    border-radius: 999px;
+    box-shadow: 3px 3px 0 #000;
+    text-decoration: none;
+    cursor: pointer;
+    margin: .4rem .4rem 0 0;
+}
+.rem-mini:hover { background: var(--secondary, #ffd62c); }
+
+/* pie de la página de compra: sobre el shader necesita su propia caja */
+.rem-pie-wrap { text-align: center; margin-top: 1.4rem; }
+.rem-pie {
+    display: inline-block;
+    max-width: 100%;
+    background: #fff;
+    border: 3px solid #000;
+    border-radius: 18px;
+    box-shadow: 4px 4px 0 #000;
+    padding: .7rem 1.1rem;
+    color: #000;
+    text-align: center;
+}
+.rem-pie a { color: #000; font-weight: 800; }
+
+/* ---------- pedido confirmado ---------- */
+.rem-ok { background: #fff; border-color: #000; }
+.rem-ok h2 { justify-content: center; text-align: center; }
+.rem-ok p { text-align: center; font-weight: 600; }
+.rem-ok .rem-acciones { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; margin-top: 1rem; }
+
+@media (max-width: 700px) {
+    .rem-form { grid-template-columns: 1fr; }
+    .vl-remera-slide { width: 158px; flex: 0 0 158px; }
+    .vl-remeras-track { animation-duration: 30s; }
+    .rem-block { padding: 1.2rem 1.1rem; border-radius: 18px; box-shadow: 6px 6px 0 #000; }
+    .rem-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .7rem; }
+    .rem-card .rem-card-nombre { font-size: .98rem; }
+}

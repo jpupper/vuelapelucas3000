@@ -1,4 +1,21 @@
-require('dotenv').config();
+// dotenv revienta en entornos sin TTY ("stdin is not a tty"), así que se lee
+// el .env a mano si la librería no puede inicializarse.
+try {
+  require('dotenv').config();
+} catch (e) {
+  const _fs = require('fs');
+  const _p = require('path').join(__dirname, '.env');
+  if (_fs.existsSync(_p)) {
+    _fs.readFileSync(_p, 'utf8').split(/\r?\n/).forEach((ln) => {
+      ln = ln.trim();
+      if (!ln || ln.startsWith('#') || ln.indexOf('=') < 0) return;
+      const i = ln.indexOf('=');
+      const k = ln.slice(0, i).trim();
+      const v = ln.slice(i + 1).trim().replace(/^["']|["']$/g, '');
+      if (k && process.env[k] == null) process.env[k] = v;
+    });
+  }
+}
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -30,6 +47,18 @@ app.use(cors({
 
 // Manejar preflight OPTIONS
 app.options('*', cors());
+
+// La ruta pública de la API de la rifa (/apivuelapelucas/...) se reescribe al
+// BASE_PATH ANTES de cualquier middleware estático: si va después, el estático
+// responde el index.html y nunca llega al router.
+app.use(function (req, res, next) {
+  if (req.url.indexOf('/apivuelapelucas/') === 0) {
+    req.url = '/vuelapelucas3000_2' + req.url.slice('/apivuelapelucas'.length);
+  } else if (req.url === '/apivuelapelucas') {
+    req.url = '/vuelapelucas3000_2/api/rifa';
+  }
+  next();
+});
 
 // CSP Headers
 app.use((req, res, next) => {
@@ -67,20 +96,43 @@ app.get(['/hospedajes', `${BASE_PATH}/hospedajes`, '/hospedajes.html', `${BASE_P
   res.sendFile(path.join(__dirname, 'public', 'hospedajes.html'));
 });
 
+app.get(['/rifa', `${BASE_PATH}/rifa`, '/rifa.html', `${BASE_PATH}/rifa.html`], (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'rifa.html'));
+});
+
+// Tienda de remeras (catalogo + formulario de compra)
+app.get(['/compraremera', `${BASE_PATH}/compraremera`, '/compraremera.html', `${BASE_PATH}/compraremera.html`], (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'compraremera.html'));
+});
+
 // API routes
 app.use(`${BASE_PATH}/api`, require('./routes/api'));
 // Creaciones de la comunidad (PanchoDraw) + indice FSCAUTH
 app.use(`${BASE_PATH}/api`, require('./routes/artworks'));
 // Curaduria del sitio (galeria / flyers) + imagenes subidas desde el admin
 app.use(`${BASE_PATH}/api`, require('./routes/curation'));
+// Rifa del festival (numeros + premios). Se monta de las dos formas porque nginx
+// proxea /apivuelapelucas/ al BASE_PATH SIN reescribir el path.
+const rifaRoutes = require('./routes/rifa');
+app.use(`${BASE_PATH}/api`, rifaRoutes);
+// Remeras del festival (catalogo + compras). Mismo criterio: nginx proxea
+// /apivuelapelucas/ al BASE_PATH, asi que el prefijo se traduce arriba.
+app.use(`${BASE_PATH}/api`, require('./routes/remeras'));
+// nginx proxea /apivuelapelucas/* SIN reescribir el path, así que acá se
+// convierte /apivuelapelucas/api/rifa -> /vuelapelucas3000_2/api/rifa antes de
+// entrar al router (montarlo dos veces con app.use NO funcionó: Express
+// restauraba la URL original y el router no encontraba las rutas).
 
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', app: 'vuelapelucas3000', version: '1.0.0', environment: NODE_ENV });
 });
 
-// SPA fallback
+// SPA fallback (nunca para las rutas de API: si no, un GET a /rifa devolvería el HTML)
 app.get('*', (req, res) => {
+  if (/^\/(api|apivuelapelucas)\//.test(req.path)) {
+    return res.status(404).json({ ok: false, error: 'No encontrado' });
+  }
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 

@@ -871,3 +871,29 @@
     border-bottom: none;
     color: var(--secondary, #ffd62c);
 }
+
+/* ---------- PIE: el pie tiene que llegar hasta el borde inferior ---------- */
+/* El boton universal de FSC (fsc-button.js en modo "flow") se agrega al final del
+   body, DESPUES del pie, con 26px de padding arriba y abajo del logo. Esa franja
+   quedaba FUERA del pie: como el fondo del sitio lo pinta el canvas del shader y
+   el pie es semitransparente, se veia una banda con el fondo animado debajo y el
+   pie parecia no estar pegado al borde de la pagina.
+   Solucion: el pie reserva ese alto en su padding-bottom y la franja se sube con
+   margin negativo, asi el logo queda DENTRO del pie y el pie es lo ultimo de la
+   pagina (una sola caja, sin costura ni banda). */
+.footer {
+    padding-bottom: calc(2rem + 75px);
+}
+#fscBadgeWrap {
+    margin-top: -75px;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+
+/* ---------- FUNDIDO entre cambios de la grilla ---------- */
+.vl-gallery { transition: opacity .22s ease; }
+.vl-gallery.vl-fading { opacity: 0; }
+.vl-draw-grid figure { animation: vlFadeIn .35s ease both; }
+@keyframes vlFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }

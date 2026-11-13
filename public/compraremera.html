@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5, viewport-fit=cover">
+  <meta name="theme-color" content="#ffd62c">
+  <title>Comprar remera — Vuelapelucas 3000</title>
+  <meta name="description" content="Comprá tu remera del Vuelapelucas 3000: elegí el modelo, el talle y la sucursal de Correo Argentino donde la retirás.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css?v=8">
+  <link rel="stylesheet" href="css/vuelapelucas2026.css?v=10">
+  <link rel="stylesheet" href="css/remeras.css?v=2">
+</head>
+<body>
+
+  <!-- mismo fondo y navegación que la página principal -->
+  <header class="vl-nav">
+    <a class="vl-brand" href="index.html">
+      VUELAPELUCAS <b>3000</b>
+    </a>
+    <nav>
+      <a href="index.html#festival">ENCUENTRO</a>
+      <a href="index.html#galeria">GALERIA</a>
+      <a href="index.html#comunidad">COMUNIDAD</a>
+      <a href="index.html#juegos">EXPERIENCIAS WEB</a>
+      <a href="rifa.html">RIFA</a>
+      <a href="compraremera.html" class="is-active">REMERAS</a>
+      <a href="anotate.html">ANOTATE</a>
+    </nav>
+  </header>
+
+  <main class="rem-page">
+
+    <!-- ================= PORTADA ================= -->
+    <section class="rem-hero">
+      <p class="rem-kicker">MERCH OFICIAL</p>
+      <h1 class="rem-title">COMPRÁ TU <span>REMERA</span></h1>
+      <p class="rem-lead" id="remLead">Remeras del Vuelapelucas 3000. Elegís modelo y talle, y te la mandamos a la sucursal de Correo Argentino que quieras.</p>
+    </section>
+
+    <!-- ================= PASO 1: REMERA ================= -->
+    <section class="rem-block" id="paso-remera">
+      <h2 class="rem-h2">1 · ELEGÍ TU REMERA <small>tocá el modelo que querés</small></h2>
+      <div class="rem-grid" id="remGrid">
+        <p class="rem-vacio">Cargando las remeras…</p>
+      </div>
+    </section>
+
+    <!-- ================= PASO 2: TALLE ================= -->
+    <section class="rem-block" id="paso-talle">
+      <h2 class="rem-h2">2 · ELEGÍ TU TALLE</h2>
+      <div class="rem-talles" id="remTalles"></div>
+    </section>
+
+    <!-- ================= PASO 3: DATOS ================= -->
+    <section class="rem-block" id="paso-datos">
+      <h2 class="rem-h2">3 · TUS DATOS <small>con esto te mandamos la remera</small></h2>
+
+      <div class="rem-form">
+        <label class="rem-field rem-field-wide">SUCURSAL DE CORREO ARGENTINO *
+          <input type="text" id="remSucursal" list="remSucursales" maxlength="120" autocomplete="off"
+                 placeholder="Ej: Correo Argentino Victorica (La Pampa)">
+          <datalist id="remSucursales"></datalist>
+        </label>
+
+        <label class="rem-field">NOMBRE Y APELLIDO *
+          <input type="text" id="remNombre" maxlength="90" autocomplete="name" placeholder="Nombre y apellido">
+        </label>
+
+        <label class="rem-field">MAIL *
+          <input type="email" id="remEmail" maxlength="90" autocomplete="email" placeholder="tu@mail.com">
+        </label>
+
+        <label class="rem-field">TELÉFONO *
+          <input type="tel" id="remTelefono" maxlength="40" autocomplete="tel" placeholder="2954 541104">
+        </label>
+
+        <label class="rem-field">NOTA <span class="rem-opt">(opcional)</span>
+          <input type="text" id="remNota" maxlength="200" placeholder="Ej: la retiro yo en Victorica">
+        </label>
+
+        <label class="rem-field rem-field-wide">COMPROBANTE DE PAGO <span class="rem-opt">(opcional)</span>
+          <input type="file" id="remComprobante" accept="image/*">
+        </label>
+
+        <div class="rem-preview rem-field-wide" id="remPreview" hidden>
+          <img id="remPreviewImg" alt="Vista previa del comprobante">
+          <button type="button" class="rem-mini" id="remQuitarComprobante">QUITAR COMPROBANTE</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= RESUMEN + COMPRA ================= -->
+    <section class="rem-block rem-resumen" id="paso-confirmar">
+      <h2 class="rem-h2">4 · CONFIRMÁ TU PEDIDO</h2>
+
+      <div class="rem-resumen-row"><span>REMERA</span><b id="remSelNombre">—</b></div>
+      <div class="rem-resumen-row"><span>TALLE</span><b id="remSelTalle">—</b></div>
+      <div class="rem-resumen-row"><span>ENVÍO</span><b>Correo Argentino a sucursal</b></div>
+      <div class="rem-resumen-row rem-total"><span>TOTAL</span><b id="remSelPrecio">$50.000</b></div>
+
+      <div class="rem-msg" id="remMsg" role="status" aria-live="polite"></div>
+
+      <button type="button" class="rem-btn" id="remBtnComprar">CONFIRMAR PEDIDO Y ENVIAR POR WHATSAPP</button>
+
+      <p class="rem-fine" id="remFine">
+        Guardamos tu pedido y se abre WhatsApp con el mensaje ya escrito para el <b>2954-541104</b>.
+        El comprobante de pago es opcional: si todavía no lo tenés, lo mandás después por WhatsApp.
+      </p>
+    </section>
+
+    <!-- ================= PEDIDO CONFIRMADO ================= -->
+    <section class="rem-block rem-ok" id="remOk" hidden>
+      <h2 class="rem-h2">¡PEDIDO <span id="remOkCode">—</span> GUARDADO!</h2>
+      <p>Falta un paso: mandanos el pedido por WhatsApp para que lo veamos al toque.</p>
+      <a class="rem-btn rem-btn-wa" id="remOkWa" href="#" target="_blank" rel="noopener">ABRIR WHATSAPP Y ENVIAR EL PEDIDO</a>
+      <div class="rem-acciones">
+        <button type="button" class="rem-mini" id="remOkCopiar">COPIAR EL MENSAJE</button>
+        <a class="rem-mini" href="index.html#remeras">VOLVER AL SITIO</a>
+      </div>
+      <div class="rem-msg" id="remOkMsg"></div>
+    </section>
+
+    <div class="rem-pie-wrap">
+      <p class="rem-fine rem-pie">
+        ¿Dudas con el talle o el envío? Escribinos al <b>2954-541104</b>. ·
+        <a href="rifa.html">Mirá también la rifa del festival</a>
+      </p>
+    </div>
+  </main>
+
+  <!-- mismo shader de fondo que la página principal -->
+  <canvas id="vuelapelucas-bg"></canvas>
+  <script src="https://vps-4455523-x.dattaweb.com/jpshadereditor/include.js"></script>
+  <script src="js/compraremera.js?v=1"></script>
+</body>
+</html>

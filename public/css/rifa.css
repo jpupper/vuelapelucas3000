@@ -1,0 +1,465 @@
+/* =========================================================
+   RIFA DEL VUELAPELUCAS 3000 — estilos
+   Misma estética que el sitio: contenedores blancos, stroke
+   negro 2-3px, sombra dura, Bebas Neue + Inter.
+   ========================================================= */
+
+.rifa-page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 3rem 1.4rem 5rem;
+}
+
+/* ---------- PORTADA ---------- */
+.rifa-hero {
+  text-align: center;
+  padding: 1.6rem 1rem 2.6rem;
+}
+.rifa-kicker {
+  display: inline-block;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.15rem;
+  letter-spacing: .28em;
+  color: #000;
+  background: var(--tertiary, #ef4720);
+  padding: .35rem 1.1rem;
+  border: 2px solid #000;
+  border-radius: 50px;
+  box-shadow: 4px 4px 0 #000;
+  margin-bottom: 1rem;
+}
+.rifa-title {
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(3.2rem, 11vw, 7rem);
+  line-height: .92;
+  color: #fff;
+  -webkit-text-stroke: 3px #000;
+  paint-order: stroke fill;
+  text-shadow: 6px 6px 0 #000;
+  margin: 0 0 .5rem;
+  letter-spacing: .01em;
+}
+.rifa-title span { color: var(--secondary, #ffd62c); }
+.rifa-lead {
+  font-size: 1.05rem;
+  max-width: 44rem;
+  margin: 0 auto 1.6rem;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000;
+  font-weight: 600;
+}
+
+.rifa-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .8rem;
+  margin-bottom: 1.8rem;
+}
+.rifa-stat {
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 16px;
+  box-shadow: 5px 5px 0 #000;
+  min-width: 108px;
+  padding: .6rem .9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.rifa-stat b {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 2.4rem;
+  line-height: 1;
+  color: #000;
+}
+.rifa-stat small {
+  font-size: .62rem;
+  letter-spacing: .16em;
+  font-weight: 800;
+  color: #555;
+}
+
+.rifa-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .9rem;
+}
+.rifa-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.45rem;
+  letter-spacing: .06em;
+  padding: .85rem 1.9rem;
+  border: 3px solid #000;
+  border-radius: 50px;
+  box-shadow: 5px 5px 0 #000;
+  cursor: pointer;
+  text-decoration: none;
+  color: #000;
+  transition: transform .08s ease, box-shadow .08s ease;
+}
+.rifa-btn-yellow { background: var(--secondary, #ffd62c); }
+.rifa-btn-white { background: #fff; }
+.rifa-btn:hover { transform: translate(-1px, -1px); box-shadow: 7px 7px 0 #000; }
+.rifa-btn:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 #000; }
+.rifa-btn:disabled { opacity: .55; cursor: not-allowed; transform: none; box-shadow: 5px 5px 0 #000; }
+.rifa-btn-block { display: flex; width: 100%; margin-top: .4rem; }
+
+.rifa-mini {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: .72rem;
+  letter-spacing: .06em;
+  background: #fff;
+  color: #000;
+  border: 2px solid #000;
+  border-radius: 8px;
+  padding: .45rem .7rem;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 #000;
+  white-space: nowrap;
+}
+.rifa-mini:hover { background: var(--secondary, #ffd62c); }
+
+/* ---------- BLOQUES ---------- */
+.rifa-block { margin-bottom: 3.4rem; }
+.rifa-block-head { text-align: center; margin-bottom: 1.3rem; }
+.rifa-h2 {
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(2rem, 5.5vw, 3.2rem);
+  color: #fff;
+  -webkit-text-stroke: 2.5px #000;
+  paint-order: stroke fill;
+  text-shadow: 4px 4px 0 #000;
+  margin: 0 0 .3rem;
+  letter-spacing: .02em;
+}
+.rifa-sub {
+  color: #fff;
+  font-weight: 600;
+  font-size: .96rem;
+  text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000;
+  margin: 0 auto;
+  max-width: 42rem;
+}
+
+/* ---------- CARTÓN ---------- */
+.carton-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .7rem;
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 16px 16px 0 0;
+  border-bottom: 0;
+  padding: .7rem .9rem;
+}
+.carton-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .9rem;
+  font-size: .66rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  color: #333;
+}
+.carton-legend span { display: inline-flex; align-items: center; gap: .35rem; }
+.dot { width: 13px; height: 13px; border: 2px solid #000; border-radius: 3px; display: inline-block; }
+.dot-libre { background: #fff; }
+.dot-vendido { background: #b9b9b9; }
+.dot-mio { background: var(--secondary, #ffd62c); }
+
+.carton-picker { display: flex; gap: .4rem; align-items: center; flex-wrap: wrap; }
+.carton-picker input {
+  width: 74px;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.15rem;
+  text-align: center;
+  padding: .3rem .4rem;
+  border: 2px solid #000;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.carton-grid {
+  background: #fff;
+  border: 3px solid #000;
+  padding: .8rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+  gap: .35rem;
+  max-height: min(64vh, 620px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.num {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.15rem;
+  color: #000;
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 7px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background .08s ease, transform .08s ease;
+}
+.num:hover { background: #f2f2f2; }
+.num.is-vendido {
+  background: #b9b9b9;
+  color: #666;
+  text-decoration: line-through;
+  cursor: not-allowed;
+  border-style: dashed;
+}
+.num.is-mio {
+  background: var(--secondary, #ffd62c);
+  box-shadow: inset 0 0 0 2px #000;
+  transform: scale(1.04);
+  z-index: 1;
+}
+.num.is-ganador { background: var(--green, #04ba65); color: #fff; }
+
+.carton-panel {
+  background: #fff;
+  border: 3px solid #000;
+  border-top: 0;
+  border-radius: 0 0 16px 16px;
+  padding: 1rem;
+}
+.carton-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .6rem;
+  margin-bottom: .5rem;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.35rem;
+  letter-spacing: .03em;
+}
+.carton-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  min-height: 34px;
+  margin-bottom: .9rem;
+}
+.carton-empty { font-size: .82rem; color: #777; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  background: var(--secondary, #ffd62c);
+  border: 2px solid #000;
+  border-radius: 50px;
+  padding: .15rem .5rem;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+.chip span { font-family: 'Inter', sans-serif; font-size: .7rem; font-weight: 800; }
+
+.carton-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .7rem;
+  margin-bottom: .8rem;
+}
+.carton-form label,
+.premio-field {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+  font-size: .64rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  color: #333;
+}
+.carton-form input,
+.premio-field input,
+.premio-field textarea,
+.premio-field select {
+  font-family: 'Inter', sans-serif;
+  font-size: .95rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: #000;
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 9px;
+  padding: .55rem .65rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+.carton-form input:focus,
+.premio-field input:focus,
+.premio-field textarea:focus { outline: 3px solid var(--secondary, #ffd62c); outline-offset: 1px; }
+
+.carton-fsc {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  background: #f4f4f4;
+  border: 2px dashed #000;
+  border-radius: 10px;
+  padding: .55rem .7rem;
+  font-size: .8rem;
+  font-weight: 600;
+  margin-bottom: .8rem;
+}
+.carton-fsc.is-on { background: #e2fbef; border-style: solid; }
+.carton-fine { font-size: .74rem; color: #666; margin: .6rem 0 0; text-align: center; }
+
+.rifa-msg { font-size: .85rem; font-weight: 700; margin: .6rem 0 0; min-height: 1.2em; }
+.rifa-msg.is-ok { color: #067a45; }
+.rifa-msg.is-err { color: #c0180f; }
+.rifa-msg.is-info { color: #333; }
+
+/* ---------- PREMIOS ---------- */
+.premios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1rem;
+}
+.premio-card {
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 16px;
+  box-shadow: 5px 5px 0 #000;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.premio-card-img {
+  aspect-ratio: 4 / 3;
+  background: #eee repeating-linear-gradient(45deg, #eee 0 8px, #e3e3e3 8px 16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 3px solid #000;
+  overflow: hidden;
+}
+.premio-card-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.premio-card-img .sin-foto {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.2rem;
+  color: #999;
+  letter-spacing: .1em;
+}
+.premio-card-body { padding: .8rem .9rem 1rem; display: flex; flex-direction: column; gap: .3rem; flex: 1; }
+.premio-card h3 {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.5rem;
+  line-height: 1.05;
+  margin: 0;
+  color: #000;
+}
+.premio-card p { margin: 0; font-size: .84rem; color: #333; line-height: 1.45; }
+.premio-card .quien {
+  margin-top: auto;
+  padding-top: .5rem;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  color: #000;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  align-items: center;
+}
+.premio-tag {
+  display: inline-block;
+  font-size: .62rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  background: var(--secondary, #ffd62c);
+  border: 2px solid #000;
+  border-radius: 50px;
+  padding: .1rem .5rem;
+}
+.premio-tag.ganador { background: var(--green, #04ba65); color: #fff; }
+.rifa-vacio {
+  grid-column: 1 / -1;
+  text-align: center;
+  background: #fff;
+  border: 3px dashed #000;
+  border-radius: 16px;
+  padding: 1.6rem;
+  font-weight: 600;
+  color: #555;
+}
+
+/* ---------- FORM PREMIO ---------- */
+.premio-form {
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 18px;
+  box-shadow: 7px 7px 0 #000;
+  padding: 1.1rem;
+  display: grid;
+  gap: .8rem;
+}
+.premio-fsc {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  background: #f4f4f4;
+  border: 2px dashed #000;
+  border-radius: 12px;
+  padding: .6rem .8rem;
+}
+.premio-fsc.is-on { background: #e2fbef; border-style: solid; }
+.premio-fsc img { width: 38px; height: 38px; border-radius: 50%; border: 2px solid #000; object-fit: cover; background: #ddd; flex-shrink: 0; }
+.premio-fsc b { font-family: 'Bebas Neue', cursive; font-size: 1.3rem; display: block; line-height: 1; }
+.premio-fsc small { font-size: .74rem; color: #555; }
+.premio-fsc > div { flex: 1; min-width: 0; }
+.premio-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
+.premio-preview { display: flex; align-items: center; gap: .8rem; }
+.premio-preview img { width: 110px; height: 110px; object-fit: cover; border: 3px solid #000; border-radius: 10px; }
+.rifa-foot {
+  text-align: center;
+  font-size: .8rem;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000;
+  margin-top: 2rem;
+}
+.rifa-foot a { color: var(--secondary, #ffd62c); font-weight: 800; }
+
+/* ---------- MOBILE ---------- */
+@media (max-width: 720px) {
+  .rifa-page { padding: 1.6rem .8rem 4rem; }
+  .rifa-title { text-shadow: 4px 4px 0 #000; -webkit-text-stroke: 2px #000; }
+  .rifa-stat { min-width: 74px; padding: .45rem .5rem; flex: 1 1 calc(50% - .8rem); }
+  .rifa-stat b { font-size: 1.9rem; }
+  .rifa-hero-actions .rifa-btn { width: 100%; font-size: 1.25rem; padding: .75rem 1rem; }
+  .carton-toolbar { border-radius: 12px 12px 0 0; }
+  .carton-picker { width: 100%; justify-content: space-between; }
+  .carton-grid {
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    gap: .28rem;
+    padding: .55rem;
+    max-height: 58vh;
+  }
+  .num { font-size: 1rem; border-radius: 6px; }
+  .carton-form { grid-template-columns: 1fr; }
+  .premio-row { grid-template-columns: 1fr; }
+  .carton-panel { border-radius: 0 0 12px 12px; padding: .8rem; }
+  .premio-form { padding: .9rem; box-shadow: 5px 5px 0 #000; }
+}
+@media (max-width: 420px) {
+  .carton-grid { grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); }
+  .rifa-stat small { font-size: .55rem; }
+}
