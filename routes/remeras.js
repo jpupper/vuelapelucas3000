@@ -398,9 +398,13 @@ router.get('/compras', async (req, res) => {
     try {
         // Pedidos viejos (anteriores al link compartible) no tienen token: se lo
         // generamos así el admin también puede compartir ese comprobante.
-        const sinToken = await Compra.find(
-            { comprobanteMime: { $ne: '' }, comprobanteToken: '' }, { _id: 1 }
-        ).lean();
+        // OJO: los documentos viejos no tienen el campo (no es ''), así que hay
+        // que buscar también los que no existen: con { comprobanteToken: '' }
+        // solo no aparecían y nunca se les generaba el token.
+        const sinToken = await Compra.find({
+            comprobanteMime: { $ne: '' },
+            $or: [{ comprobanteToken: '' }, { comprobanteToken: { $exists: false } }]
+        }, { _id: 1 }).lean();
         for (const x of sinToken) {
             await Compra.updateOne({ _id: x._id }, { comprobanteToken: crypto.randomBytes(16).toString('hex') });
         }
