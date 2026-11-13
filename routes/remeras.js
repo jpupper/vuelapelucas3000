@@ -396,10 +396,19 @@ router.post('/compras', async (req, res) => {
 router.get('/compras', async (req, res) => {
     if (!esAdmin(req)) return res.status(401).json({ ok: false, error: 'No autorizado' });
     try {
+        // Pedidos viejos (anteriores al link compartible) no tienen token: se lo
+        // generamos así el admin también puede compartir ese comprobante.
+        const sinToken = await Compra.find(
+            { comprobanteMime: { $ne: '' }, comprobanteToken: '' }, { _id: 1 }
+        ).lean();
+        for (const x of sinToken) {
+            await Compra.updateOne({ _id: x._id }, { comprobanteToken: crypto.randomBytes(16).toString('hex') });
+        }
+
         // La imagen es un Buffer: se enumeran los campos para no traerla.
         const lista = await Compra.find({}, {
             remera: 1, remeraNombre: 1, talle: 1, sucursal: 1, nombreApellido: 1,
-            email: 1, telefono: 1, nota: 1, precio: 1, comprobanteMime: 1,
+            email: 1, telefono: 1, nota: 1, precio: 1, comprobanteMime: 1, comprobanteToken: 1,
             estado: 1, createdAt: 1
         }).sort({ createdAt: -1 }).lean();
         res.json({
@@ -417,6 +426,7 @@ router.get('/compras', async (req, res) => {
                 precio: x.precio,
                 estado: x.estado,
                 tieneComprobante: !!x.comprobanteMime,
+                comprobanteToken: x.comprobanteToken || '',
                 createdAt: x.createdAt
             }))
         });

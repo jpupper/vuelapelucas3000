@@ -1946,7 +1946,8 @@
                         '<td>' + remPlata(c.precio) + '</td>' +
                         '<td>' + (c.tieneComprobante
                             ? '<a href="' + esc(urlComp) + '" target="_blank" rel="noopener" title="Ver el comprobante">' +
-                              '<img class="rem-comprob-mini" src="' + esc(urlComp) + '" alt="Comprobante"></a>'
+                              '<img class="rem-comprob-mini" src="' + esc(urlComp) + '" alt="Comprobante"></a>' +
+                              '<button class="mini-btn2" style="margin-top:.3rem" onclick="remCopiarLinkComprobante(\'' + c.id + '\',\'' + esc(c.comprobanteToken || '') + '\')">🔗 link</button>'
                             : '<span class="meta">sin comprobante</span>') + '</td>' +
                         '<td><select class="mini-select" onchange="remEstadoCompra(\'' + c.id + '\', this.value)">' +
                         estados.map((e) => '<option value="' + e + '"' + (c.estado === e ? ' selected' : '') + '>' + e.toUpperCase() + '</option>').join('') +
@@ -2120,6 +2121,30 @@
                     toast('No se pudo borrar la compra: ' + e.message);
                 }
             });
+        }
+
+        // Link público del comprobante (el mismo que viaja por WhatsApp): sirve
+        // para reenviarlo sin pasar el ?pass= del panel.
+        function remCopiarLinkComprobante(id, token) {
+            if (!token) { toast('Ese pedido todavía no tiene comprobante'); return; }
+            const url = API + '/compras/' + id + '/comprobante?t=' + encodeURIComponent(token);
+            const listo = () => toast('Link del comprobante copiado');
+            const respaldo = () => {
+                const ta = document.createElement('textarea');
+                ta.value = url;
+                ta.setAttribute('readonly', '');
+                ta.style.position = 'fixed';
+                ta.style.left = '-9999px';
+                document.body.appendChild(ta);
+                ta.select();
+                try { document.execCommand('copy'); listo(); } catch (e) { toast('Copiá a mano: ' + url); }
+                document.body.removeChild(ta);
+            };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(listo).catch(respaldo);
+            } else {
+                respaldo();
+            }
         }
 
         function remExportarCSV() {
