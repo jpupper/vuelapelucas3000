@@ -14,6 +14,27 @@
   var API_DIRECTA = 'https://vps-4455523-x.dattaweb.com/vuelapelucas3000_2/api';
   var IS_LOCAL = (location.hostname === 'localhost' || location.hostname === '127.0.0.1');
   var API = IS_LOCAL ? (location.origin + '/vuelapelucas3000_2/api') : API_LOCAL;
+  var apiResuelta = null;
+
+  // Igual criterio que rifa.js / compraremera.js: en producción el dominio es
+  // FTP (Apache) y no proxea /apivuelapelucas/, así que si esa ruta no contesta
+  // se va directo al backend del VPS. La base que responde se cachea.
+  function apiBase() {
+    if (apiResuelta) return Promise.resolve(apiResuelta);
+    return fetch(API + '/remeras', { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('status ' + r.status)); })
+      .then(function (d) { if (!d || !d.ok) throw new Error('sin ok'); apiResuelta = API; return apiResuelta; })
+      .catch(function () {
+        if (IS_LOCAL) throw new Error('api local caída');
+        return fetch(API_DIRECTA + '/remeras', { cache: 'no-store' })
+          .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('status ' + r.status)); })
+          .then(function (d) {
+            if (!d || !d.ok) throw new Error('sin ok');
+            apiResuelta = API_DIRECTA;
+            return apiResuelta;
+          });
+      });
+  }
 
   var RESPALDO = [
     { nombre: 'REMERA X FASOLITO', archivo: 'img/remeras/remera-fasolito.webp' },
@@ -60,13 +81,17 @@
       return { nombre: r.nombre, archivo: r.archivo, precio: 50000 };
     }), null);
 
-    fetch(API + '/remeras', { cache: 'no-store' })
-      .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('status ' + r.status)); })
+    var baseApi = null;
+    apiBase()
+      .then(function (base) {
+        baseApi = base;
+        return fetch(base + '/remeras', { cache: 'no-store' }).then(function (r) { return r.json(); });
+      })
       .then(function (d) {
         if (!d || !d.ok || !d.remeras || !d.remeras.length) throw new Error('sin datos');
         pintar(d.remeras.map(function (r) {
           return { id: r.id, nombre: r.nombre, precio: r.precio || d.precio };
-        }), API);
+        }), baseApi);
         var nota = document.getElementById('remerasNota');
         if (nota && d.precio) nota.innerHTML = 'TODAS A <b>' + plata(d.precio) + '</b> · ENVÍO A SUCURSAL DE CORREO ARGENTINO';
       })
