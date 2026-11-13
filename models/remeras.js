@@ -30,6 +30,9 @@ const compraSchema = new mongoose.Schema({
   precio: { type: Number, default: 50000 },
   comprobante: { type: Buffer, default: null },    // OPCIONAL
   comprobanteMime: { type: String, default: '' },
+  // Token aleatorio para compartir el comprobante por WhatsApp sin exponer
+  // el panel: el link del mensaje es /compras/:id/comprobante?t=<token>.
+  comprobanteToken: { type: String, default: '', index: true },
   estado: { type: String, default: 'pendiente' },  // pendiente | pagado | enviado | entregado | cancelado
   createdAt: { type: Date, default: Date.now }
 });

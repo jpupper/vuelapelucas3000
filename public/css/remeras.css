@@ -41,21 +41,49 @@
     gap: 1rem;
     width: max-content;
     padding: 0 1rem;
-    animation: vl-remeras-scroll 42s linear infinite;
+    /* el movimiento lo maneja js/remeras-home.js (auto-avance + flechas) */
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
 }
 
-.vl-remeras-marquee:hover .vl-remeras-track,
-.vl-remeras-marquee:focus-within .vl-remeras-track {
-    animation-play-state: paused;
+/* flechas: pasan las remeras de derecha a izquierda (y al revés) */
+.vl-remeras-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    color: #000;
+    background: #fff;
+    border: 3px solid #000;
+    border-radius: 50%;
+    box-shadow: 3px 3px 0 #000;
+    cursor: pointer;
+    transition: transform .12s ease, background .12s ease, box-shadow .12s ease;
 }
 
-@keyframes vl-remeras-scroll {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
+.vl-remeras-arrow svg { width: 22px; height: 22px; display: block; }
+
+.vl-remeras-arrow:hover { background: var(--secondary, #ffd62c); }
+.vl-remeras-arrow:active { transform: translateY(-50%) translate(2px, 2px); box-shadow: 1px 1px 0 #000; }
+.vl-remeras-arrow:focus-visible { outline: 3px solid var(--blue, #2247ff); outline-offset: 2px; }
+.vl-remeras-arrow-prev { left: 10px; }
+.vl-remeras-arrow-next { right: 10px; }
+
+@media (max-width: 700px) {
+    .vl-remeras-arrow { width: 38px; height: 38px; font-size: 1.7rem; padding-bottom: 4px; }
+    .vl-remeras-arrow-prev { left: 5px; }
+    .vl-remeras-arrow-next { right: 5px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .vl-remeras-track { animation: none; flex-wrap: wrap; width: auto; justify-content: center; }
+    /* sin auto-avance: las flechas siguen funcionando */
+    .vl-remeras-track { will-change: auto; }
 }
 
 .vl-remera-slide {
@@ -341,6 +369,88 @@
 }
 .rem-preview .rem-mini { margin-top: .5rem; }
 
+/* ---------- mapita de sucursales ---------- */
+.rem-ubic { display: flex; flex-direction: column; gap: .7rem; }
+
+.rem-ubic-barra {
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+    flex-wrap: wrap;
+}
+
+.rem-ubic-btn {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.2rem;
+    letter-spacing: .05em;
+    padding: .45rem 1.15rem;
+    background: #fff;
+    color: #000;
+    border: 3px solid #000;
+    border-radius: 50px;
+    box-shadow: 4px 4px 0 #000;
+    cursor: pointer;
+    transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+}
+.rem-ubic-btn:hover { background: var(--secondary, #ffd62c); transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #000; }
+.rem-ubic-btn[disabled] { opacity: .6; cursor: progress; transform: none; box-shadow: 4px 4px 0 #000; }
+
+.rem-ubic-estado {
+    font-family: 'Inter', sans-serif;
+    font-size: .85rem;
+    font-weight: 700;
+    color: #333;
+    flex: 1 1 220px;
+}
+
+.rem-mapa {
+    height: 300px;
+    border: 3px solid #000;
+    border-radius: 16px;
+    box-shadow: 5px 5px 0 #000;
+    overflow: hidden;
+    background: #f2f2f2;
+}
+.rem-mapa .leaflet-container { font-family: 'Inter', sans-serif; }
+.rem-mapa .leaflet-control-attribution { font-size: .6rem; }
+
+.rem-cercanas { display: flex; flex-direction: column; gap: .45rem; }
+
+.rem-cercana {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .7rem;
+    text-align: left;
+    font-family: 'Inter', sans-serif;
+    font-size: .86rem;
+    font-weight: 700;
+    color: #000;
+    padding: .5rem .75rem;
+    background: #fff;
+    border: 2px solid #000;
+    border-radius: 12px;
+    box-shadow: 3px 3px 0 #000;
+    cursor: pointer;
+    transition: background .12s ease;
+}
+.rem-cercana:hover { background: #fffbe8; }
+.rem-cercana.is-sel { background: var(--secondary, #ffd62c); }
+.rem-cercana b { font-family: 'Bebas Neue', cursive; font-size: 1.05rem; letter-spacing: .03em; }
+.rem-cercana small { font-family: 'Inter', sans-serif; font-size: .68rem; color: #6a4b00; letter-spacing: 0; }
+.rem-cercana .dir { display: block; font-size: .72rem; font-weight: 600; color: #666; }
+.rem-cercana .km {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.05rem;
+    color: var(--tertiary, #ef4720);
+    white-space: nowrap;
+}
+.rem-cercanas-vacio { font-size: .82rem; font-weight: 600; color: #666; }
+
+@media (max-width: 700px) {
+    .rem-mapa { height: 240px; }
+}
+
 /* ---------- resumen ---------- */
 .rem-resumen { background: #fffbe8; }
 
@@ -372,6 +482,7 @@
 }
 .rem-msg.is-on { display: block; }
 .rem-msg.ok { background: #b6f5d3; }
+.rem-msg a { color: #000; font-weight: 800; }
 
 .rem-btn {
     display: block;

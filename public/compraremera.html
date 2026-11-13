@@ -11,7 +11,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css?v=8">
   <link rel="stylesheet" href="css/vuelapelucas2026.css?v=10">
-  <link rel="stylesheet" href="css/remeras.css?v=2">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/remeras.css?v=3">
 </head>
 <body>
 
@@ -65,6 +66,18 @@
           <datalist id="remSucursales"></datalist>
         </label>
 
+        <!-- MAPITA: lee tu ubicación y marca las sucursales más cercanas -->
+        <div class="rem-ubic rem-field-wide">
+          <div class="rem-ubic-barra">
+            <button type="button" class="rem-ubic-btn" id="remUbicar">📍 USAR MI UBICACIÓN</button>
+            <span class="rem-ubic-estado" id="remUbicEstado" role="status" aria-live="polite">
+              Tocá el botón y te marcamos las sucursales más cercanas a donde estás.
+            </span>
+          </div>
+          <div class="rem-mapa" id="remMapa" hidden></div>
+          <div class="rem-cercanas" id="remCercanas"></div>
+        </div>
+
         <label class="rem-field">NOMBRE Y APELLIDO *
           <input type="text" id="remNombre" maxlength="90" autocomplete="name" placeholder="Nombre y apellido">
         </label>
@@ -107,7 +120,8 @@
 
       <p class="rem-fine" id="remFine">
         Guardamos tu pedido y se abre WhatsApp con el mensaje ya escrito para el <b>2954-541104</b>.
-        El comprobante de pago es opcional: si todavía no lo tenés, lo mandás después por WhatsApp.
+        Si subís el comprobante, viaja como <b>link</b> dentro del mensaje (WhatsApp no deja adjuntar imágenes
+        desde la web). El comprobante es opcional: si todavía no lo tenés, lo mandás después.
       </p>
     </section>
 
@@ -134,6 +148,7 @@
   <!-- mismo shader de fondo que la página principal -->
   <canvas id="vuelapelucas-bg"></canvas>
   <script src="https://vps-4455523-x.dattaweb.com/jpshadereditor/include.js"></script>
-  <script src="js/compraremera.js?v=1"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/compraremera.js?v=3"></script>
 </body>
 </html>

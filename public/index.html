@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css?v=8">
     <link rel="stylesheet" href="css/vuelapelucas2026.css?v=10">
-    <link rel="stylesheet" href="css/remeras.css?v=2">
+    <link rel="stylesheet" href="css/remeras.css?v=3">
 </head>
 <body>
 
@@ -259,8 +259,16 @@
             <h2 class="section-title">REMERAS DEL VUELAPELUCAS</h2>
             <p class="section-subtitle">Los modelos de la edición 2026, hechos con la comunidad. Elegí el tuyo y te lo mandamos a la sucursal de Correo Argentino que quieras.</p>
 
-            <div class="vl-remeras-marquee">
+            <div class="vl-remeras-marquee" id="remerasCinta">
+                <button type="button" class="vl-remeras-arrow vl-remeras-arrow-prev" data-dir="-1"
+                        aria-label="Ver las remeras anteriores">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4 7 12l8 8" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
                 <div class="vl-remeras-track" id="remerasTrack"></div>
+                <button type="button" class="vl-remeras-arrow vl-remeras-arrow-next" data-dir="1"
+                        aria-label="Ver las remeras siguientes">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4l8 8-8 8" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
             </div>
 
             <div class="vl-remeras-acciones">
@@ -348,7 +356,7 @@
             data-comp="nodeeditor-0857" data-pass="ndlf4r28qv"></script>
     <script src="js/main.js?v=5"></script>
     <script src="js/galeria.js?v=7"></script>
-    <script src="js/remeras-home.js?v=1"></script>
+    <script src="js/remeras-home.js?v=2"></script>
     <!-- Boton universal del ecosistema FullScreen: lleva al perfil de FSCAUTH -->
     <script src="https://vps-4455523-x.dattaweb.com/jpconnect/js/fsc-button.js" data-fsc-mode="flow" data-fsc-pos="bottom-left" data-fsc-size="34"></script>
 </body>

@@ -65,9 +65,10 @@ app.use((req, res, next) => {
   res.setHeader('Content-Security-Policy', [
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://unpkg.com https://cdn.jsdelivr.net https://vps-4455523-x.dattaweb.com",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-    "font-src 'self' https://fonts.gstatic.com",
-    "img-src 'self' data: blob: https://res.cloudinary.com https://*.cloudinary.com https://vps-4455523-x.dattaweb.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com",
+    "font-src 'self' https://fonts.gstatic.com https://unpkg.com",
+    // unpkg: leaflet (css/js + iconos). tile.openstreetmap.org: el mapita de sucursales.
+    "img-src 'self' data: blob: https://res.cloudinary.com https://*.cloudinary.com https://vps-4455523-x.dattaweb.com https://unpkg.com https://*.tile.openstreetmap.org https://tile.openstreetmap.org",
     "connect-src 'self' https://fullscreencode.com https://vps-4455523-x.dattaweb.com https://res.cloudinary.com https://api.cloudinary.com",
     "media-src 'self' https://res.cloudinary.com https://*.cloudinary.com",
     "worker-src 'self' blob:",

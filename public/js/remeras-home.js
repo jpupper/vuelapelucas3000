@@ -1,11 +1,15 @@
 // ============================================================
-// REMERAS EN LA PORTADA — la cinta que pasa
+// REMERAS EN LA PORTADA — la cinta que pasa + flechas
 // ------------------------------------------------------------
-// Lee el catalogo de la API y arma la cinta duplicando la lista:
-// la animacion CSS mueve el track un -50%, asi el loop no corta.
-// Si la API no contesta, usa los modelos de respaldo (los mismos
-// archivos que estan en img/remeras/) para que la seccion nunca
-// quede vacia en la portada.
+// El track tiene la lista DUPLICADA: el auto-avance (acá, por JS con
+// requestAnimationFrame) corre de 0 a -mitad y vuelve a empezar, así el
+// loop no corta nunca. Las flechas mueven de a una remera y frenan el
+// auto-avance unos segundos para que no se pelee con el click.
+//
+// Antes era una animación CSS; se pasó a JS para poder mover a mano sin
+// que el transform de la animación pise el de las flechas.
+// Si la API no contesta, usa los modelos de respaldo (mismos archivos que
+// public/img/remeras/): la sección nunca queda vacía.
 // ============================================================
 (function () {
   'use strict';
@@ -16,9 +20,8 @@
   var API = IS_LOCAL ? (location.origin + '/vuelapelucas3000_2/api') : API_LOCAL;
   var apiResuelta = null;
 
-  // Igual criterio que rifa.js / compraremera.js: en producción el dominio es
-  // FTP (Apache) y no proxea /apivuelapelucas/, así que si esa ruta no contesta
-  // se va directo al backend del VPS. La base que responde se cachea.
+  // En producción el dominio es FTP (Apache) y no proxea /apivuelapelucas/,
+  // así que si esa ruta no contesta se va directo al backend del VPS.
   function apiBase() {
     if (apiResuelta) return Promise.resolve(apiResuelta);
     return fetch(API + '/remeras', { cache: 'no-store' })
@@ -44,19 +47,27 @@
     { nombre: 'REMERA X JPUPPER', archivo: 'img/remeras/remera-pupper.webp' }
   ];
 
+  var VELOCIDAD = 26;              // px por segundo del auto-avance
+  var FRENO_TRAS_CLICK = 2600;     // ms de pausa después de tocar una flecha
+  var reductor = false;
+  try { reductor = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { /* nada */ }
+
+  var track = null;
+  var offset = 0;        // px (negativo = la cinta se corre a la izquierda)
+  var mitad = 0;         // ancho de UNA copia de la lista
+  var frenadoHasta = 0;
+  var ultimoT = 0;
+
+  function plata(n) { return '$' + (Number(n) || 0).toLocaleString('es-AR'); }
+
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
   }
-  function plata(n) {
-    return '$' + (Number(n) || 0).toLocaleString('es-AR');
-  }
 
   function pintar(lista, base) {
-    var track = document.getElementById('remerasTrack');
     if (!track) return;
-
     var slides = lista.map(function (r) {
       var img = r.archivo ? r.archivo : (base || API) + '/remeras/' + r.id + '/img';
       var link = r.id ? 'compraremera.html?remera=' + encodeURIComponent(r.id) : 'compraremera.html';
@@ -67,19 +78,88 @@
         '<span class="vl-remera-precio">' + plata(r.precio) + '</span>' +
         '</span></a>';
     }).join('');
-
-    // dos copias: el keyframe llega a -50% y vuelve a empezar sin salto
+    // dos copias: se corre media lista y vuelve a empezar sin salto
     track.innerHTML = slides + slides;
+    medir();
+    aplicar();
+  }
+
+  // ---------- movimiento ----------
+  function medir() {
+    mitad = Math.round(track.scrollWidth / 2) || 0;
+  }
+
+  function normalizar() {
+    if (!mitad) return;
+    while (offset <= -mitad) offset += mitad;
+    while (offset > 0) offset -= mitad;
+  }
+
+  function aplicar() {
+    track.style.transform = 'translate3d(' + offset.toFixed(2) + 'px,0,0)';
+  }
+
+  function pasoAncho() {
+    var primera = track.querySelector('.vl-remera-slide');
+    if (!primera) return 200;
+    var est = getComputedStyle(track);
+    var gap = parseFloat(est.columnGap || est.gap) || 16;
+    return primera.getBoundingClientRect().width + gap;
+  }
+
+  // dir +1 = siguiente (la cinta se corre a la izquierda), -1 = anterior.
+  function mover(dir) {
+    if (!mitad) medir();
+    offset -= dir * pasoAncho();
+    normalizar();
+    aplicar();
+    frenadoHasta = Date.now() + FRENO_TRAS_CLICK;
+  }
+
+  function loop(t) {
+    if (!ultimoT) ultimoT = t;
+    var dt = Math.min(0.06, (t - ultimoT) / 1000);
+    ultimoT = t;
+    var libre = Date.now() > frenadoHasta;
+    if (mitad && libre && !reductor) {
+      offset -= VELOCIDAD * dt;
+      normalizar();
+      aplicar();
+    }
+    requestAnimationFrame(loop);
+  }
+
+  function engancharCinta() {
+    var cont = document.getElementById('remerasCinta');
+    if (!cont) return;
+
+    cont.querySelectorAll('.vl-remeras-arrow').forEach(function (b) {
+      b.addEventListener('click', function (e) {
+        e.preventDefault();
+        mover(parseInt(b.dataset.dir, 10) || 1);
+      });
+    });
+
+    // el mouse (o el foco) sobre la cinta frena el auto-avance
+    cont.addEventListener('mouseenter', function () { frenadoHasta = Date.now() + 3600000; });
+    cont.addEventListener('mouseleave', function () { frenadoHasta = 0; });
+    cont.addEventListener('focusin', function () { frenadoHasta = Date.now() + 3600000; });
+    cont.addEventListener('focusout', function () { frenadoHasta = 0; });
+
+    window.addEventListener('resize', function () { medir(); normalizar(); aplicar(); });
+    track.addEventListener('load', function () { medir(); }, true);
   }
 
   function arrancar() {
-    var track = document.getElementById('remerasTrack');
+    track = document.getElementById('remerasTrack');
     if (!track) return;
 
-    // Mientras llega la API se muestran los modelos de respaldo.
     pintar(RESPALDO.map(function (r) {
       return { nombre: r.nombre, archivo: r.archivo, precio: 50000 };
     }), null);
+
+    engancharCinta();
+    requestAnimationFrame(loop);
 
     var baseApi = null;
     apiBase()
@@ -96,7 +176,7 @@
         if (nota && d.precio) nota.innerHTML = 'TODAS A <b>' + plata(d.precio) + '</b> · ENVÍO A SUCURSAL DE CORREO ARGENTINO';
       })
       .catch(function () {
-        // Se queda el respaldo: la portada no muestra un cartel de error.
+        // se queda el respaldo: la portada no muestra un cartel de error
       });
   }
 

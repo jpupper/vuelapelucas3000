@@ -116,6 +116,144 @@
   }
 
   // ============================================================
+  // MAPITA DE SUCURSALES DE CORREO ARGENTINO
+  // ------------------------------------------------------------
+  // data/sucursales-correo.json son 879 sucursales con coordenadas (salen
+  // de OpenStreetMap, tools/build_sucursales.js). Se lee la ubicación del
+  // navegador, se calculan las distancias y se marcan las más cercanas en
+  // un mapa Leaflet. Sin permiso de ubicación (o sin Leaflet) la lista por
+  // distancia sigue andando y el campo se puede escribir a mano.
+  // ============================================================
+  var sucursales = null;
+  var miPos = null;
+  var mapa = null;
+  var capaMarcas = null;
+  var cercaActual = [];
+
+  function cargarSucursales() {
+    if (sucursales) return Promise.resolve(sucursales);
+    return fetch('data/sucursales-correo.json', { cache: 'force-cache' })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('status ' + r.status)); })
+      .then(function (d) {
+        sucursales = (d && d.sucursales) || [];
+        return sucursales;
+      });
+  }
+
+  function distanciaKm(a, b) {
+    var R = 6371, rad = Math.PI / 180;
+    var dLat = (b.lat - a.lat) * rad;
+    var dLon = (b.lng - a.lng) * rad;
+    var s = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    return 2 * R * Math.asin(Math.min(1, Math.sqrt(s)));
+  }
+
+  function kmTxt(km) {
+    if (km < 1) return Math.round(km * 1000) + ' m';
+    return km.toLocaleString('es-AR', { maximumFractionDigits: 1 }) + ' km';
+  }
+
+  function nombreSucursal(s) {
+    return 'Correo Argentino ' + (s.c || 'sucursal');
+  }
+
+  function detalleSucursal(s) {
+    return [s.d, s.p].filter(Boolean).join(' · ');
+  }
+
+  function estadoUbic(txt) { $('remUbicEstado').textContent = txt; }
+
+  function seleccionarSucursal(s) {
+    var valor = (nombreSucursal(s) + (s.d ? ' (' + s.d + ')' : '')).slice(0, 120);
+    $('remSucursal').value = valor;
+    $('remSucursal').classList.remove('rem-falta');
+    $('remCercanas').querySelectorAll('.rem-cercana').forEach(function (b) {
+      b.classList.toggle('is-sel', cercaActual[Number(b.dataset.i)] === s);
+    });
+    estadoUbic('Elegiste: ' + valor + (s._km != null ? ' — a ' + kmTxt(s._km) : '') + '.');
+  }
+
+  function pintarCercanas(cerca) {
+    var cont = $('remCercanas');
+    if (!cerca.length) {
+      cont.innerHTML = '<p class="rem-cercanas-vacio">No encontramos sucursales cerca.</p>';
+      return;
+    }
+    cont.innerHTML = cerca.map(function (s, i) {
+      var det = detalleSucursal(s);
+      return '<button type="button" class="rem-cercana" data-i="' + i + '">' +
+        '<span><b>' + esc(nombreSucursal(s)) + '</b>' + (i === 0 ? ' <small>(la más cercana)</small>' : '') +
+        (det ? '<span class="dir">' + esc(det) + '</span>' : '') + '</span>' +
+        '<span class="km">' + kmTxt(s._km) + '</span></button>';
+    }).join('');
+    cont.querySelectorAll('.rem-cercana').forEach(function (b) {
+      b.addEventListener('click', function () { seleccionarSucursal(cerca[Number(b.dataset.i)]); });
+    });
+  }
+
+  function pintarMapa(yo, cerca) {
+    var cont = $('remMapa');
+    if (typeof L === 'undefined') { cont.hidden = true; return; }
+    cont.hidden = false;
+    if (!mapa) {
+      mapa = L.map(cont, { scrollWheelZoom: false });
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '© OpenStreetMap'
+      }).addTo(mapa);
+      capaMarcas = L.layerGroup().addTo(mapa);
+    }
+    capaMarcas.clearLayers();
+    var pts = [[yo.lat, yo.lng]];
+    cerca.forEach(function (s) {
+      var m = L.circleMarker([s.y, s.x], { radius: 8, color: '#000', weight: 3, fillColor: '#ffd62c', fillOpacity: 1 })
+        .addTo(capaMarcas)
+        .bindTooltip(nombreSucursal(s) + ' · ' + kmTxt(s._km));
+      m.on('click', function () { seleccionarSucursal(s); });
+      pts.push([s.y, s.x]);
+    });
+    // "estás acá" va ÚLTIMO para que no lo tape la sucursal que tiene al lado
+    L.circleMarker([yo.lat, yo.lng], { radius: 9, color: '#fff', weight: 3, fillColor: '#2247ff', fillOpacity: 1 })
+      .addTo(capaMarcas).bindTooltip('Estás acá');
+    mapa.fitBounds(pts, { padding: [30, 30], maxZoom: 14 });
+    setTimeout(function () { mapa.invalidateSize(); }, 250);
+  }
+
+  function ubicar() {
+    var btn = $('remUbicar');
+    if (!navigator.geolocation) {
+      estadoUbic('Tu navegador no comparte la ubicación. Escribí la sucursal a mano.');
+      return;
+    }
+    btn.disabled = true;
+    estadoUbic('Buscando tu ubicación…');
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      miPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      cargarSucursales().then(function (lista) {
+        var ordenadas = lista.map(function (s) {
+          s._km = distanciaKm(miPos, { lat: s.y, lng: s.x });
+          return s;
+        }).sort(function (a, b) { return a._km - b._km; });
+        cercaActual = ordenadas.slice(0, 6);
+        pintarCercanas(cercaActual);
+        pintarMapa(miPos, cercaActual);
+        estadoUbic('La más cercana: ' + nombreSucursal(cercaActual[0]) + ' — a ' +
+          kmTxt(cercaActual[0]._km) + '. Tocá una para elegirla.');
+        btn.disabled = false;
+      }).catch(function () {
+        estadoUbic('No pudimos cargar la lista de sucursales. Escribila a mano.');
+        btn.disabled = false;
+      });
+    }, function (err) {
+      btn.disabled = false;
+      estadoUbic(err && err.code === 1
+        ? 'No diste permiso de ubicación. Escribí la sucursal a mano.'
+        : 'No pudimos leer tu ubicación. Escribí la sucursal a mano.');
+    }, { enableHighAccuracy: false, timeout: 15000, maximumAge: 600000 });
+  }
+
+  // ============================================================
   // CATÁLOGO
   // ============================================================
   function pintarRemeras() {
@@ -365,8 +503,16 @@
         // el botón grande del panel hace lo mismo con un click.
         try { window.open(d.whatsapp, '_blank', 'noopener'); } catch (e) { /* bloqueado */ }
         $('remOkMsg').className = 'rem-msg is-on ok';
-        $('remOkMsg').textContent = 'Pedido ' + (d.codigo || '') +
-          ' guardado' + (d.comprobante ? ' con comprobante' : ' (sin comprobante, lo mandás por WhatsApp)') + '.';
+        // El comprobante viaja como LINK: se lo mostramos para que lo pueda
+        // abrir/guardar y saber qué está mandando.
+        if (d.comprobanteUrl) {
+          $('remOkMsg').innerHTML = 'Pedido ' + esc(d.codigo || '') +
+            ' guardado con comprobante. El link de tu comprobante ya va dentro del mensaje: ' +
+            '<a href="' + esc(d.comprobanteUrl) + '" target="_blank" rel="noopener">ver mi comprobante</a>.';
+        } else {
+          $('remOkMsg').textContent = 'Pedido ' + (d.codigo || '') +
+            ' guardado sin comprobante: mandalo por WhatsApp cuando lo tengas.';
+        }
       })
       .catch(function (e) {
         aviso('No se pudo guardar el pedido: ' + e.message + '. Probá de nuevo o escribinos al ' + estado.whatsapp + '.');
@@ -414,6 +560,7 @@
     engancharComprobante();
     $('remBtnComprar').addEventListener('click', comprar);
     $('remOkCopiar').addEventListener('click', copiarMensaje);
+    $('remUbicar').addEventListener('click', ubicar);
 
     // Campos: al escribir se limpia la marca de "falta".
     ['remNombre', 'remEmail', 'remTelefono', 'remSucursal'].forEach(function (id) {

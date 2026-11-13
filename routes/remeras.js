@@ -16,6 +16,7 @@
 // DELETE {BASE}/api/compras/:id?pass=        -> borrar compra (admin)
 // ============================================================
 const express = require('express');
+const crypto = require('crypto');
 const mongoose = require('mongoose');
 const router = express.Router();
 const { Remera, Compra, Config } = require('../models/remeras');
@@ -271,7 +272,27 @@ function linkWhatsapp(numero, texto) {
     return 'https://wa.me/' + num + '?text=' + encodeURIComponent(texto);
 }
 
-function mensajePedido(c, codigo) {
+// Base pública de la API tal como la llamó el cliente, para armar links
+// absolutos que abran desde WhatsApp (ahí no hay origen ni cookies).
+//   /vuelapelucas3000_2/api/compras  ->  https://host/vuelapelucas3000_2/api
+//   /apivuelapelucas/api/compras     ->  https://host/apivuelapelucas/api
+function basePublica(req) {
+    const host = req.get('host') || '';
+    const esLocal = /^(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/.test(host);
+    const proto = esLocal ? req.protocol : 'https';
+    const ruta = String(req.originalUrl || req.url || '').split('?')[0].replace(/\/+$/, '');
+    const base = ruta.replace(/\/compras$/, '') || '/api';
+    return proto + '://' + host + base;
+}
+
+// Link del comprobante: sin pass, pero con un token aleatorio del pedido.
+// OJO: basePublica() ya viene sin '/compras' (lo recorta para el resto de las
+// rutas), así que el segmento se agrega acá.
+function linkComprobante(req, id, token) {
+    return basePublica(req) + '/compras/' + id + '/comprobante?t=' + encodeURIComponent(token || '');
+}
+
+function mensajePedido(c, codigo, enlaceComprobante) {
     const precio = '$' + Number(c.precio || 0).toLocaleString('es-AR');
     return [
         'HOLA! QUIERO COMPRAR UNA REMERA DEL VUELAPELUCAS 3000',
@@ -286,7 +307,8 @@ function mensajePedido(c, codigo) {
         'MAIL: ' + c.email,
         'TELEFONO: ' + c.telefono,
         c.nota ? 'NOTA: ' + c.nota : null,
-        'COMPROBANTE: ' + (c.comprobanteMime ? 'SUBIDO EN LA WEB' : 'LO ENVIO POR ACA')
+        // El comprobante viaja como LINK (WhatsApp no adjunta imágenes por wa.me)
+        enlaceComprobante ? 'COMPROBANTE DE PAGO: ' + enlaceComprobante : 'COMPROBANTE DE PAGO: LO ENVIO POR ACA'
     ].filter((x) => x !== null).join('\n');
 }
 
@@ -345,11 +367,13 @@ router.post('/compras', async (req, res) => {
             precio,
             comprobante: img.imagen,
             comprobanteMime: img.mime,
+            comprobanteToken: img.mime ? crypto.randomBytes(16).toString('hex') : '',
             estado: 'pendiente'
         });
 
         const codigo = String(doc._id).slice(-6).toUpperCase();
-        const texto = mensajePedido(Object.assign({}, doc.toObject(), { precio }), codigo);
+        const enlace = img.mime ? linkComprobante(req, String(doc._id), doc.comprobanteToken) : '';
+        const texto = mensajePedido(Object.assign({}, doc.toObject(), { precio }), codigo, enlace);
 
         res.status(201).json({
             ok: true,
@@ -359,6 +383,7 @@ router.post('/compras', async (req, res) => {
             whatsapp: linkWhatsapp(c.whatsapp, texto),
             mensaje: texto,
             comprobante: !!img.mime,
+            comprobanteUrl: enlace,
             message: '¡Pedido guardado!'
         });
     } catch (err) {
@@ -401,15 +426,17 @@ router.get('/compras', async (req, res) => {
     }
 });
 
-// ---------- GET comprobante (admin) ----------
+// ---------- GET comprobante ----------
+// Dos formas: ?pass= (panel admin) o ?t=<token> (el link que viaja por WhatsApp).
 router.get('/compras/:id/comprobante', async (req, res) => {
-    if (!esAdmin(req)) return res.status(401).json({ ok: false, error: 'No autorizado' });
     try {
         if (!esId(req.params.id)) return res.status(404).end();
-        const x = await Compra.findById(req.params.id, { comprobante: 1, comprobanteMime: 1 }).lean();
+        const x = await Compra.findById(req.params.id, { comprobante: 1, comprobanteMime: 1, comprobanteToken: 1 }).lean();
         if (!x || !x.comprobante) return res.status(404).end();
+        const porToken = !!req.query.t && !!x.comprobanteToken && String(req.query.t) === String(x.comprobanteToken);
+        if (!porToken && !esAdmin(req)) return res.status(401).json({ ok: false, error: 'No autorizado' });
         res.setHeader('Content-Type', x.comprobanteMime || 'image/jpeg');
-        res.setHeader('Cache-Control', 'private, max-age=60');
+        res.setHeader('Cache-Control', 'private, max-age=300');
         res.send(x.comprobante.buffer ? x.comprobante.buffer : x.comprobante);
     } catch (err) {
         res.status(404).end();
